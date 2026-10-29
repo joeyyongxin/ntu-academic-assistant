@@ -1,0 +1,892 @@
+{
+  "tasks": [
+    {
+      "id": "e3da4936-e2d3-53eb-bc03-3c5ae17d1301",
+      "date": "2026-10-27",
+      "module": "CC0015",
+      "title": "Slide 15 memorisation + Q&A",
+      "minutes": 25,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "d4358edd-efa2-574c-b665-bc228023830e",
+      "date": "2026-10-27",
+      "module": "MH1812",
+      "title": "2019 + 2020 CA2 past papers",
+      "minutes": null,
+      "notes": "3–4 hours",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "d7162574-c5ae-59fd-966b-705a4e3abea0",
+      "date": "2026-10-27",
+      "module": "SC1005",
+      "title": "Lab quiz revision",
+      "minutes": 30,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "c0044f27-eafa-5d15-9b85-28872300d384",
+      "date": "2026-10-27",
+      "module": "SC1004",
+      "title": "Vectors, magnitude, dot products, linear combinations",
+      "minutes": 40,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "c5c9ae33-45d3-5da9-99e4-fe6e3bad6d53",
+      "date": "2026-10-27",
+      "module": "SC2000",
+      "title": "Lecture 8 point estimation + Casio mean/SD",
+      "minutes": 60,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "f0c7fd6e-757c-5f2c-9218-0c8e987d52a3",
+      "date": "2026-10-27",
+      "module": "SC1001",
+      "title": "Week 9 LAMS + recursion basics",
+      "minutes": 30,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "cf4a6b27-069b-5a2a-bfe6-1c76d086d13b",
+      "date": "2026-10-27",
+      "module": "SC1005",
+      "title": "Final: introduction + binary number systems",
+      "minutes": 25,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "163902b7-1783-5f06-9615-e26d9943f441",
+      "date": "2026-10-28",
+      "module": "CC0015",
+      "title": "Full rehearsal + mock Q&A",
+      "minutes": 30,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "cc60d3b8-9df3-5fdd-9bb4-e68b51502282",
+      "date": "2026-10-28",
+      "module": "MH1812",
+      "title": "2021 + 2022 CA2 past papers",
+      "minutes": null,
+      "notes": "3–4 hours",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "c00f471a-43b8-50e2-8fce-e1835d930b34",
+      "date": "2026-10-28",
+      "module": "SC1005",
+      "title": "Final lab quiz preparation",
+      "minutes": 30,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "08847154-bc3b-5dd5-9fa3-8f2c161cf284",
+      "date": "2026-10-28",
+      "module": "SC1004",
+      "title": "Matrices, multiplication, transpose, TI-84 basics",
+      "minutes": 45,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "7a00c8c4-b7ab-5687-8dfe-f21f4543155c",
+      "date": "2026-10-28",
+      "module": "SC2000",
+      "title": "Confidence intervals for means + Z critical values",
+      "minutes": 60,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "f05b9df4-e8e3-513c-b0b0-ae87113abe07",
+      "date": "2026-10-28",
+      "module": "SC1001",
+      "title": "Week 10 LAMS + pattern recognition",
+      "minutes": 30,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "503c9614-de19-5b50-bb05-f5641ef83062",
+      "date": "2026-10-28",
+      "module": "SC1005",
+      "title": "Final: binary/decimal conversions",
+      "minutes": 25,
+      "notes": "",
+      "done": true,
+      "source": "manual"
+    },
+    {
+      "id": "5772af9c-9d86-586b-ad68-32ebdd6fbb27",
+      "date": "2026-10-29",
+      "module": "CC0015",
+      "title": "Group presentation + quick revision",
+      "minutes": 10,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "5d5ed04e-57a1-56b7-b0d8-c4cfa515fecd",
+      "date": "2026-10-29",
+      "module": "SC1005",
+      "title": "Lab session and quiz",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "25bfea4e-f864-5d1d-b872-fb7c9beafa04",
+      "date": "2026-10-29",
+      "module": "MH1812",
+      "title": "2023 CA2 paper",
+      "minutes": null,
+      "notes": "1.5–2 hours",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "86e5d244-3589-5b63-9a1c-9167aa74df3a",
+      "date": "2026-10-30",
+      "module": "MH1812",
+      "title": "2024 CA2 paper + corrections",
+      "minutes": null,
+      "notes": "2–3 hours",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "0e00c749-2b61-5924-8928-bc69209081bd",
+      "date": "2026-10-30",
+      "module": "CC0003",
+      "title": "Full argument, Callahan + professor Q&A",
+      "minutes": 35,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "e7ecc907-8e55-5231-8e80-f0e67e329b56",
+      "date": "2026-10-30",
+      "module": "SC1004",
+      "title": "Linear equations, RREF, pivots, TI-84",
+      "minutes": 45,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "324e20f1-da14-5e15-91f7-e0a8e2575050",
+      "date": "2026-10-30",
+      "module": "SC2000",
+      "title": "Tutorial 2 + confidence intervals",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "8ba3732f-e563-55d2-bc35-f14c65e64310",
+      "date": "2026-10-30",
+      "module": "SC1005",
+      "title": "Final: octal and hexadecimal conversions",
+      "minutes": 30,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "32e1d313-3792-5949-9295-8e77259d5c26",
+      "date": "2026-10-30",
+      "module": "SC1001",
+      "title": "Variables, I/O, types, operators + coding",
+      "minutes": 40,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "e211f8e7-2c22-53b7-9aea-c64b96f15e7d",
+      "date": "2026-10-31",
+      "module": "MH1812",
+      "title": "CA2 assessment",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "70fdd79e-2d33-543f-9e8a-a93923899946",
+      "date": "2026-10-31",
+      "module": "SC2000",
+      "title": "Light formula review",
+      "minutes": 20,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "4fe029d7-004d-5f6b-b913-497d25cbf840",
+      "date": "2026-11-01",
+      "module": "CC0003",
+      "title": "Final timed mock viva + Q&A",
+      "minutes": 30,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "1d21b54e-33a7-5dcb-b6e2-161cfe2c63fa",
+      "date": "2026-11-01",
+      "module": "SC1004",
+      "title": "Span, independence, basis, subspaces",
+      "minutes": 45,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "97200e73-c8f9-5d4d-bb84-8fec32b81c4b",
+      "date": "2026-11-01",
+      "module": "SC2000",
+      "title": "Part 1 refresher + Lecture 7–8 practice",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "cf15471a-56f9-52c1-9b3d-aeb03584f5bd",
+      "date": "2026-11-01",
+      "module": "SC1005",
+      "title": "Final: BCD, Gray, ASCII, parity",
+      "minutes": 30,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "56e53f10-81f2-58e3-993d-b9bc7e12bc6f",
+      "date": "2026-11-01",
+      "module": "SC1001",
+      "title": "If/elif/else, Booleans + coding",
+      "minutes": 40,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "dd2daf3f-c14c-594b-a216-3e14906785a9",
+      "date": "2026-11-02",
+      "module": "CC0003",
+      "title": "Quick warm-up + individual viva",
+      "minutes": 10,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "25f2a5d5-e13c-58a2-b5ee-3474075bce8e",
+      "date": "2026-11-03",
+      "module": "SC1004",
+      "title": "Orthogonality, orthonormal bases, projections",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "abf0826f-2658-5477-b8da-0a82d9d12d85",
+      "date": "2026-11-03",
+      "module": "SC1001",
+      "title": "For/while/range, nested loops",
+      "minutes": 50,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "a6905090-a3f5-523f-a881-1f9f5ed78d80",
+      "date": "2026-11-03",
+      "module": "SC1005",
+      "title": "Logic gates and Boolean algebra",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "c9d8b3ad-deb6-5b4b-a49b-2d83d4d4a694",
+      "date": "2026-11-03",
+      "module": "SC2000",
+      "title": "Quiz 3 preparation",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "bdfb1c0c-af61-55d5-ab5a-777abe9f43e0",
+      "date": "2026-11-04",
+      "module": "SC1004",
+      "title": "Gram–Schmidt, QR, Tutorial 6",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "b2b355b6-ac06-5da3-88ee-8c1579e8174f",
+      "date": "2026-11-04",
+      "module": "SC1001",
+      "title": "Functions, parameters, return, scope",
+      "minutes": 45,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "21f09cf6-3bcf-5df8-ade4-7f0fc66ad972",
+      "date": "2026-11-04",
+      "module": "SC1005",
+      "title": "Boolean algebra",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "6a1b2230-aaa5-551d-93cb-bb8a16e35104",
+      "date": "2026-11-04",
+      "module": "SC2000",
+      "title": "Quiz 3 practice",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "9e9ee64b-c960-5dc2-8ed4-81424c672950",
+      "date": "2026-11-05",
+      "module": "SC1004",
+      "title": "Least squares, normal equations, calculator",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "bfb084c3-5ec6-5dcc-be1e-b8c362356257",
+      "date": "2026-11-05",
+      "module": "SC1001",
+      "title": "Strings, lists, tuples, dictionaries",
+      "minutes": 50,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "2d12fa8e-6d80-58f3-ab87-c7c0ebe8678f",
+      "date": "2026-11-05",
+      "module": "SC1005",
+      "title": "Logic circuit practice",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "be62559e-2710-5f17-9e56-2e47860a6108",
+      "date": "2026-11-05",
+      "module": "SC2000",
+      "title": "Final Quiz 3 revision",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "2f5ecd8b-0036-5d09-bcbc-fe3034852b20",
+      "date": "2026-11-06",
+      "module": "SC2000",
+      "title": "Quiz 3, 9:30–10:20 AM",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "806d9a9f-259d-500b-ad17-48bdb32aecb7",
+      "date": "2026-11-06",
+      "module": "SC1004",
+      "title": "Tutorial 7, projection matrices, applications",
+      "minutes": 45,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "707725b5-533e-5a5e-896d-d043d19ca33a",
+      "date": "2026-11-07",
+      "module": "SC1004",
+      "title": "Complex numbers, polar form, De Moivre",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "e5ce5f76-431b-5491-8e87-2af64d018b4d",
+      "date": "2026-11-07",
+      "module": "SC1001",
+      "title": "Recursion, trees, exceptions",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "42bdfc9a-6e23-5a5e-b760-db36b9881a8c",
+      "date": "2026-11-07",
+      "module": "SC1005",
+      "title": "Digital arithmetic and 2's complement",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "24e662d4-b17a-5159-9e7e-ddd8f081dde1",
+      "date": "2026-11-08",
+      "module": "SC1004",
+      "title": "DFT, analysis/synthesis matrices, Tutorial 8A",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "01676d36-a2e1-575f-97a6-0d50b75f1279",
+      "date": "2026-11-08",
+      "module": "SC1001",
+      "title": "Pattern recognition and searching",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "3143fbc0-e040-5a92-8a30-f83f7d2a4b32",
+      "date": "2026-11-08",
+      "module": "SC1005",
+      "title": "Digital arithmetic",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "38bf1c79-dc21-59f4-9fec-249ac33641a8",
+      "date": "2026-11-09",
+      "module": "SC1004",
+      "title": "Eigenvalues, eigenvectors, characteristic equation",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "9084900b-e56f-5117-9f40-17b2f88b3412",
+      "date": "2026-11-09",
+      "module": "SC1001",
+      "title": "Lab-style coding",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "a8490998-fd31-5790-b3b6-656f9b47919e",
+      "date": "2026-11-09",
+      "module": "SC1005",
+      "title": "SOP, POS, K-maps",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "db765046-c7ab-5f4c-94e4-dda1606cb21b",
+      "date": "2026-11-09",
+      "module": "SC2000",
+      "title": "Quiz 4 preparation",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "e9b1f5d0-f0bd-522a-ab44-709a2a481ac7",
+      "date": "2026-11-10",
+      "module": "SC1004",
+      "title": "Diagonalisation, matrix powers, Tutorial 8",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "63bee301-7fcb-5fbc-8fee-c3310689bbfb",
+      "date": "2026-11-10",
+      "module": "SC1001",
+      "title": "Functions, strings, lists, dictionaries coding",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "2cd363eb-bbb1-5e4b-a70e-338fc65dcb49",
+      "date": "2026-11-10",
+      "module": "SC1005",
+      "title": "K-map practice",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "a16ec11f-3853-55d2-a047-a344fe3a8a05",
+      "date": "2026-11-10",
+      "module": "SC2000",
+      "title": "Quiz 4 preparation",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "98d1467f-d8ef-5c71-9abe-c69556ad2e1c",
+      "date": "2026-11-11",
+      "module": "SC1004",
+      "title": "2024 past-year Q11–Q20, weak concepts",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "5b50b6d6-c660-551e-8a92-4c9f4f8cc20c",
+      "date": "2026-11-11",
+      "module": "SC1001",
+      "title": "Recursion and binary-tree coding",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "268102d8-b515-59b6-a30e-63e12fb82c4f",
+      "date": "2026-11-11",
+      "module": "SC1005",
+      "title": "Digital circuits",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "471b4ad1-0367-5013-b0f4-b44083269c56",
+      "date": "2026-11-11",
+      "module": "SC2000",
+      "title": "Quiz 4 practice",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "0546d8b4-b0fc-5885-838c-2cc9f887f8e8",
+      "date": "2026-11-12",
+      "module": "SC1004",
+      "title": "Timed MCQ mock, corrections, cheat sheet",
+      "minutes": 90,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "4b4cb62f-78ca-5480-ad33-46b3c526ef0c",
+      "date": "2026-11-12",
+      "module": "SC1001",
+      "title": "Searching, debugging, edge cases",
+      "minutes": 60,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "6ed9fcf7-29e0-5be6-addc-36779c9e312d",
+      "date": "2026-11-12",
+      "module": "SC1005",
+      "title": "Circuit applications",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "c115148b-cab4-5672-b02b-b53d4b48e604",
+      "date": "2026-11-12",
+      "module": "SC2000",
+      "title": "Final Quiz 4 revision",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "99438805-d458-5b98-af2a-bcfa215808f2",
+      "date": "2026-11-13",
+      "module": "SC1004",
+      "title": "CA2 Quiz 2, 8:15–9:05 AM",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "3ba55360-aa87-5b5c-95c3-706a5267fcb4",
+      "date": "2026-11-13",
+      "module": "SC2000",
+      "title": "Quiz 4, 9:30–10:20 AM",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "a651ef6e-875f-538f-bd14-e0477d02f5f6",
+      "date": "2026-11-14",
+      "module": "SC1001",
+      "title": "Full timed HackerEarth mock",
+      "minutes": 90,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "66ca9948-e55b-59ad-93d7-4cf3101357fc",
+      "date": "2026-11-14",
+      "module": "SC1005",
+      "title": "Sequential circuits and Verilog",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "23beec9a-375e-58c5-b138-df85f42ca531",
+      "date": "2026-11-15",
+      "module": "SC1001",
+      "title": "Mock corrections and final coding revision",
+      "minutes": 75,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "79677c1c-40ed-5073-9d66-038f3e0ffc14",
+      "date": "2026-11-15",
+      "module": "SC1005",
+      "title": "Counters and FSM",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "a0470f1a-deaf-5a25-a418-1cea24931990",
+      "date": "2026-11-16",
+      "module": "SC1001",
+      "title": "Quiz 2 — 90 minutes",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "8b37f2de-cca5-5297-9816-dd4b99e31f3d",
+      "date": "2026-11-16",
+      "module": "SC1005",
+      "title": "Sequential circuits and FSM",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "c11221d0-5c4e-5dff-9a6f-5bfc031e7f0b",
+      "date": "2026-11-17",
+      "module": "SC1004",
+      "title": "Final-exam revision period (17–22 Nov): prioritise SC1004",
+      "minutes": null,
+      "notes": "Planning block: exact daily revision tasks not assigned",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "1807527b-bf03-5d8f-a83e-46e561beff85",
+      "date": "2026-11-17",
+      "module": "SC1005",
+      "title": "Final-exam revision period (17–22 Nov): SC1005",
+      "minutes": null,
+      "notes": "Planning block: exact daily revision tasks not assigned",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "763c654a-2e29-5de3-9d6a-2ab2cb70c2e7",
+      "date": "2026-11-17",
+      "module": "MH1812",
+      "title": "Keep practising alongside SC1004/SC1005 (17–22 Nov)",
+      "minutes": null,
+      "notes": "Planning block: exact daily revision tasks not assigned",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "425d4c8a-2761-526c-bb36-c08e9d820bea",
+      "date": "2026-11-23",
+      "module": "SC1004",
+      "title": "Final exam",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "97f76eb0-cd11-54db-8f7f-9a98355bc083",
+      "date": "2026-11-24",
+      "module": "SC1005",
+      "title": "Final exam",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "bda4cbc1-5d70-53df-a654-bad66d7b52e2",
+      "date": "2026-11-25",
+      "module": "MH1812",
+      "title": "Final revision period (25–27 Nov): past papers, weak concepts, timed practice",
+      "minutes": null,
+      "notes": "Planning block: exact daily revision tasks not assigned",
+      "done": false,
+      "source": "manual"
+    },
+    {
+      "id": "9d74ba82-46d0-5496-8a23-25abb160dc3a",
+      "date": "2026-11-28",
+      "module": "MH1812",
+      "title": "Final exam",
+      "minutes": null,
+      "notes": "",
+      "done": false,
+      "source": "manual"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "fc1b67cb-eef9-5962-ba6f-7f18719cf4e5",
+      "date": "2026-10-29",
+      "module": "CC0015",
+      "title": "Quit Together group presentation"
+    },
+    {
+      "id": "51bcda6f-0b34-5153-83ac-92cead8983fb",
+      "date": "2026-10-29",
+      "module": "SC1005",
+      "title": "Lab session and quiz"
+    },
+    {
+      "id": "db148461-0c12-598f-b984-a66fc16fb835",
+      "date": "2026-10-31",
+      "module": "MH1812",
+      "title": "CA2"
+    },
+    {
+      "id": "1ddacd52-4adc-5adf-90c0-77cb114712da",
+      "date": "2026-11-02",
+      "module": "CC0003",
+      "title": "Right to Die individual viva"
+    },
+    {
+      "id": "4fa13357-f190-5530-bab4-83fd1c1b1eca",
+      "date": "2026-11-06",
+      "module": "SC2000",
+      "title": "Quiz 3, 9:30–10:20 AM"
+    },
+    {
+      "id": "1704b3b7-9f42-55d8-964b-89a488d3e462",
+      "date": "2026-11-13",
+      "module": "SC1004",
+      "title": "CA2 Quiz 2, 8:15–9:05 AM"
+    },
+    {
+      "id": "3357eb4e-5cc2-56d6-baa6-eb80eaa1890d",
+      "date": "2026-11-13",
+      "module": "SC2000",
+      "title": "Quiz 4, 9:30–10:20 AM"
+    },
+    {
+      "id": "eb9e52fd-3916-5272-855b-223bdf251e13",
+      "date": "2026-11-16",
+      "module": "SC1001",
+      "title": "Quiz 2 — HackerEarth, 90 minutes"
+    },
+    {
+      "id": "b84f1310-11c8-55ac-bbd7-1ce5a3e865f3",
+      "date": "2026-11-23",
+      "module": "SC1004",
+      "title": "Final exam"
+    },
+    {
+      "id": "6f17afa5-bde1-5978-a1ef-3dd186e9eb88",
+      "date": "2026-11-24",
+      "module": "SC1005",
+      "title": "Final exam"
+    },
+    {
+      "id": "c67c9a92-86e6-5944-8d32-1882953cda9c",
+      "date": "2026-11-28",
+      "module": "MH1812",
+      "title": "Final exam"
+    }
+  ]
+}

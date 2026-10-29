@@ -1,0 +1,11 @@
+USERNAME SIGN-IN — PERSONAL PLANNER
+
+1. Open username-config.js in Notepad.
+2. Enter your chosen username and your EXISTING Supabase login email between the quotation marks. Do not enter a password into any file.
+3. Save and redeploy the entire ntu_planner_redesign folder on Netlify.
+4. Sign in using your username and the existing account password. You can still enter the email address directly as a fallback.
+5. Do not create a second Supabase user. Your same user ID and tasks remain.
+
+IMPORTANT: username-config.js is public when hosted. It exposes the account email (not password). This approach is a convenient username ALIAS, not native username-based authentication. Anyone can see the username/email by viewing the file, but knowing the email does not bypass Supabase password authentication or RLS. If you do not want your email exposed, do not configure this file; use email sign-in until a server-based username lookup is added.
+
+If you have never successfully set a password, username sign-in will not solve invalid credentials. Set a password on the existing Supabase account first through a verified session or password reset.
