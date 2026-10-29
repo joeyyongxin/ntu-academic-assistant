@@ -1,27 +1,32 @@
-# NTU Academic Planner — GitHub-ready V7
+# NTU Academic Planner — GitHub Pages edition (V7)
 
-Static site based on the latest V6 redesigned planner, with account status and username-alias login.
+This is the redesigned planner for phone, tablet and laptop. Supabase remains the database; GitHub Pages only hosts the website files. **Deploying code does not import or alter your tasks.**
 
-## Upload to GitHub
-1. Create a **private** repository in GitHub (e.g. `ntu-academic-planner`).
-2. Choose **Add file → Upload files**, and upload the **contents of this folder** (not the ZIP and not an enclosing folder). `index.html` must be at the repository root.
-3. Commit the files.
-4. In Netlify, link your GitHub repository as the deployment source (Site configuration / Build & deploy / Link repository), or create a new Netlify site via **Add new project → Import an existing project → GitHub**. The project is static: no build command; publish directory `.`. If creating a new site, configure its new URL in Supabase Auth redirect settings. Keep your previous site available until the new one works.
-5. Netlify serves the PWA, Supabase stores your task data; uploading files does **not** replace or reset your database.
+## Publish with GitHub Pages
 
-## Login and privacy
-- `config.js` contains the **public** Supabase project URL and publishable key. Never commit a service-role key, `sb_secret_...`, a database password, or a user password.
-- `username-config.js` currently has an empty alias. For username login, set `username` and `email` to your **existing** Supabase account's details before deployment. Note this mapping is **publicly readable**, even in a private GitHub repository once deployed to a publicly accessible Netlify site. You may simply log in using your email instead.
-- Username alias does NOT create a user or set a password. The underlying Supabase email/password login must already work.
-- A displayed cloud sync status isn't proof of full cross-device syncing: test an edit on device A and refresh device B.
+1. Go to https://github.com/new and create a repository called `ntu-academic-planner`.
+2. For a **free GitHub Pages site**, use a **public repository**. Only add the files inside this website folder. Do not upload personal files, schedule exports, credentials, or the separate study-schedule JSON.
+3. Open the repository, choose **Add file → Upload files**, select **every file in this folder** (not the folder itself), and click **Commit changes**. `index.html` must be in the repository root.
+4. In the repository choose **Settings → Pages**. Under **Build and deployment**, set Source = **Deploy from a branch**, Branch = `main`, Folder = `/ (root)`, then **Save**.
+5. Find your link on that Pages settings screen. Usually it is `https://YOUR-USERNAME.github.io/ntu-academic-planner/` (replace `YOUR-USERNAME`).
+6. In Supabase, open **Authentication → URL Configuration**. Set **Site URL** to your GitHub Pages URL if this is your primary planner and add the exact GitHub Pages URL under **Redirect URLs**. Keep the Netlify URL as an allowed redirect while transitioning.
+7. Test sign-in, task completion, refresh, and cross-device syncing using the same Supabase account. Back up your schedule first.
 
-## Latest study schedule import
-- `latest-master-schedule-2026.json` is a separate optional import based on your newest schedule (27 Oct – 28 Nov 2026).
-- 27–28 October listed tasks are marked completed; later tasks are unconfirmed. Your statement that **18 tasks** were completed includes items outside the 14 explicitly itemised for those two days; this file marks only the **14 supplied itemised tasks** done and doesn't invent four more.
-- The 17–22 Nov and 25–27 Nov revision ranges are entered as **planning blocks**, not made-up individual daily sessions.
-- IMPORTANT: if you previously imported earlier seed data, importing this will ADD new tasks, since the import function skips only matching IDs. **Export your current planner JSON first** and review for duplicates. Do not import again blindly. In particular, the 27–28 Oct tasks may differ from earlier records. GitHub deployment alone never imports this file.
+The hosting path is supported by relative URLs in the HTML, manifest, and service worker. A PWA on GitHub Pages needs HTTPS (provided by Pages).
 
-## Known limitations
-- The V6 app may show sync errors if Supabase table permissions/RLS policies are not configured to allow signed-in users to read/write their own rows.
-- Offline writes and concurrent-device edits need real-world testing. Don't assume they are conflict-free.
-- ChatGPT writeback requires a separate secured API and a supported integration; it's not enabled simply by hosting this repository.
+## Existing account and username
+
+- `config.js` contains only the **browser-safe Supabase publishable key**. Never add a database password, service-role key, secret key or user password.
+- `username-config.js` is an **optional username alias** for your existing Supabase email/password account. This JavaScript file is publicly accessible on a GitHub Pages site and can expose your login email if you fill it in. **For privacy, leave username/email blank and sign in with email + password instead.** Username alias is not a true username authentication system.
+- Password sign-in works only if you have actually set a password for your current Supabase account. The earlier “Auth session missing” issue requires verification if it persists.
+- The header's Signed in and Cloud synced indicators are different checks. Refresh and verify changes on a second device to confirm actual cloud persistence.
+
+## Import the latest schedule safely
+
+Download `NTU_Master_Schedule_2026_Import.json` separately from ChatGPT. It is deliberately **not in this website repository** because your schedule is personal. In the website choose Import Schedule after confirming cloud sign-in. **Export a backup first and check for duplicates**: importing on top of earlier seed data may add overlapping tasks. The provided schedule has 27–28 October itemized tasks marked completed and later tasks unconfirmed; final-revision ranges are summaries, not invented daily entries.
+
+## Status and limitations
+
+- Client-side Supabase login and syncing are present; live GitHub Pages deployment has not been tested yet.
+- Avoid editing while offline; robust conflict resolution is not fully tested.
+- Direct ChatGPT database updates require a separately deployed secure API and supported integration. They are NOT enabled by GitHub Pages alone.
