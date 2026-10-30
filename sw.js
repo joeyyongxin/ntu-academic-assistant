@@ -1,4 +1,4 @@
-const CACHE='ntu-planner-shell-v8';
+const CACHE='academic-assistant-shell-v9';
 const ASSETS=['./','./index.html','./app.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg'];
 const HOSTS=['cdn.jsdelivr.net','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));

@@ -1,1 +1,23 @@
-{"name": "NTU Academic Planner", "short_name": "NTU Planner", "description": "Your NTU study schedule across devices", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#f5f7fd", "theme_color": "#3551db", "icons": [{"src": "icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable"}, {"src": "apple-touch-icon.png", "type": "image/png", "sizes": "180x180"}]}
+{
+  "name": "Academic Assistant",
+  "short_name": "Academic Assistant",
+  "description": "Your personal NTU academic assistant and study planner",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fd",
+  "theme_color": "#3551db",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ]
+}
