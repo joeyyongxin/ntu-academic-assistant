@@ -1,0 +1,28 @@
+const {PGlite}=await import(process.env.PGLITE_MODULE||'@electric-sql/pglite');
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import '../workspace/account-bridge.js';
+const db=new PGlite();
+await db.exec(`create schema auth;create table auth.users(id uuid primary key);create role anon;create role authenticated;grant usage on schema public,auth to authenticated,anon;create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid primary key,bucket_id text,name text);alter table storage.objects enable row level security;grant usage on schema storage to authenticated;grant select,insert,delete on storage.objects to authenticated;create function storage.foldername(text) returns text[] language sql immutable as $$select (string_to_array($1,'/'))[1:array_length(string_to_array($1,'/'),1)-1]$$;`);
+await db.exec(await readFile(new URL('../supabase/install_workspace.sql',import.meta.url),'utf8'));
+await db.exec(await readFile(new URL('../supabase/install_workspace.sql',import.meta.url),'utf8'));
+// Re-running the additive file setup must preserve rows and policy behavior.
+await db.exec(await readFile(new URL('../supabase/install_workspace.sql',import.meta.url),'utf8'));
+const a=crypto.randomUUID(),b=crypto.randomUUID();await db.query('insert into auth.users(id) values($1),($2)',[a,b]);
+const login=async id=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated');};
+const s=ReferenceCloud.emptyWorkspace(new Date('2026-11-01'));s.terms[0].mods=['SC1004'];
+await login(a);await db.query('select aa_workspace_save($1,0,$2::jsonb)',[a,JSON.stringify(s)]);
+const id=crypto.randomUUID(),path=a+'/s1/'+id+'.pdf';
+await db.query('insert into aa_file_assets(id,user_id,semester_id,module,name,bytes,mime,path) values($1,$2,$3,$4,$5,$6,$7,$8)',[id,a,'s1','SC1004','Lecture.pdf',10,'application/pdf',path]);
+await db.query('insert into storage.objects values($1,$2,$3)',[id,'academic-private-files',path]);
+assert.equal((await db.query('select * from aa_file_assets')).rows.length,1);
+const bad=crypto.randomUUID();await assert.rejects(()=>db.query('insert into aa_file_assets(id,user_id,semester_id,module,name,bytes,mime,path) values($1,$2,$3,$4,$5,$6,$7,$8)',[bad,a,'s2','SC1004','Other.pdf',10,'application/pdf',a+'/s2/'+bad+'.pdf']));
+await assert.rejects(()=>db.query('insert into storage.objects values($1,$2,$3)',[crypto.randomUUID(),'academic-private-files',a+'/s999/'+crypto.randomUUID()+'.pdf']));
+await assert.rejects(()=>db.query('update aa_file_assets set user_id=$1',[b]));
+await login(b);assert.equal((await db.query('select * from aa_file_assets')).rows.length,0);assert.equal((await db.query('select * from storage.objects')).rows.length,0);
+assert.equal((await db.query('delete from aa_file_assets where id=$1 returning id',[id])).rows.length,0);
+await assert.rejects(()=>db.query('insert into storage.objects values($1,$2,$3)',[crypto.randomUUID(),'academic-private-files',a+'/s1/other.pdf']));
+await login(a);await db.query('delete from storage.objects where id=$1',[id]);await db.query('delete from aa_file_assets where id=$1',[id]);assert.equal((await db.query('select * from aa_file_assets')).rows.length,0);
+await db.exec('reset role;set role anon');await assert.rejects(()=>db.query('select * from aa_file_assets'));
+await db.close();console.log('PASS file SQL: repeatable setup, term enrolment checks, owner isolation, immutable metadata, private object paths, deletion and anonymous denial. Storage gateway/byte delivery remains a live check.');

@@ -4,6 +4,7 @@ const MODULES=['SC1001','SC1004','SC1005','SC2000','MH1812','CC0003','CC0015','O
 const CFG=window.PLANNER_CONFIG||{};
 const CLOUD=!!(CFG.supabaseUrl&&CFG.supabaseAnonKey&&window.supabase);
 const client=CLOUD?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+const dataService=client?new PlannerDataService(client):null;
 const PREVIEW='ntu-planner-preview-v4', CACHE='ntu-planner-snapshot-v4', QUEUE='ntu-planner-queue-v4';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -25,22 +26,32 @@ function persist(){write(user?CACHE+'-'+user.id:PREVIEW,snapshot());if(user)writ
 function loadSnapshot(key){let x=read(key,{tasks:[],assessments:[]});tasks=new Map((x.tasks||[]).map(a=>[a.id,a]));assessments=new Map((x.assessments||[]).map(a=>[a.id,a]));render()}
 function origin(){return user?'cloud':'preview'}
 async function refresh(){if(!client||!user){render();return}if(!navigator.onLine){status('● Offline · changes will sync on reconnect');return}
- try{const [{data:t,error:te},{data:a,error:ae}]=await Promise.all([client.from('tasks').select('*').eq('user_id',user.id),client.from('assessments').select('*').eq('user_id',user.id)]);if(te||ae)throw te||ae;
+ const owner=user.id;
+ try{const {tasks:t,assessments:a}=await dataService.load(owner);if(user?.id!==owner)return;
  merge('tasks',t);merge('assessments',a);cloudLoaded=true;persist();render();status(queue.length?'● '+queue.length+' pending edit(s)'+(lastSyncError?' · '+lastSyncError:''):'● Cloud synced ✓',!!(queue.length&&lastSyncError));}
- catch(e){status('● Sync error: '+e.message,true)}}
+ catch(e){if(user?.id===owner)status('● Sync error: '+e.message,true)}}
 function optimistic(table,old,patch){const val={...old,...patch,updated_at:new Date().toISOString()};(table==='tasks'?tasks:assessments).set(val.id,val);persist();render()}
 async function change(table,id,patch){const m=table==='tasks'?tasks:assessments,old=m.get(id);if(!old)return;lastEdit=patch.deleted_at?{kind:'delete',table,old:{...old}}:{kind:'edit',table,id,patch:Object.fromEntries(Object.keys(patch).map(k=>[k,old[k]??null]))};const op={kind:'update',table,id,expected:old.updated_at,patch,base:old};optimistic(table,old,patch);queue.push(op);persist();await flush()}
 async function create(table,item){validate(table,item);const id=item.id||crypto.randomUUID();lastEdit={kind:'create',table,id};const doc={...item,id,user_id:user?.id||null,created_at:new Date().toISOString(),updated_at:new Date().toISOString(),deleted_at:null};if(table==='tasks'){doc.done=!!doc.done;doc.done_at=doc.done?new Date().toISOString():null;doc.source='manual';doc.notes=doc.notes||'';} (table==='tasks'?tasks:assessments).set(id,doc);queue.push({kind:'insert',table,id,doc});persist();render();await flush()}
-async function flush(){if(flushActive||!client||!user||!navigator.onLine)return;flushActive=true;try{while(queue.length){const op=queue[0];let result;
- if(op.kind==='insert')result=await client.from(op.table).insert({...op.doc,user_id:user.id,updated_at:undefined,created_at:undefined}).select().single();
- else result=await client.rpc(op.table==='tasks'?'update_planner_task':'update_planner_assessment',{p_id:op.id,p_expected:op.expected,p_patch:op.patch});
- if(result.error){lastSyncError=result.error.message;status('● Sync blocked: '+lastSyncError,true); // Keep failed operation so it is never silently lost.
- break;}
- const got=Array.isArray(result.data)?result.data[0]:result.data; // Don't overwrite a newer local change.
- if(got){const pendingLater=queue.slice(1).some(x=>x.id===op.id);if(!pendingLater){(op.table==='tasks'?tasks:assessments).set(op.id,got)}}
- queue.shift();persist();render();}
- if(queue.length===0){lastSyncError='';status('● Cloud synced ✓')}else if(navigator.onLine)status('● '+queue.length+' edit(s) awaiting resolution',true);
- }finally{flushActive=false}}
+async function flush(){
+ if(flushActive||!client||!user||!navigator.onLine)return;
+ const owner=user.id,ownerQueue=queue;flushActive=true;
+ try{while(ownerQueue.length&&user?.id===owner&&queue===ownerQueue){
+  const op=ownerQueue[0];let got;
+  try{got=await dataService.apply(owner,op);}catch(error){
+   if(user?.id===owner){lastSyncError=error.message;status('● Sync blocked: '+lastSyncError,true);}break;
+  }
+  if(user?.id!==owner||queue!==ownerQueue)break;
+  const later=ownerQueue.slice(1).some(x=>x.id===op.id);
+  if(!later)(op.table==='tasks'?tasks:assessments).set(op.id,got);
+  ownerQueue.shift();persist();render();
+ }
+ if(user?.id===owner&&queue===ownerQueue){
+  if(!queue.length){lastSyncError='';status('● Cloud synced ✓');}
+  else if(navigator.onLine)status('● '+queue.length+' edit(s) awaiting resolution',true);
+ }
+ }finally{flushActive=false;}
+}
 function taskHTML(x,showDate){let chat=x.source==='chatgpt'&&Date.now()-Date.parse(x.updated_at)<86400000;return `<div class="task ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} aria-label="Mark completed" onchange="toggleTask('${esc(x.id)}',this.checked)"><div class="taskbody"><div class="taskname"><span class="tag" data-m="${esc(x.module)}">${esc(x.module)}</span>${esc(x.title)}${chat?'<span class="remote">Changed by ChatGPT</span>':''}</div><div class="taskmeta">${showDate?esc(fmt(x.date,{weekday:'short',day:'numeric',month:'short'}))+' · ':''}${x.minutes!=null?esc(x.minutes)+' min':'No duration'}${x.notes?' · '+esc(x.notes):''}</div></div><button class="action" onclick="editTask('${esc(x.id)}')" title="Edit">✎</button><button class="action" onclick="removeTask('${esc(x.id)}')" title="Delete">✕</button></div>`}
 function render(){const all=rows('tasks'), day=all.filter(x=>x.date===selected),done=day.filter(x=>x.done).length,up=rows('assessments').filter(a=>days(a.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));$('dayInput').value=selected;$('dayTitle').textContent=fmt(selected);$('daySubtitle').textContent=`${done} of ${day.length} tasks completed`;$('countToday').textContent=day.length;$('pctToday').textContent=(day.length?Math.round(done/day.length*100):0)+'%';$('dayProgress').style.width=(day.length?done/day.length*100:0)+'%';$('daysNext').textContent=up.length?days(up[0].date):'—';$('nextName').textContent=up.length?up[0].module+' · '+up[0].title:'No upcoming assessments';$('dayTasks').innerHTML=day.length?day.map(x=>taskHTML(x,false)).join(''):'<div class="empty">No tasks scheduled for this day</div>';$('upcoming').innerHTML=up.length?up.slice(0,6).map(a=>`<div class="event"><div class="cnt"><b>${days(a.date)}</b><span>${days(a.date)===1?'day':'days'}</span></div><div><strong>${esc(a.title)}</strong><span class="tag" data-m="${esc(a.module)}">${esc(a.module)}</span><span class="date">${esc(fmt(a.date,{weekday:'short',day:'numeric',month:'short'}))}</span></div></div>`).join(''):'<div class="empty">No upcoming assessments</div>';
  if(!weekStart){const n=asDate(selected).getUTCDay();weekStart=shift(selected,-((n+6)%7))} $('weekTitle').textContent=fmt(weekStart,{day:'numeric',month:'short'})+' – '+fmt(shift(weekStart,6),{day:'numeric',month:'short',year:'numeric'});$('weekTasks').innerHTML=Array.from({length:7},(_,i)=>{const d=shift(weekStart,i),dayTasks=all.filter(x=>x.date===d);return `<div class="weeklyday"><div class="weekhead"><strong>${esc(fmt(d,{weekday:'long',day:'numeric',month:'short'}))}</strong><span class="pill">${dayTasks.filter(x=>x.done).length}/${dayTasks.length} completed</span></div>${dayTasks.map(x=>taskHTML(x,false)).join('')||'<div class="muted sub">No planned tasks</div>'}</div>`}).join('');
