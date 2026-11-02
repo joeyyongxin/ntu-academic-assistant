@@ -1,5 +1,5 @@
-const CACHE='academic-assistant-shell-v9';
-const ASSETS=['./','./index.html','./app.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg'];
+const CACHE='academic-assistant-shell-v13';
+const ASSETS=['./','./index.html','./workspace.html','./legacy.html','./app.js','./data-service.js','./account.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg'];
 const HOSTS=['cdn.jsdelivr.net','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

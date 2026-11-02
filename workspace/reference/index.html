@@ -1,0 +1,1008 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Academic Assistant v2.9 · Demo</title>
+
+<style>
+:root{--bg:#f4f5f9;--sf:#fff;--ink:#1b2540;--mut:#5b647a;--ln:#e4e7ef;--acc:#3448c5;--on:#fff;--hero:#1b2540;--ok:#157a4a;--wn:#b45309;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1424;--sf:#171d33;--ink:#e8ecf8;--mut:#a3adc7;--ln:#2a3350;--acc:#8fa2ff;--on:#0f1424;--hero:#222b4a;--ok:#5fd39b;--wn:#f0b35a;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1424;--sf:#171d33;--ink:#e8ecf8;--mut:#a3adc7;--ln:#2a3350;--acc:#8fa2ff;--on:#0f1424;--hero:#222b4a;--ok:#5fd39b;--wn:#f0b35a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);padding-left:224px;font-size:14px}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+#nav{position:fixed;inset:0 auto 0 0;width:224px;background:var(--sf);border-right:1px solid var(--ln);padding:24px 14px;display:flex;flex-direction:column;gap:4px;z-index:9}
+.br{font-size:17px;font-weight:800;padding:0 10px 18px}
+#nav a{display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;color:var(--mut);text-decoration:none;font-weight:600}
+#nav a.on{background:color-mix(in srgb,var(--acc) 14%,var(--sf));color:var(--acc)}
+.bd{background:var(--acc);color:var(--on);border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700}
+.th{margin-top:auto}
+main{max-width:980px;padding:32px 36px}
+h1{font-size:30px;letter-spacing:-.02em;margin:2px 0}h2{font-size:17px;margin:0 0 6px}.eb{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}.sub{margin:0;color:var(--mut)}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.hero{display:flex;flex-wrap:wrap;gap:24px;background:var(--hero);color:#fff;border-radius:18px;padding:20px 24px;margin-bottom:16px}.hero>div{flex:1;min-width:200px}.hero b{display:block;font-size:28px;font-weight:800;margin:3px 0 8px}.hero small{opacity:.9}.hero i{display:block;height:8px;border-radius:9px;background:#ffffff33;overflow:hidden}.hero u{display:block;height:100%;background:#8fa2ff}
+.cols{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}.cols>*{flex:1;min-width:280px}.cols>.w{flex:1.7}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px 20px;margin-bottom:14px}
+.t{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--ln);cursor:pointer}.t:first-of-type{border-top:0}
+.t input{width:22px;height:22px;accent-color:var(--acc);flex:none;margin-top:1px}.t b{font-weight:600}.t.dn b{text-decoration:line-through;color:var(--mut)}.t small{display:block;margin-top:5px;color:var(--mut)}
+.c{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:6px;background:color-mix(in srgb,var(--h,#888) 18%,var(--sf));color:color-mix(in srgb,var(--h,#888) 55%,var(--ink))}
+[data-m=SC1001]{--h:#2f9e63}[data-m=SC1004]{--h:#3b6ee0}[data-m=SC1005]{--h:#14a39a}[data-m=SC2000]{--h:#d98a1c}[data-m=MH1812]{--h:#64748b}[data-m=CC0003]{--h:#8b4fd6}[data-m=CC0015]{--h:#d6457a}
+.btn{min-height:44px;padding:0 16px;border:1px solid var(--ln);background:var(--sf);border-radius:10px;font-weight:600}.btn.p{background:var(--acc);border-color:var(--acc);color:var(--on)}.btn:disabled{opacity:.5;cursor:default}
+.f{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.f input,.f select{flex:1;min-width:120px;min-height:44px;padding:0 12px;border:1px solid var(--ln);border-radius:10px;background:var(--sf)}
+.day{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 4px}.day b{font-size:15px}.ld{flex:1;max-width:180px;height:6px;border-radius:9px;background:var(--ln);overflow:hidden}.ld u{display:block;height:100%;background:var(--ok)}.ld.hv u{background:var(--wn)}
+.hvt{color:var(--wn);font-weight:700;font-size:12px}
+.cl{padding:8px 12px;border-left:3px dashed var(--h,#888);background:color-mix(in srgb,var(--h,#888) 8%,var(--sf));border-radius:6px;margin:6px 0;color:var(--mut)}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}.mc{text-align:left;background:var(--sf);border:1px solid var(--ln);border-left:4px solid var(--h);border-radius:14px;padding:14px}.mc b{font-size:16px;display:block}.mc small{color:var(--mut)}
+.tp{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--ln)}.tp:first-of-type{border-top:0}.st{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid var(--ln);background:var(--sf);font-weight:600;font-size:12px}.s3{background:color-mix(in srgb,var(--ok) 20%,var(--sf))}.s2{background:color-mix(in srgb,var(--acc) 16%,var(--sf))}
+.nx{border:1px solid var(--acc);border-radius:12px;padding:12px 14px;margin:10px 0}
+.tag{font-size:11px;font-weight:700;color:var(--mut);border:1px solid var(--ln);border-radius:6px;padding:1px 7px;margin-left:4px}
+.ok{color:var(--ok);font-weight:700}
+@media(max-width:800px){body{padding-left:0;padding-bottom:84px}#nav{inset:auto 0 0 0;width:auto;flex-direction:row;border-right:0;border-top:1px solid var(--ln);padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));gap:2px}.br,.th{display:none}#nav a{flex:1;flex-direction:column;justify-content:center;font-size:12px;gap:2px;padding:0}main{padding:20px 16px}h1{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.bt{display:flex;align-items:center;gap:10px;padding:0 10px 18px}.lg{width:36px;height:36px;border-radius:11px;background:var(--acc);color:var(--on);display:grid;place-items:center;font-weight:800}.bt b{display:block;font-size:15px}.bt small{color:var(--mut);font-size:12px}
+.tb{display:flex;align-items:center;gap:10px;margin-bottom:22px;position:relative}.sq{flex:1;max-width:420px;min-height:44px;padding:0 14px;border:1px solid var(--ln);border-radius:12px;background:var(--sf);color:var(--ink)}
+.sr{position:absolute;top:50px;left:0;width:min(420px,100%);background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:6px;z-index:5;box-shadow:0 8px 28px #0003}.sr a{display:block;padding:10px;border-radius:8px;color:var(--ink);text-decoration:none}.sr a:hover{background:var(--bg)}
+.pill{font-size:12px;font-weight:700;border-radius:99px;padding:6px 11px;background:color-mix(in srgb,var(--ok) 16%,var(--sf));color:color-mix(in srgb,var(--ok) 75%,var(--ink));white-space:nowrap}.pill.off{background:color-mix(in srgb,var(--wn) 16%,var(--sf));color:color-mix(in srgb,var(--wn) 70%,var(--ink))}
+.gear{margin-left:auto;text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
+.wk{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}.wk .card{margin:0}.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.wk .ld{max-width:none;margin-bottom:6px}
+.cv{display:flex;height:6px;gap:2px;margin-top:10px}.cv i{flex:1;border-radius:3px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--ln)}.set:first-of-type{border-top:0}
+.tag{font-size:12px}@media(max-width:800px){.lib{display:none}.sq{max-width:none}.pill{display:none}}
+
+/* v2.1 enhancements */
+.preview-note{background:color-mix(in srgb,var(--acc) 8%,var(--sf));border:1px solid color-mix(in srgb,var(--acc) 22%,var(--ln));padding:11px 14px;border-radius:12px;margin:0 0 18px;color:var(--mut);font-size:12px}
+.preview-note strong{color:var(--ink)}
+.navsub{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);padding:14px 12px 5px;font-weight:800}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:14px 0}.toolbar .btn{min-height:40px}.btn.on{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 9%,var(--sf))}
+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:14px}.stat strong{display:block;font-size:21px}.stat small{color:var(--mut)}
+.event{border-left:4px solid var(--h,var(--acc));background:color-mix(in srgb,var(--h,var(--acc)) 8%,var(--sf));border-radius:8px;padding:10px 12px;margin:7px 0}.event small{display:block;margin-top:3px;color:var(--mut)}
+.hourgrid{display:grid;grid-template-columns:58px repeat(5,minmax(110px,1fr));gap:5px;min-width:690px}.hourgrid .slot{background:var(--sf);border:1px solid var(--ln);border-radius:7px;padding:8px 7px;min-height:66px;font-size:12px}.hourgrid .slot.head{background:var(--bg);text-align:center;font-weight:700;min-height:auto}.hourgrid .slot.time{background:transparent;border:0;color:var(--mut);text-align:right;padding-right:9px}.hourgrid .slot.eventslot{background:color-mix(in srgb,var(--h,var(--acc)) 13%,var(--sf));border-left:3px solid var(--h,var(--acc))}.scroller{overflow-x:auto;padding-bottom:8px}
+.fileitem{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--ln);padding:13px 0}.fileitem:first-of-type{border-top:0}.fileitem b{display:block;overflow-wrap:anywhere}.fileitem small{display:block;color:var(--mut);margin-top:4px}.file-actions{display:flex;gap:5px;flex-wrap:wrap}.file-actions .btn{min-height:34px;padding:0 10px;font-size:12px}
+.review{padding:13px;border:1px solid var(--ln);border-radius:11px;background:var(--bg);margin:12px 0}.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare>div{background:var(--sf);padding:11px;border:1px solid var(--ln);border-radius:9px}.compare small{display:block;color:var(--mut);font-weight:700;margin-bottom:7px}
+.notice{color:var(--wn);font-weight:600}.crumb{color:var(--mut);font-size:12px}.muted{color:var(--mut)}
+@media(max-width:800px){.navsub{display:none}#nav a{font-size:11px;min-width:0}#nav a.lib{display:flex}.compare{grid-template-columns:1fr}.statgrid{grid-template-columns:repeat(2,1fr)}.fileitem{align-items:flex-start;flex-direction:column}}
+
+/* v2.2 NTULearn hub */
+.hubgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);gap:16px}
+.hubtabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.hubtabs .btn.active{background:var(--acc);color:var(--on);border-color:var(--acc)}
+.hubitem{padding:15px 0;border-top:1px solid var(--ln)}.hubitem:first-child{border-top:0}.hubitem h3{margin:7px 0;font-size:15px}.hubitem p{margin:6px 0 10px;color:var(--mut);line-height:1.5}
+.hubmeta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:12px;color:var(--mut)}
+.hubchat{display:flex;flex-direction:column;min-height:345px}.hubmessages{flex:1;max-height:370px;overflow:auto;background:var(--bg);border-radius:12px;padding:12px;margin:10px 0;display:flex;flex-direction:column;gap:10px}
+.hubmsg{border:1px solid var(--ln);border-radius:12px;background:var(--sf);padding:10px 12px;line-height:1.45}.hubmsg.me{align-self:flex-end;background:color-mix(in srgb,var(--acc) 13%,var(--sf))}.hubmsg small{display:block;margin-top:6px;color:var(--mut)}
+.hubsource{font-size:12px;color:var(--mut);background:var(--bg);padding:10px 12px;border-radius:10px;margin-bottom:12px}
+.hubchips{display:flex;gap:6px;flex-wrap:wrap}.hubchips button{border:1px solid var(--ln);background:var(--sf);border-radius:20px;padding:7px 10px;font-size:12px}
+.hubform{display:flex;gap:8px;margin-top:12px}.hubform input{flex:1;min-width:0;min-height:44px;padding:0 12px;border:1px solid var(--ln);border-radius:10px;background:var(--sf)}
+.hubtextarea{width:100%;min-height:88px;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--sf);resize:vertical;font:inherit}
+@media(max-width:900px){.hubgrid{grid-template-columns:1fr}}
+@media(max-width:800px){#nav{overflow-x:auto;justify-content:flex-start}#nav a{flex:0 0 auto;min-width:70px;padding:0 8px;white-space:nowrap}#nav a.lib{display:flex}body{padding-bottom:92px}}
+
+/* v2.3: dashboard-first hybrid design (first-version visual language) */
+:root{--bg:#f5f7fc;--sf:#fff;--ink:#162441;--mut:#71809e;--ln:#e3e8f2;--acc:#425de4;--hero:#1b2d55}
+body{padding-left:260px;font-size:14px}
+#nav{width:260px;padding:28px 15px;gap:6px}
+#nav a{font-size:14px;min-height:48px;padding:0 15px}
+#nav a.on{background:#eef1fc;color:#3b53cd}
+#nav .bt{padding:7px 11px 29px;gap:13px}
+#nav .lg{height:45px;width:45px;border-radius:14px;font-size:23px;background:#425de4}
+#nav .bt b{font-size:17px;line-height:1.4}
+.navsub{padding-top:24px;font-size:11px;letter-spacing:.15em}
+main{max-width:1560px;padding:32px clamp(22px,4vw,70px) 80px}
+h1{font-size:clamp(28px,3vw,38px);letter-spacing:-.04em;line-height:1.13;margin:12px 0 14px}
+h2{font-size:17px}
+.card{border-radius:21px;padding:23px 26px;box-shadow:0 3px 14px #12234805}
+.tb{margin-bottom:40px}.sq{border-radius:16px;background:white;max-width:530px}
+.stat4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px;margin:30px 0 24px}
+.stat4 .stat{padding:27px 28px;border-radius:22px;min-height:160px;box-shadow:0 3px 14px #12234806}
+.stat4 .stat strong{font-size:37px;letter-spacing:-.05em;margin:16px 0 7px}
+.stat4 .stat small{font-size:12px;line-height:1.4}
+.bigcols{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:20px;align-items:start}
+.dashline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.dashline h2{font-size:19px}
+.dashline .btn{color:var(--acc);background:#f0f2ff;border:0}
+.dashtask{display:flex;gap:15px;align-items:center;padding:19px 4px;border-top:1px solid var(--ln)}
+.dashtask:first-of-type{border-top:0}
+.dashtask input{width:23px;height:23px;accent-color:var(--acc);flex:none}
+.dashtask .body{flex:1;min-width:0}
+.dashtask b{font-size:14px;line-height:1.5}.dashtask small{display:block;color:var(--mut);margin-top:5px}
+.dashtask.done b{text-decoration:line-through;opacity:.55}
+.due{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:17px 0;border-top:1px solid var(--ln)}
+.due:first-of-type{border-top:0}.due b{display:block}.due small{color:var(--mut);display:block;margin-top:7px}
+.duetag{background:#f1efff;color:#5648b8;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+.sectionhint{margin-top:22px;color:var(--mut);font-size:13px}
+.quickrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.quickrow .btn{background:var(--sf)}
+@media(max-width:1150px){.stat4{grid-template-columns:repeat(2,minmax(0,1fr))}.bigcols{grid-template-columns:1fr}}
+@media(max-width:800px){body{padding-left:0;padding-bottom:88px}main{padding:18px 16px 90px}.stat4{gap:10px;margin:22px 0}.stat4 .stat{padding:17px;min-height:120px}.stat4 .stat strong{font-size:28px}.card{padding:17px}.tb{margin-bottom:25px}#nav{width:100%;padding:5px 6px calc(8px + env(safe-area-inset-bottom,0px))}#nav .bt,.navsub{display:none}#nav a{font-size:11px;min-height:59px;padding:0 10px;flex:0 0 auto;min-width:80px}.bigcols{grid-template-columns:1fr}}
+
+/* v2.4 mobile-first improvements */
+.mobile-top,.mobile-more,.mobile-scrim{display:none}
+@media(max-width:800px){
+  html,body{max-width:100%;overflow-x:hidden}
+  body{padding:0 0 calc(83px + env(safe-area-inset-bottom,0px));font-size:14px}
+  main{width:100%;min-width:0;padding:0 14px 32px}
+  .mobile-top{position:sticky;top:0;z-index:15;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--sf);border-bottom:1px solid var(--ln);padding:11px 16px;min-height:62px}
+  .mobile-top .mbrand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px}
+  .mobile-top .mbrand .mlogo{background:var(--acc);color:var(--on);width:34px;height:34px;border-radius:11px;display:grid;place-items:center}
+  .mobile-top .mstatus{font-size:11px;color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--sf));border-radius:50px;padding:7px 9px;font-weight:700}
+  #nav{position:fixed;bottom:0;left:0;right:0;top:auto;z-index:30;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:6px 4px calc(7px + env(safe-area-inset-bottom,0px));gap:2px;overflow:visible;background:var(--sf);box-shadow:0 -3px 18px #0000000d}
+  #nav a{display:none!important}
+  #nav a[href="#today"],#nav a[href="#plan"],#nav a[href="#timetable"],#nav a[href="#ntulearn"]{display:flex!important;min-width:0!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:55px;min-height:55px;padding:5px 1px;font-size:10px!important;line-height:1.15;text-align:center;white-space:normal;border-radius:11px}
+  #nav a .navico{font-size:20px;line-height:24px}
+  #nav a .navlabel{font-size:10px;line-height:1.15}
+  #nav .mobile-more-trigger{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;background:transparent;border:0;border-radius:11px;color:var(--mut);font-weight:650;padding:5px 1px;min-height:55px}
+  #nav .mobile-more-trigger.active{background:color-mix(in srgb,var(--acc) 11%,var(--sf));color:var(--acc)}
+  #nav .mobile-more-trigger .navico{font-size:20px;line-height:24px}
+  .mobile-scrim.open{display:block;position:fixed;inset:0;z-index:31;background:#090d20a8}
+  .mobile-more.open{display:block;position:fixed;bottom:0;left:0;right:0;z-index:32;max-height:78dvh;overflow-y:auto;background:var(--sf);border-radius:22px 22px 0 0;padding:14px 16px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 38px #0004}
+  .more-handle{height:5px;width:46px;border-radius:6px;background:var(--ln);margin:0 auto 17px}
+  .more-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .mobile-more a{display:flex;align-items:center;gap:11px;min-height:51px;padding:8px 10px;border-bottom:1px solid var(--ln);color:var(--ink);text-decoration:none;font-weight:650}
+  .mobile-more a span:first-child{width:28px;font-size:20px;text-align:center;color:var(--acc)}
+  .mobile-more button{min-height:44px}
+  .preview-note{font-size:11px;line-height:1.45;margin-top:12px;padding:10px 12px}
+  .tb{margin:15px 0 21px;gap:8px}.tb .sq{height:44px;min-width:0;width:100%;font-size:13px;padding:0 12px}.tb .gear,.tb .pill{display:none}
+  .sr{max-width:calc(100vw - 28px)}
+  h1{font-size:clamp(23px,6vw,29px);line-height:1.15}
+  .sub{line-height:1.5}
+  .stat4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat4 .stat{min-width:0;padding:14px;min-height:104px}.stat4 .stat strong{font-size:clamp(22px,6vw,27px)}
+  .bigcols,.cols,.hubgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+  .bigcols>*,.cols>*,.hubgrid>*{min-width:0}
+  .card{padding:15px;margin-bottom:12px;border-radius:15px}
+  .dashline{align-items:flex-start;gap:8px}.dashline .btn{padding:0 9px;min-height:38px;font-size:12px}
+  .dashtask{gap:10px;padding:12px 0}.dashtask .body{min-width:0;flex:1}.dashtask .body b{overflow-wrap:anywhere}.dashtask .duetag{font-size:10px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar .btn{flex:1 1 auto;padding:0 10px;font-size:12px}
+  .hourgrid{min-width:620px;grid-template-columns:53px repeat(5,minmax(104px,1fr))}
+  .scroller{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+  .mg{grid-template-columns:repeat(2,minmax(0,1fr))}.mc{min-width:0}
+  .f{display:flex;flex-direction:column}.f input,.f select,.f button{width:100%;min-width:0}
+  .fileitem,.tp,.set{gap:10px;flex-wrap:wrap}.fileitem>*{min-width:0}
+  .hubgrid{gap:12px}.compare{grid-template-columns:1fr}
+}
+@media(max-width:360px){main{padding-left:10px;padding-right:10px}.stat4 .stat{padding:11px}.stat4 .stat strong{font-size:22px}.navlabel{font-size:9px!important}}
+
+/* v2.4.1: native, touch-safe More navigation */
+.native-more{display:none}
+@media(max-width:800px){
+ #nav .mobile-more-trigger{display:none!important}
+ #nav .native-more{display:block;min-width:0;align-self:stretch}
+ #nav .native-more>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:55px;height:55px;padding:5px 1px;font-size:10px;font-weight:700;border-radius:11px;color:var(--mut);user-select:none}
+ #nav .native-more>summary::-webkit-details-marker{display:none}
+ #nav .native-more[open]>summary{color:var(--acc);background:color-mix(in srgb,var(--acc) 11%,var(--sf))}
+ #nav .native-more .native-panel{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom,0px));left:10px;right:10px;max-height:70dvh;overflow-y:auto;z-index:60;background:var(--sf);border:1px solid var(--ln);border-radius:17px;padding:9px;box-shadow:0 10px 50px #0005}
+ #nav .native-more .native-panel a{display:flex!important;flex-direction:row!important;align-items:center;justify-content:flex-start;gap:13px;height:auto;min-height:51px!important;padding:11px 12px!important;font-size:14px!important;font-weight:650;color:var(--ink);text-align:left;text-decoration:none}
+ #nav .native-more .native-panel a .navico{font-size:20px}
+}
+
+/* v2.5 refinement layer: tokens, hierarchy, dark-mode fixes */
+:root{--bg:#f2f4f8;--ink:#14213d;--mut:#617089;--ln:#e0e4ed;--acc:#3a55d8;--acc-soft:#e8ecfc;--urg:#c4122f;--urg-soft:#fcebee;--soon:#a65a06;--soon-soft:#fdf1dd;--r1:16px;--r2:10px}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--acc-soft:#232c55;--urg:#ff8394;--urg-soft:#3b1e2a;--soon:#f0b35a;--soon-soft:#3a2d17}}
+:root[data-theme=dark]{--acc-soft:#232c55;--urg:#ff8394;--urg-soft:#3b1e2a;--soon:#f0b35a;--soon-soft:#3a2d17}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,.br,#nav .bt b,.stat4 .stat strong{font-family:"Bricolage Grotesque",Inter,system-ui,sans-serif}
+h1{letter-spacing:-.025em;font-weight:700}h2{font-weight:700;letter-spacing:-.01em}
+.eb{text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--mut)}
+.navsub{text-transform:none;letter-spacing:0;font-size:12px;font-weight:600;color:var(--mut);padding:22px 15px 6px}
+.card,.stat4 .stat{border-radius:var(--r1);box-shadow:none}
+.card{padding:20px 22px}
+.sq,.btn,.f input,.f select,.hubform input,.hubtextarea{border-radius:var(--r2)}
+.sq{background:var(--sf)}
+#nav a.on{background:var(--acc-soft);color:var(--acc)}
+#nav .lg{background:var(--acc);color:var(--on);border-radius:12px;width:40px;height:40px;font-size:20px}
+.dashline .btn{background:var(--acc-soft);color:var(--acc);border:0}
+.preview-note{font-size:12px}
+.stat4{gap:14px;margin:24px 0 20px}
+.stat4 .stat{min-height:0;padding:18px 20px}
+.stat4 .stat strong{font-size:30px;letter-spacing:-.03em;margin:8px 0 4px;line-height:1.1}
+.dashtask{padding:14px 2px}
+.dashtask b{font-weight:600}
+.duetag{background:var(--bg);color:var(--mut);border-radius:8px;padding:6px 10px;font-weight:700}
+.duetag.soon{background:var(--soon-soft);color:var(--soon)}
+.duetag.urg{background:var(--urg-soft);color:var(--urg)}
+.duetag.okt{background:color-mix(in srgb,var(--ok) 16%,var(--sf));color:var(--ok)}
+.due{padding:14px 0}.due small{margin-top:3px}
+.event{border-radius:var(--r2)}
+.hourgrid .slot{border-radius:8px}
+.hubmsg,.review,.compare>div,.nx{border-radius:12px}
+.bd:empty{display:none}
+@media(min-width:801px){
+ #nav a{justify-content:flex-start;gap:12px}
+ #nav a .navico{width:22px;text-align:center;flex:none}
+ #nav a .bd{margin-left:auto}
+ #nav .th{margin-top:auto;width:100%}
+ main{max-width:1240px}
+}
+@media(max-width:800px){.stat4 .stat strong{font-size:24px}.card{padding:15px}}
+@media(prefers-reduced-motion:no-preference){.btn,#nav a{transition:background-color .15s,border-color .15s}}
+
+/* v2.5.1 sidebar: scrollable + compact on short screens */
+@media(min-width:801px){
+ #nav{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--ln) transparent;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ #nav>*{flex-shrink:0}
+ #nav .th{position:sticky;bottom:-16px;margin-top:auto;background:var(--sf);box-shadow:0 -10px 10px -4px var(--sf)}
+ #nav::-webkit-scrollbar{width:6px}#nav::-webkit-scrollbar-thumb{background:var(--ln);border-radius:6px}
+}
+@media(min-width:801px) and (max-height:820px){
+ #nav{padding-top:18px;gap:2px}
+ #nav a{min-height:42px}
+ #nav .bt{padding-bottom:12px}
+ .navsub{padding-top:14px}
+}
+@media(min-width:801px) and (max-height:640px){
+ #nav a{min-height:38px;font-size:13px}
+ #nav .bt small{display:none}
+ .navsub{padding-top:10px}
+}
+
+/* v2.5.2 hide mobile-only "More" controls on desktop */
+@media(min-width:801px){#nav .mobile-more-trigger,#nav .native-more,.mobile-more,.mobile-scrim{display:none!important}}
+
+/* v2.9 standalone demo account experience */
+[hidden]{display:none!important}body.auth-mode{padding:0!important}.auth-mode #workspace{display:none}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.auth-layout{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr}
+.auth-story{background:#1b2d55;color:#fff;padding:clamp(30px,6vw,90px);display:flex;flex-direction:column;justify-content:space-between;gap:50px;position:relative;overflow:hidden}
+.auth-story:after{content:'';position:absolute;right:-160px;bottom:-230px;width:550px;height:550px;border:70px solid #ffffff07;border-radius:50%;pointer-events:none}
+.auth-brand{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:750}.auth-brand .lg{background:#6079ff;color:white;flex:none}.auth-story h2{font-size:clamp(32px,4vw,54px);line-height:1.12;letter-spacing:-.04em;max-width:500px;margin:0 0 22px}.auth-story p{color:#c2cde5;line-height:1.7;max-width:450px}.auth-preview{border:1px solid #ffffff26;background:#ffffff09;border-radius:18px;padding:22px;margin-top:32px;max-width:420px}.auth-preview div{display:flex;gap:12px;margin:16px 0;font-size:14px}.auth-preview span{color:#a9b9ff}.auth-story footer{font-size:12px;color:#bac8e5;line-height:1.6}
+.auth-panel{display:flex;align-items:center;justify-content:center;padding:40px 28px;background:var(--bg)}.auth-card{width:100%;max-width:420px}.auth-card h1{font-size:33px;margin:18px 0 12px}.auth-card .sub{line-height:1.65}.auth-tag{display:inline-flex;border:1px solid var(--ln);border-radius:30px;padding:7px 12px;color:var(--acc);font-size:12px;font-weight:750;background:var(--sf)}
+.auth-notice{background:var(--sf);border:1px solid var(--ln);border-left:3px solid var(--acc);border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.6;color:var(--mut);margin:23px 0}.auth-notice b{color:var(--ink)}.auth-field{display:block;font-weight:600;margin:19px 0 7px}.auth-input{width:100%;min-height:48px;border:1px solid var(--ln);border-radius:11px;background:var(--sf);padding:12px;font:inherit}.auth-input[readonly]{color:var(--mut)}.auth-password{display:flex;position:relative}.auth-password input{padding-right:75px}.auth-password button{position:absolute;right:5px;top:5px;min-height:38px;border:0;background:transparent;color:var(--acc);font-weight:700}.auth-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:18px 0;font-size:12px}.auth-row label{display:flex;align-items:center;gap:8px;min-height:36px}.auth-row input{width:19px;height:19px;accent-color:var(--acc)}.auth-card a{color:var(--acc);font-weight:650}.auth-submit{width:100%;margin:8px 0;min-height:48px}.auth-foot{text-align:center;font-size:13px;color:var(--mut);line-height:1.7;margin:20px 0}.auth-status{min-height:22px;color:var(--wn);font-size:13px;line-height:1.5}.auth-success{font-size:30px;background:#e5f5ec;color:#157a4a;border-radius:16px;width:62px;height:62px;display:grid;place-items:center;margin:20px 0}.spinner{width:42px;height:42px;border:4px solid var(--ln);border-top-color:var(--acc);border-radius:50%;animation:spin .9s linear infinite;margin:30px 0}@keyframes spin{to{transform:rotate(360deg)}}
+.account-wrap{position:relative;margin-left:auto}.account-button{display:flex;align-items:center;gap:9px;white-space:nowrap}.avatar{width:29px;height:29px;display:grid;place-items:center;background:#eef1fc;color:#425de4;border-radius:50%;font-size:12px;font-weight:800}.account-pop{position:absolute;right:0;top:52px;z-index:25;width:260px;padding:17px;background:var(--sf);border:1px solid var(--ln);box-shadow:0 12px 40px #16244125;border-radius:16px}.account-pop p{font-size:12px;color:var(--mut);overflow-wrap:anywhere}.account-pop .btn{display:block;width:100%;margin-top:9px;text-align:left;text-decoration:none;padding:12px}.account-pop small{display:block;color:var(--mut);line-height:1.5}.mobile-account{border:1px solid var(--ln);background:var(--sf);border-radius:50%;padding:5px;min-width:44px;min-height:44px}.mobile-more-trigger{display:none}body.more-open{overflow:hidden}.mobile-more a:focus-visible{outline-offset:-4px}#mobileMore{outline:none}
+@media(min-width:801px){.tb{flex-wrap:wrap}.account-mobile-only{display:none!important}}
+@media(max-width:800px){#nav .mobile-more-trigger{display:flex!important}.auth-layout{grid-template-columns:1fr}.auth-story{padding:24px;gap:18px}.auth-story h2,.auth-story .story-copy,.auth-story footer{display:none}.auth-story:after{display:none}.auth-brand{font-size:17px}.auth-panel{padding:30px 22px 40px;align-items:flex-start}.auth-card h1{font-size:29px}.auth-notice{margin:20px 0}.account-wrap{display:none}.mobile-top .mstatus{display:none}.mobile-more.open{z-index:42}.mobile-scrim.open{z-index:41}.cols>*{min-width:0}.account-pop{position:fixed;top:67px;right:12px}.auth-row{flex-wrap:wrap}.auth-preview{display:none}}
+.auth-foot a{display:inline-flex;align-items:center;justify-content:center;min-height:44px}.auth-row a{display:inline-flex;align-items:center;min-height:44px}
+@media(prefers-reduced-motion:reduce){.spinner{animation:none}}
+
+.semester-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 24px;padding:16px 20px;border:1px solid var(--ln);border-radius:16px;background:var(--sf)}.semester-bar label{display:block;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin-bottom:7px}.semester-bar select{max-width:100%;border:0;background:var(--sf);font:inherit;font-size:16px;font-weight:700;min-height:36px;color:var(--ink)}.semester-main{flex:1;min-width:180px}.semester-meta{font-size:12px;color:var(--mut);line-height:1.7}.semester-status{display:inline-block;border-radius:30px;background:#eef1fc;color:#425de4;padding:4px 10px;font-size:11px;font-weight:750;margin-right:6px}.term-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.term-card{position:relative}.term-card.selected{border-color:var(--acc)}.term-card h3{margin:12px 0;font-size:19px}.term-card p{line-height:1.7}.term-form{display:grid;grid-template-columns:1fr 1fr;gap:16px}.term-form label{display:block;font-weight:650;font-size:13px}.term-form input,.term-form select{display:block;margin-top:8px;width:100%;min-height:46px;border:1px solid var(--ln);background:var(--sf);border-radius:10px;padding:10px;color:var(--ink)}.term-form .wide{grid-column:1/-1}.term-check{display:flex!important;align-items:center;gap:10px;min-height:44px}.term-check input{width:20px;height:20px;min-height:20px;margin:0}.term-note{padding:13px 16px;background:color-mix(in srgb,var(--acc) 7%,var(--sf));border-radius:12px;line-height:1.65;color:var(--mut);font-size:13px}.term-empty{padding:28px;text-align:center}.term-toast{font-size:13px;color:var(--ok);min-height:22px}.semester-link{display:inline-flex;align-items:center;text-decoration:none}.term-codes{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}
+@media(max-width:800px){.semester-bar{padding:12px;margin:0 0 22px;gap:8px}.semester-main{flex-basis:100%}.semester-bar select{width:100%;font-size:15px}.semester-meta{flex:1}.term-grid,.term-form{grid-template-columns:1fr}.term-form .wide{grid-column:auto}.semester-bar .btn{font-size:12px;padding:0 10px}.tb{margin-bottom:12px}.term-card .toolbar .btn{flex:1}.term-form input{min-width:0}}
+
+.year-select{flex:1;min-width:150px}.year-select select{width:100%;min-height:44px}.year-group{margin:28px 0}.year-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:15px}.year-heading h2{font-size:25px;margin:7px 0}.study-field{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:16px;font-weight:650}.year-group .term-grid{margin-bottom:24px}.year-group .card{margin-bottom:0}
+@media(max-width:800px){.year-select{min-width:0;flex:1 1 calc(50% - 8px)}.year-select select{font-size:13px!important}.year-heading{align-items:flex-start;flex-wrap:wrap}.semester-bar .semester-meta{flex-basis:100%}.year-heading .btn{min-height:44px}}
+
+.settings-semester{padding:16px;background:var(--bg);box-shadow:none}.settings-semester .year-select select{background:var(--bg)}.settings-semester .semester-meta{flex-basis:100%}.settings-back{display:inline-flex;align-items:center;min-height:44px;color:var(--acc);font-weight:650;text-decoration:none;margin-bottom:8px}
+@media(max-width:800px){.settings-semester .semester-link{width:100%;justify-content:center}.settings-semester .year-select{flex-basis:100%}.settings-semester .year-select select{font-size:15px!important}}
+</style></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
+<header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
+<div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
+<script src="config.js"></script><script>/* Local persistence only. This adapter never connects to a remote service. */
+(function(root){
+ const KEY='aa-reference-v29-workspace-v1';
+ const copy=value=>JSON.parse(JSON.stringify(value));
+ const check=(ok,message)=>{if(!ok)throw Error(message);};
+ const date=value=>typeof value==='string'&&/^\d{4}-\d\d-\d\d$/.test(value)&&!Number.isNaN(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
+ const words=(value,max=5000)=>typeof value==='string'&&value.length<=max;
+ function validate(data){
+  check(data&&Array.isArray(data.years)&&data.years.length>0&&data.years.length<=100,'Academic years are missing or invalid.');
+  check(Array.isArray(data.terms)&&data.terms.length>0&&data.terms.length<=300,'Semester records are missing or invalid.');
+  const years=new Set();for(const y of data.years){check(/^y\d+$/.test(y.id)&&!years.has(y.id)&&Number.isInteger(y.start)&&y.start>=2000&&y.start<=2098&&words(y.label,80),'Invalid academic year.');years.add(y.id);}
+  check(new Set(data.years.map(y=>y.start)).size===data.years.length,'Duplicate academic years.');
+  const ids=new Set(),taskIds=new Set();let count=0;
+  for(const t of data.terms){
+   check(/^s\d+$/.test(t.id)&&!ids.has(t.id)&&years.has(t.yearId)&&words(t.label,40)&&words(t.name,140),'Invalid semester identity.');ids.add(t.id);
+   check(date(t.start)&&date(t.end)&&t.end>=t.start&&date(t.date)&&Number.isInteger(t.weeks)&&t.weeks>=1&&t.weeks<=52,'Invalid semester dates or teaching weeks.');
+   check(Array.isArray(t.mods)&&t.mods.every(m=>typeof m==='string'&&/^[A-Z0-9_-]{2,16}$/.test(m))&&new Set(t.mods).size===t.mods.length,'Invalid module enrolments.');
+   for(const key of ['tasks','classes','inbox','files','assessments','timetable','hub'])check(Array.isArray(t[key])&&t[key].length<=10000,'Invalid '+key+' collection.');
+   count+=t.tasks.length+t.classes.length+t.inbox.length+t.files.length+t.assessments.length+t.timetable.length+t.hub.length;
+   for(const x of t.tasks){check(Number.isSafeInteger(x.id)&&x.id>0&&!taskIds.has(x.id)&&t.mods.includes(x.mod)&&date(x.date)&&words(x.title,500)&&x.title.trim()&&Number.isInteger(x.min)&&x.min>=0&&x.min<=1440&&typeof x.done==='boolean','Invalid task record or semester assignment.');taskIds.add(x.id);}
+   for(const f of t.files)check(Array.isArray(f)&&f.length>=5&&f.slice(0,5).every(x=>words(x))&&t.mods.includes(f[1]),'Invalid library record.');
+   for(const a of t.assessments)check(t.mods.includes(a.mod)&&date(a.date)&&words(a.name,500)&&words(a.type,80)&&words(a.time,40),'Invalid assessment record.');
+   for(const c of t.classes)check(Array.isArray(c)&&date(c[0])&&t.mods.includes(c[1])&&words(c[2],80)&&words(c[3],80),'Invalid planner class.');
+   for(const c of t.timetable)check(t.mods.includes(c.mod)&&['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].includes(c.d)&&words(c.kind,120)&&words(c.range,80)&&words(c.venue,500),'Invalid timetable record.');
+   check(t.topics&&typeof t.topics==='object'&&!Array.isArray(t.topics),'Invalid topic records.');for(const [module,topics] of Object.entries(t.topics)){check(t.mods.includes(module)&&Array.isArray(topics),'Invalid topic module.');for(const topic of topics)check(Array.isArray(topic)&&words(topic[0],500)&&[0,1,2,3].includes(topic[1])&&Number.isFinite(topic[2])&&topic[2]>=0,'Invalid topic progress.');}
+   for(const p of t.inbox)check(Number.isSafeInteger(p.id)&&['p','a','r'].includes(p.s)&&(!p.mod||t.mods.includes(p.mod))&&(!p.title||words(p.title,500)),'Invalid Inbox record.');
+   for(const h of t.hub)check(Number.isSafeInteger(h.id)&&t.mods.includes(h.mod)&&['ann','file','deadline'].includes(h.type)&&words(h.title,500)&&words(h.desc)&&words(h.date,80)&&words(h.origin,500)&&typeof h.unread==='boolean','Invalid course feed record.');
+   if(t.messages)for(const m of t.messages)check(['me','bot'].includes(m.role)&&words(m.text,10000),'Invalid demo chat record.');
+  }
+  check(count<=50000,'Workspace is too large for this local development build.');
+  check(ids.has(data.active)&&ids.has(data.current)&&['Year 1','Year 2','Year 3','Year 4','Year 5+','Postgraduate','Other'].includes(data.studyYear),'Invalid active semester or profile.');
+  check(Number.isSafeInteger(data.n)&&data.n>=0,'Invalid task counter.');
+  check(!data.theme||['light','dark'].includes(data.theme),'Invalid appearance preference.');
+  if(data.lastByYear)for(const [year,id] of Object.entries(data.lastByYear))check(years.has(year)&&data.terms.some(t=>t.id===id&&t.yearId===year),'Invalid remembered semester.');
+  return data;
+ }
+ class ConflictError extends Error{constructor(){super('Another tab saved newer changes. Export this tab’s work before reloading the saved workspace.');this.name='ConflictError';}}
+ class Store{
+  constructor(storage,key=KEY){this.storage=storage;this.key=key;}
+  load(){const raw=this.storage.getItem(this.key);if(raw==null)return null;check(raw.length<=10000000,'Saved workspace exceeds the local size limit.');const envelope=JSON.parse(raw);check(envelope.schemaVersion===1&&Number.isSafeInteger(envelope.revision)&&envelope.revision>0,'Unsupported saved workspace.');validate(envelope.data);return copy(envelope);}
+  save(data,expected){validate(data);const existing=this.load();if((existing?.revision||0)!==expected)throw new ConflictError();const next={schemaVersion:1,revision:expected+1,savedAt:new Date().toISOString(),data:copy(data)};const raw=JSON.stringify(next);check(raw.length<=10000000,'Workspace exceeds the local size limit. Export a backup.');this.storage.setItem(this.key,raw);return copy(next);}
+ }
+ root.ReferenceLocalStore={Store,ConflictError,validate,copy,KEY};
+})(globalThis);
+
+(function(root){
+ const copy=x=>JSON.parse(JSON.stringify(x));
+ function checkConfig(c){
+  if(c.mode==='local')return false;if(c.mode!=='supabase')throw Error('Choose local or supabase mode.');
+  if(c.projectRole!=='staging')throw Error('Only a separate staging project is supported by this build.');
+  const url=new URL(c.supabaseUrl);if(url.protocol!=='https:'||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw Error('Enter the HTTPS test-project URL only.');
+  if(typeof c.publishableKey!=='string'||!c.publishableKey)throw Error('A browser-safe publishable key is required.');
+  if(c.publishableKey.startsWith('sb_secret_'))throw Error('Secret keys must not be used in this browser app.');
+  if(c.publishableKey.startsWith('eyJ')){try{const token=c.publishableKey.split('.')[1],claims=JSON.parse(atob(token.replace(/-/g,'+').replace(/_/g,'/')));if(claims.role!=='anon')throw Error();}catch{throw Error('Use a publishable or legacy anon key, never a service-role key.');}}
+  else if(!c.publishableKey.startsWith('sb_publishable_'))throw Error('Use a Supabase publishable key.');
+  return true;
+ }
+ function emptyWorkspace(now=new Date()){
+  const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'}).format(now),calendar=Number(date.slice(0,4)),month=Number(date.slice(5,7)),start=calendar-(month<8?1:0),yearId='y'+start,label=month<8?'Semester 2':'Semester 1';
+  return {years:[{id:yearId,start,label:'AY'+start+'/'+String(start+1).slice(-2)}],terms:[{id:'s1',yearId,label,name:'AY'+start+'/'+String(start+1).slice(-2)+' · '+label,start:month<8?calendar+'-01-01':calendar+'-08-01',end:month<8?calendar+'-07-31':calendar+'-12-31',weeks:13,date,mods:[],tasks:[],classes:[],topics:{},inbox:[],files:[],assessments:[],timetable:[],hub:[],messages:[],imported:false}],active:'s1',current:'s1',studyYear:'Year 1',n:0,lastByYear:{},theme:null};
+ }
+ // Viewing choices and theme are per-device; current semester and academic records are shared.
+ function payloadOf(snapshot){const data=copy(snapshot);data.active=data.current;data.lastByYear={};data.theme=null;return data;}
+ function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])]));return value;}
+ class Bridge{
+  constructor(client,validate,callbacks={}){this.client=client;this.validate=validate;this.cb=callbacks;this.owner=null;this.epoch=0;this.revision=0;this.signature='';this.queue=Promise.resolve();this.pending=0;this.blocked=false;this.loading=false;}
+  async verify(owner){const {data,error}=await this.client.auth.getUser();if(error||data?.user?.id!==owner)throw Error('Account changed or session expired. Sign in again before continuing.');}
+  async open(user){const token=++this.epoch;this.owner=user.id;this.loading=true;this.blocked=false;this.signature='';this.revision=0;this.cb.loading?.();try{await this.verify(user.id);if(token!==this.epoch)return;const health=await this.client.rpc('aa_reference_health');if(health.error)throw health.error;if(health.data?.purpose!=='academic-assistant-staging'||health.data?.schemaVersion!==1)throw Error('The reference test schema is missing or incompatible.');const result=await this.client.rpc('aa_reference_load',{p_expected_user_id:user.id});if(result.error)throw result.error;if(token!==this.epoch)return;const data=result.data.snapshot||emptyWorkspace();this.validate(data);this.revision=Number(result.data.revision);if(!Number.isSafeInteger(this.revision)||this.revision<0)throw Error('Invalid server revision.');this.signature=result.data.snapshot?JSON.stringify(canonical(payloadOf(data))):'';this.loading=false;this.cb.loaded?.(copy(data),user);if(!result.data.snapshot)this.changed(data);}catch(error){if(token!==this.epoch)return;this.loading=false;this.blocked=true;this.cb.error?.(error);}}
+  changed(snapshot){if(!this.owner||this.loading||this.blocked)return;let data;try{data=payloadOf(snapshot);this.validate(data);}catch(error){this.blocked=true;this.cb.error?.(error);return;}const signature=JSON.stringify(canonical(data));if(signature===this.signature&&this.pending===0)return;const token=this.epoch,owner=this.owner;this.pending++;this.cb.status?.('saving');this.queue=this.queue.then(async()=>{if(token!==this.epoch||this.blocked||signature===this.signature)return;await this.verify(owner);if(token!==this.epoch)return;const {data:revision,error}=await this.client.rpc('aa_reference_save',{p_expected_user_id:owner,p_expected_revision:this.revision,p_snapshot:data});if(error){if(error.code==='40001')throw Error('A newer version was saved on another device. Export this tab’s work, then reload to review the saved version.');throw error;}if(token!==this.epoch)return;const next=Number(revision);if(!Number.isSafeInteger(next)||next!==this.revision+1)throw Error('Unexpected save response. Reload to verify the saved workspace.');this.revision=next;this.signature=signature;}).catch(error=>{if(token===this.epoch){this.blocked=true;this.cb.error?.(error);}}).finally(()=>{this.pending--;if(token===this.epoch)this.cb.status?.(this.blocked?'error':this.pending?'saving':'saved');});}
+  close(){++this.epoch;this.owner=null;this.loading=false;this.signature='';this.revision=0;this.blocked=false;this.cb.closed?.();}
+ }
+ const api={enabled:false,user:null,bridge:null,recovering:false,hooks:null,clientPromise:null,config:null,
+  configure(c){this.config=c;this.enabled=c.mode!=='local';},
+  async client(){if(this.clientPromise)return this.clientPromise;this.clientPromise=(async()=>{checkConfig(this.config);if(!root.supabase){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';s.onload=resolve;s.onerror=()=>reject(Error('The Supabase client could not load. Check your connection.'));document.head.append(s);});}const storage={getItem:key=>sessionStorage.getItem(key)||localStorage.getItem(key),setItem:(key,value)=>{const session=localStorage.getItem('aa-reference-auth-duration')==='session';(session?sessionStorage:localStorage).setItem(key,value);(session?localStorage:sessionStorage).removeItem(key);},removeItem:key=>{sessionStorage.removeItem(key);localStorage.removeItem(key);}};return root.supabase.createClient(this.config.supabaseUrl,this.config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage,storageKey:'aa-reference-staging-auth'}});})();return this.clientPromise;},
+  async start(hooks){this.hooks=hooks;try{const client=await this.client();this.bridge=new Bridge(client,root.ReferenceLocalStore.validate,{loading:()=>hooks.loading(),loaded:(state,user)=>{this.user=user;hooks.loaded(state,user);},error:error=>hooks.error(error),status:state=>hooks.status(state),closed:()=>{this.user=null;hooks.closed();}});client.auth.onAuthStateChange((event,session)=>{setTimeout(()=>{if(event==='PASSWORD_RECOVERY'){this.recovering=true;this.recoveryOwner=session?.user?.id;this.recoverySession={access_token:session?.access_token,refresh_token:session?.refresh_token};this.bridge.close();hooks.recovery();}else if(event==='SIGNED_OUT'){this.recovering=false;this.recoveryOwner=null;this.recoverySession=null;this.bridge.close();}else if(session?.user&&!this.recovering&&session.user.id!==this.bridge.owner)void this.bridge.open(session.user);},0);});const {data:{session},error}=await client.auth.getSession();if(error)throw error;if(session?.user&&!this.recovering&&session.user.id!==this.bridge.owner)await this.bridge.open(session.user);else if(!session)hooks.signedOut();}catch(error){hooks.error(error);}},
+  async submit(mode,form){const client=await this.client(),email=form.querySelector('#demoEmail')?.value.trim(),password=form.querySelector('#demoPass')?.value,confirm=form.querySelector('#demoConfirm')?.value;const redirect=location.origin+location.pathname;if(confirm!==undefined&&confirm!==password)throw Error('Passwords do not match.');if(['signup','reset'].includes(mode)&&(!password||password.length<12))throw Error('Use at least 12 characters for the password.');if(mode==='signin'){localStorage.setItem('aa-reference-auth-duration',form.querySelector('#remember')?.checked?'local':'session');const {data,error}=await client.auth.signInWithPassword({email,password});if(error)throw error;if(data.user&&(this.bridge?.owner!==data.user.id||this.bridge?.blocked))await this.bridge.open(data.user);return;}if(mode==='signup'){const {data,error}=await client.auth.signUp({email,password,options:{emailRedirectTo:redirect,data:{display_name:form.querySelector('#demoName')?.value.trim()||''}}});if(error)throw error;if(data.session){if((this.bridge?.owner!==data.user.id||this.bridge?.blocked))await this.bridge.open(data.user);}else return 'Check your email to confirm the test account.';}if(mode==='forgot'){const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:redirect});if(error)throw error;return 'If this address has an account, a recovery email will arrive.';}if(mode==='reset'){if(!this.recovering)throw Error('Open a valid password-recovery email before updating a password.');const verified=await client.auth.getUser();if(verified.error||verified.data?.user?.id!==this.recoveryOwner)throw Error('The recovery account changed. Request a new recovery email.');if(!this.recoverySession?.access_token||!this.recoverySession?.refresh_token)throw Error('Recovery session expired. Request a new recovery email.');const recoveryOwner=this.recoveryOwner;const isolated=root.supabase.createClient(this.config.supabaseUrl,this.config.publishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'aa-reference-isolated-recovery'}});const bound=await isolated.auth.setSession(this.recoverySession);if(bound.error)throw bound.error;const check=await isolated.auth.getUser();if(check.error||check.data?.user?.id!==recoveryOwner)throw Error('Invalid recovery account. Request a new recovery email.');const updated=await isolated.auth.updateUser({password});if(updated.error)throw updated.error;const saved=await isolated.auth.getSession();this.recovering=false;this.recoverySession=null;this.recoveryOwner=null;const main=await client.auth.getUser();if(main.error||main.data?.user?.id!==recoveryOwner)return 'Password updated. The active account changed; sign in again to continue.';if(!saved.data?.session)throw Error('Password updated. Sign in again to continue.');const restored=await client.auth.setSession({access_token:saved.data.session.access_token,refresh_token:saved.data.session.refresh_token});if(restored.error)throw restored.error;await this.bridge.open(saved.data.session.user);}},
+  async signOut(){if(this.bridge?.pending)throw Error('Wait for pending saves to finish before signing out.');if(this.bridge?.blocked)throw Error('Export unsaved work and reload before signing out.');const client=await this.client(),{error}=await client.auth.signOut({scope:'local'});if(error)throw error;this.bridge?.close();},
+  decorateAuth(root,mode){root.querySelector('.auth-tag').textContent='SUPABASE · SEPARATE TEST PROJECT';const note=root.querySelector('.auth-notice');if(note)note.innerHTML='<b>Test account access.</b> Connected only to the configured test project. NTULearn, AI and file transfers are not connected.';for(const field of root.querySelectorAll('input[readonly]')){field.readOnly=false;field.value='';field.required=true;}const sub=root.querySelector('.auth-card .sub');const subtitles={signin:'Sign in to your separate test workspace.',signup:'Create a separate test account for this workspace.',forgot:'Request a recovery link for your test account.',reset:'Choose a new password for the account in your recovery email.',recovery:'If this address has an account, a recovery email will arrive.'};if(sub&&subtitles[mode])sub.textContent=subtitles[mode];if(mode==='recovery'){const preview=root.querySelector('a[href="#reset"]');if(preview)preview.hidden=true;root.querySelectorAll('.auth-card p').forEach(p=>{if(p.textContent.includes('No email was sent'))p.textContent='Open the recovery link from your email in this browser. The link must be configured for this test app address.';});}const email=root.querySelector('#demoEmail');if(email){email.type='email';email.autocomplete='email';email.placeholder='Your test account email';root.querySelector('label[for="demoEmail"]').textContent='Email address';}for(const input of root.querySelectorAll('input[type="password"]')){input.autocomplete=mode==='signin'?'current-password':'new-password';if(mode!=='signin')input.minLength=12;}for(const label of root.querySelectorAll('.auth-field'))label.textContent=label.textContent.replace(/Sample display name/,'Display name').replace(/sample password/,'password').replace(/Sample password/,'Password');root.querySelectorAll('[data-show]').forEach(b=>b.setAttribute('aria-label',b.getAttribute('aria-label').replace('sample ','')));const remember=root.querySelector('#remember')?.closest('label');if(remember)Array.from(remember.childNodes).filter(n=>n.nodeType===3).forEach(n=>n.textContent=n.textContent.replace(' (demo)',''));const button=root.querySelector('.auth-submit');if(button)button.textContent=({signin:'Sign in',signup:'Create test account',forgot:'Send recovery email',reset:'Update password',signedout:'Sign in again',restoring:'Cancel and sign out'})[mode]||button.textContent;const footer=root.querySelector('.auth-story footer');if(footer)footer.textContent='Separate test environment · No production changes';for(const link of root.querySelectorAll('a')){link.textContent=link.textContent.replace('Create a demo account','Create a test account').replace('Explore sign up','Create a test account');}for(const p of root.querySelectorAll('.auth-foot'))if(p.textContent.includes('no real registration'))p.textContent='Creates an account in the separate test project.';if(mode==='signedout'){const p=root.querySelector('.auth-card .sub');if(p)p.textContent='Your test account is signed out. Saved records remain in the test project.';}if(mode==='restoring'){const p=root.querySelector('.auth-card .sub');if(p)p.textContent='Verifying your test account and loading its saved workspace…';}if(mode==='reset'&&!this.recovering){root.querySelector('.auth-submit').disabled=true;}},
+  decorateWorkspace(){if(!this.enabled||!this.user)return;const email=this.user.email||'Test account';const initials=email.slice(0,2).toUpperCase();document.querySelectorAll('.avatar').forEach(a=>a.textContent=initials);const pill=document.querySelector('#tb>.pill');if(pill)pill.textContent='Test workspace · connected';const hint=document.querySelector('.sectionhint');if(hint)hint.textContent='Separate test workspace · Saved academic records. NTULearn, AI and file transfers are not connected.';document.querySelectorAll('.term-note').forEach(n=>{if(n.textContent.includes('All semesters and edits save in this browser'))n.textContent='Separate test workspace · Academic changes save to the test project. Calendar dates are illustrative, not official NTU dates.';});document.querySelectorAll('.account-button').forEach(b=>{const a=b.querySelector('.avatar');b.textContent='Your account ▾';if(a)b.prepend(a);});const pop=document.getElementById('accountPop');if(pop){pop.querySelector('b').textContent='Your test account';pop.querySelector('p').textContent=email;pop.querySelector('small').textContent='Separate Supabase test project';}document.querySelectorAll('button').forEach(b=>{if(b.textContent==='Sign out of demo')b.textContent='Sign out';});}
+ };
+ root.ReferenceCloud={...api,Bridge,checkConfig,emptyWorkspace,payloadOf};
+})(globalThis);
+
+/* Private file bytes live in Storage; metadata is separate from workspace snapshots. */
+(function(root){
+ const BUCKET='academic-private-files',MAX=10*1024*1024;
+ const extensions=new Set(['pdf','txt','md','csv','png','jpg','jpeg','webp','docx','pptx','xlsx','zip']);
+ function validateFile(file){
+  if(!file||typeof file.name!=='string'||!file.name.trim()||file.name.length>240)throw Error('Choose a file with a name of 1–240 characters.');
+  if(!Number.isSafeInteger(file.size)||file.size<=0||file.size>MAX)throw Error('Choose a non-empty file up to 10 MB.');
+  const ext=file.name.split('.').pop().toLowerCase();if(!extensions.has(ext))throw Error('Supported files: PDF, text, CSV, images, Office documents and ZIP.');return ext;
+ }
+ class Library{
+  constructor(client){this.client=client;}
+  async verify(owner){const {data,error}=await this.client.auth.getUser();if(error||data?.user?.id!==owner)throw Error('Your account changed. Sign in again before using files.');}
+  async list(owner,semester){await this.verify(owner);const {data,error}=await this.client.from('aa_file_assets').select('*').eq('user_id',owner).eq('semester_id',semester).order('created_at',{ascending:false});if(error)throw error;await this.verify(owner);return data;}
+  async upload(owner,semester,module,file){
+   const ext=validateFile(file);if(!/^s\d+$/.test(semester)||!/^[A-Z0-9_-]{2,16}$/.test(module))throw Error('Choose an enrolled module.');
+   await this.verify(owner);const id=crypto.randomUUID(),path=owner+'/'+semester+'/'+id+'.'+ext;
+   const {error:uploadError}=await this.client.storage.from(BUCKET).upload(path,file,{contentType:'application/octet-stream',upsert:false,cacheControl:'0'});if(uploadError)throw uploadError;
+   const row={id,user_id:owner,semester_id:semester,module,name:file.name,bytes:file.size,mime:file.type||'application/octet-stream',path};
+   let registered=false;
+   try{
+    await this.verify(owner);const {data,error}=await this.client.from('aa_file_assets').insert(row).select().single();if(error)throw error;registered=true;await this.verify(owner);return data;
+   }catch(error){
+    if(registered)throw error; // The complete saved asset must survive a later account switch.
+    // Never clean up through a different account. A failed cleanup is reported explicitly.
+    try{await this.verify(owner);const {data:found,error:lookup}=await this.client.from('aa_file_assets').select('*').eq('id',id).eq('user_id',owner).maybeSingle();if(lookup)throw lookup;if(found){await this.verify(owner);return found;}const {error:cleanup}=await this.client.storage.from(BUCKET).remove([path]);if(cleanup)throw cleanup;}
+    catch{throw Error('The file may have uploaded without a library entry. Sign back into the original account and review Storage path '+path+'.');}
+    throw error;
+   }
+  }
+  async download(owner,row){await this.verify(owner);if(row.user_id!==owner)throw Error('This file belongs to another account.');const {data,error}=await this.client.storage.from(BUCKET).download(row.path);if(error)throw error;await this.verify(owner);return data;}
+  async remove(owner,row){
+   await this.verify(owner);if(row.user_id!==owner)throw Error('This file belongs to another account.');
+   const {error:storageError}=await this.client.storage.from(BUCKET).remove([row.path]);if(storageError)throw storageError;
+   await this.verify(owner);const {error}=await this.client.from('aa_file_assets').delete().eq('id',row.id).eq('user_id',owner);if(error)throw Error('File bytes were removed, but the library entry still needs deletion. Retry Delete.');
+  }
+ }
+ root.AcademicFiles={Library,validateFile,MAX,BUCKET};
+})(globalThis);
+
+(function(root){
+ const escape=s=>String(s??'').replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+ const utc=(date,time)=>new Date(date+'T'+time+':00+08:00').toISOString().replace(/[-:]/g,'').replace('.000','');
+ const stamp=()=>new Date().toISOString().replace(/[-:]/g,'').replace('.000','');
+ function calendar(term,owner){
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Academic Assistant//Study Calendar//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  function event(id,title,date,time,end,extra=[]){lines.push('BEGIN:VEVENT','UID:'+escape(owner+'-'+term.id+'-'+id)+'@academic-assistant','DTSTAMP:'+stamp(),'SUMMARY:'+escape(title),time?'DTSTART:'+utc(date,time):'DTSTART;VALUE=DATE:'+date.replace(/-/g,''),...(end?['DTEND:'+utc(date,end)]:[]),...extra,'END:VEVENT');}
+  for(const task of term.tasks)event('task-'+task.id,task.mod+' · '+task.title,task.date,null,null,['DESCRIPTION:'+escape(task.min+' minutes planned · '+(task.done?'Completed':'Not completed'))]);
+  for(const [i,a] of term.assessments.entries())event('assessment-'+(a.id||i),a.mod+' · '+a.name,a.date,a.time||null,null,['DESCRIPTION:'+escape(a.type)]);
+  for(const [i,c] of term.timetable.entries()){
+   let date=term.start;const weekday=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(c.d);const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+(weekday-d.getUTCDay()+7)%7);date=d.toISOString().slice(0,10);if(date>term.end)continue;
+   const [start,end]=c.range.split('–');event('class-'+(c.id||i),c.mod+' · '+c.kind,date,start,end,['LOCATION:'+escape(c.venue),'RRULE:FREQ=WEEKLY;UNTIL='+utc(term.end,'23:59')]);
+  }
+  lines.push('END:VCALENDAR');
+  // RFC 5545: fold lines at 75 UTF-8 octets without splitting a character.
+  return lines.map(line=>{let out='',part='',bytes=0;for(const ch of line){const size=new TextEncoder().encode(ch).length;if(bytes+size>75){out+=part+'\r\n';part=' ';bytes=1;}part+=ch;bytes+=size;}return out+part;}).join('\r\n')+'\r\n';
+ }
+ root.AcademicCalendar={calendar};
+})(globalThis);
+
+// Read only the revision counter, using the existing owner-only table policy.
+(function(root){
+ class RevisionWatch {
+  constructor(client, bridge, changed){this.client=client;this.bridge=bridge;this.changed=changed;this.running=false;}
+  async check(){
+   const b=this.bridge,owner=b.owner,epoch=b.epoch;
+   if(this.running||!owner||b.loading||b.pending||b.blocked)return;
+   this.running=true;
+   try{
+    await b.verify(owner);
+    const {data,error}=await this.client.from('aa_reference_workspaces').select('revision').eq('user_id',owner).maybeSingle();
+    if(error)throw error;
+    if(b.epoch!==epoch||b.owner!==owner||b.pending||b.loading||b.blocked)return;
+    await b.verify(owner);
+    if(b.epoch!==epoch||b.owner!==owner||b.pending||b.loading||b.blocked)return;
+    const remote=Number(data?.revision);
+    if(Number.isSafeInteger(remote)&&remote>b.revision)this.changed(remote);
+   }finally{this.running=false;}
+  }
+ }
+ root.AcademicRevisionWatch=RevisionWatch;
+})(globalThis);
+
+ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
+
+let TODAY='2026-11-01';let MODS=['SC1001','SC1004','SC1005','SC2000','MH1812','CC0003','CC0015'];const ST=['Not started','Learning','Practising','Confident'];
+let n=0;const mk=(d,m,t,min,fix)=>({id:++n,date:d,mod:m,title:t,min:min||30,fix:!!fix,done:false});
+let T=[mk('2026-11-01','CC0003','Final timed mock viva + Q&A',30,1),mk('2026-11-01','SC1004','Span, independence, basis, subspaces',45),mk('2026-11-01','SC2000','Part 1 refresher + Lecture 7–8 practice',75),mk('2026-11-01','SC1005','Final: BCD, Gray, ASCII, parity',30),mk('2026-11-01','SC1001','If/elif/else, Booleans + coding',40),
+mk('2026-11-02','CC0003','Quick warm-up + individual viva',10,1),
+mk('2026-11-03','SC1004','Orthogonality, orthonormal bases, projections',75),mk('2026-11-03','SC1001','For/while/range, nested loops',50),
+mk('2026-11-04','SC1004','Gram–Schmidt, QR, Tutorial 6',75),mk('2026-11-04','SC1001','Functions, parameters, return, scope',45),
+mk('2026-11-05','SC1004','Least squares, normal equations',75),mk('2026-11-05','SC1001','Strings, lists, tuples, dictionaries',50),
+mk('2026-11-06','SC2000','Quiz 3, 9:30–10:20 AM',50,1),mk('2026-11-06','SC1004','Tutorial 7, projection matrices',45),
+mk('2026-11-07','SC1004','Complex numbers, polar form',75),mk('2026-11-07','SC1001','Recursion, trees, exceptions',60)];
+let C=[['2026-11-02','SC1005','Lab','14:30–16:30'],['2026-11-03','SC1004','Lecture','10:30–12:30'],['2026-11-04','SC2000','Tutorial','14:30–15:30'],['2026-11-05','SC1001','Lecture','09:30–11:30']];
+let TP={SC1004:[['Vectors and dot products',3,6],['Matrices, RREF',2,3],['Span, basis, subspaces',1,0],['Orthogonality, projections',0,0],['Gram–Schmidt, QR',0,0],['Least squares',0,0]],SC2000:[['Sampling distributions',2,9],['Point estimation',1,4],['Confidence intervals',1,3]],SC1005:[['Number systems',3,5],['Logic gates, Boolean algebra',1,8],['Sequential circuits',0,0]]};
+let IN=[{id:1,t:'plan',s:'p',ids:[]},{id:2,t:'ann',s:'p'},{id:3,t:'imp',s:'p',low:true}];
+let F=[['SC1004_L6_GramSchmidt.pdf','SC1004','Slides','Personal','2.1 MB'],['SC2000_Tutorial2.pdf','SC2000','Tutorial','Personal','340 KB'],['SC1005_Verilog_Notes.docx','SC1005','Notes','Personal','88 KB'],['MH1812_2023_CA2_Paper.pdf','MH1812','Past paper','Personal','1.4 MB'],['SC1004_Tut6_Solutions.pdf','SC1004','Tutorial','NTULearn import','260 KB']];
+let q='',fm='',mod=null;
+const dn=d=>new Date(d+'T00:00:00Z').toLocaleDateString('en-SG',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long'});
+const sh=(d,k)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+k);return x.toISOString().slice(0,10)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+const chip=m=>`<span class="c" data-m="${m}">${m}</span>`;
+const mins=d=>T.filter(t=>t.date==d).reduce((a,t)=>a+t.min,0);
+const row=t=>`<label class="t${t.done?' dn':''}"><input type="checkbox" ${t.done?'checked':''} onchange="tog(${t.id})"><span><b>${esc(t.title)}</b><small>${chip(t.mod)}${t.min} min${t.fix?' · fixed 🔒':''}</small></span></label>`;
+function tog(i){const t=T.find(x=>x.id==i);t.done=!t.done;go()}
+function add(e){e.preventDefault();T.push(mk(TODAY,document.getElementById('nm').value,document.getElementById('nt').value.trim(),30));go()}
+function theme(){const r=document.documentElement,d=getComputedStyle(r).colorScheme=='dark';r.dataset.theme=d?'light':'dark'}
+function today(){const d=T.filter(t=>t.date==TODAY),k=d.filter(t=>t.done).length,days=[...Array(7)].map((_,i)=>sh(TODAY,i)),hv=days.reduce((a,x)=>mins(x)>mins(a)?x:a);
+return `<p class="eb">Today</p><h1>${dn(TODAY)}</h1><p class="sub">${d.length} tasks · ${mins(TODAY)} min planned</p><br>
+<section class="hero"><div><small>Progress</small><b>${k} of ${d.length} done</b><i><u style="width:${d.length?100*k/d.length:0}%"></u></i></div><div><small>Next fixed deadline</small><b>5 days</b><small>SC2000 · Quiz 3 · Fri 6 Nov</small></div></section>
+<div class="cols"><section class="card w">${d.map(row).join('')}<form class="f" onsubmit="add(event)"><input id="nt" placeholder="Add a task for today" required><select id="nm" aria-label="Module">${MODS.map(m=>`<option>${m}</option>`).join('')}</select><button class="btn p">Add</button></form></section>
+<aside class="card"><h2>Needs attention</h2><p>No overdue tasks.</p><p><a href="#inbox">${IN.filter(i=>i.s=='p').length} items waiting in Inbox</a></p><p>Heaviest day this week: <b>${dn(hv).split(',')[0]} (${mins(hv)} min)</b></p></aside></div>`}
+function plan(){let h='<p class="eb">Plan</p><h1>Next 7 days</h1><p class="sub">Classes are dashed and fixed; study tasks are flexible. Sample classes shown.</p><br><div class="wk">';
+for(let i=0;i<7;i++){const d=sh(TODAY,i),m=mins(d),hv=m>130;h+=`<section class="card"><div class="dh"><b>${dn(d)}</b>${hv?'<span class="hvt">Heavy</span>':''}</div><div class="ld${hv?' hv':''}"><u style="width:${Math.min(100,m/2.4)}%"></u></div><small class="sub">${m} min planned</small>${C.filter(c=>c[0]==d).map(c=>`<div class="cl" data-m="${c[1]}">${chip(c[1])}${esc(c[2])} · ${esc(c[3])} <span class="tag">sample</span></div>`).join('')}${T.filter(t=>t.date==d).map(row).join('')||'<p class="sub">Nothing planned.</p>'}</section>`}return h+'</div>'}
+function modules(){if(mod)return detail();return `<p class="eb">Modules</p><h1>Your modules</h1><p class="sub">One hub per module: tasks, topics, practice and files.</p><br><div class="mg">${MODS.map(m=>{const o=T.filter(t=>t.mod==m&&!t.done).length;return `<button class="mc" data-m="${m}" onclick="mod='${m}';go()"><b>${m}</b><small>${o} open tasks${TP[m]?' · '+TP[m].length+' topics':''}</small>${TP[m]?cov(m):''}</button>`}).join('')}</div><p><a href="#files">Open the Library →</a></p>`}
+function detail(){const tp=TP[mod]||[],nx=tp.filter(x=>x[1]<3).sort((a,b)=>((3-b[1])*10+b[2])-((3-a[1])*10+a[2]))[0];
+return `<button class="btn" onclick="mod=null;go()">← Modules</button><h1>${chip(mod)} ${mod}</h1>${nx?`<div class="nx"><b>Revise next: ${nx[0]}</b><br><span class="sub">Rule: lowest status first, then longest since revised (${nx[2]} days). No readiness percentage; just the evidence.</span></div>`:''}
+<div class="card"><h2>Topics</h2>${tp.map((x,i)=>`<div class="tp"><span>${esc(x[0])}<br><small class="sub">last revised ${x[2]?x[2]+' days ago':'never'}</small></span><button class="st s${x[1]}" onclick="cyc('${mod}',${i})">${ST[x[1]]}</button></div>`).join('')||'<p class="sub">No topics yet. Add them from the syllabus.</p>'}</div>
+<div class="card"><h2>Open tasks</h2>${T.filter(t=>t.mod==mod&&!t.done).map(row).join('')||'<p class="sub">None.</p>'}</div>
+<div class="card"><h2>Files</h2>${F.filter(f=>f[1]==mod).map(f=>`<p>${esc(f[0])} <span class="tag">${f[3]}</span></p>`).join('')||'<p class="sub">No files.</p>'}</div>`}
+function cov(m){return '<div class="cv" title="Topic coverage">'+TP[m].map(x=>`<i style="background:${['var(--ln)','color-mix(in srgb,var(--wn) 60%,var(--sf))','var(--acc)','var(--ok)'][x[1]]}"></i>`).join('')+'</div>'}
+function bar(){document.getElementById('tb').innerHTML='<input class="sq" id="sq" placeholder="Search tasks and files" aria-label="Search" oninput="srch(this.value)"><span class="pill">● Preview mode · local samples</span><a class="btn gear" href="#settings">Settings</a><div class="sr" id="sr" hidden></div>'}
+function srch(v){const r=document.getElementById('sr'),k=v.trim().toLowerCase();if(!k){r.hidden=true;return}const a=[...T.filter(t=>t.title.toLowerCase().includes(k)).map(t=>`<a href="#plan" onclick="clr()">${esc(t.title)} <span class="tag">task · ${t.mod}</span></a>`),...F.filter(f=>f[0].toLowerCase().includes(k)).map(f=>`<a href="#files" onclick="clr()">${esc(f[0])} <span class="tag">file · ${f[1]}</span></a>`)].slice(0,6);r.innerHTML=a.join('')||'<a>No matches</a>';r.hidden=false}
+function clr(){document.getElementById('sq').value='';document.getElementById('sr').hidden=true}
+function settings(){return `<p class="eb">Settings</p><h1>Connections and preferences</h1><br><div class="card"><h2>Connections</h2><div class="set"><span>ChatGPT assistant<br><small class="sub">Reads your plan; its changes arrive as proposals in the Inbox</small></span><span class="pill">Connected</span></div><div class="set"><span>NTULearn<br><small class="sub">No approved access, so manual mode: paste announcements, upload files</small></span><span class="pill off">Manual</span></div><div class="set"><span>Calendar feed<br><small class="sub">Classes, deadlines and tasks in Apple or Google Calendar</small></span><button class="btn" onclick="this.textContent='Link copied (sample)'">Copy private link</button></div></div><div class="card"><h2>Term</h2><div class="set"><span>Current semester (sample)<br><small class="sub">Start date, teaching weeks and recess are set here</small></span><button class="btn">Edit</button></div></div><div class="card"><h2>Data and appearance</h2><div class="set"><span>Backup<br><small class="sub">Download everything as JSON</small></span><button class="btn">Export</button></div><div class="set"><span>Theme</span><button class="btn" onclick="theme()">Light / dark</button></div></div>`}
+function cyc(m,i){const x=TP[m][i];x[1]=(x[1]+1)%4;x[2]=0;go()}
+function inbox(){const L=IN.map(i=>{if(i.t=='plan')return i.s=='p'?`<div class="card"><b>Plan for Mon 2 Nov: 3 free hours</b><span class="tag">ChatGPT proposal</span><p class="sub">Quiz 3 (SC2000) is in 5 days and Orthogonality hasn’t been started. Monday has only a lab and a 10-minute viva.</p><p>+ SC2000 Quiz 3 practice · 60 min<br>+ SC1004 Orthogonality, projections · 75 min</p><button class="btn p" onclick="plan1(1)">Approve</button> <button class="btn" onclick="setS(1,'r')">Reject</button></div>`:`<div class="card"><b>Plan for Mon 2 Nov</b> ${i.s=='a'?'<span class="ok">Applied</span> <button class="btn" onclick="plan1(0)">Undo</button>':'<span class="sub">Rejected</span>'}</div>`;
+if(i.t=='ann')return i.s=='p'?`<div class="card"><b>SC2000: Quiz 3 covers Lectures 7–8 and Tutorial 2</b><span class="tag">pasted by you</span><p class="sub">Proposed task: Review Lectures 7–8 + Tutorial 2 · Thu 5 Nov · 45 min</p><button class="btn p" onclick="ann()">Add as task</button> <button class="btn" onclick="setS(2,'r')">Dismiss</button></div>`:`<div class="card"><b>SC2000 announcement</b> <span class="ok">${i.s=='a'?'Task added':'Dismissed'}</span></div>`;
+return i.s=='p'?`<div class="card"><b>Timetable import review</b><span class="tag">screenshot</span><p class="sub">3 classes found. Nothing is saved until you confirm.</p><p>${chip('SC1004')}Lecture · Tue 10:30–12:30 <span class="ok">High</span></p><p>${chip('SC1005')}Lab · Mon 14:30–16:30 <span class="ok">High</span></p><p>${chip('SC2000')}Tutorial · Wed 14:30–? <span class="hvt">Low: end time unclear</span> ${i.low?'<button class="btn" onclick="IN[2].low=false;go()">Set 15:30</button>':'<span class="ok">Edited</span>'}</p><button class="btn p" ${i.low?'disabled':''} onclick="setS(3,'a')">Confirm import</button></div>`:`<div class="card"><b>Timetable import</b> <span class="ok">Saved (3 classes)</span></div>`}).join('');
+return `<p class="eb">Inbox</p><h1>Needs your decision</h1><p class="sub">AI suggestions, imports and announcements wait here. Nothing changes until you approve.</p><br>${L}`}
+function setS(id,s){IN.find(i=>i.id==id).s=s;go()}
+function plan1(a){const i=IN[0];if(a){const x=mk('2026-11-02','SC2000','Quiz 3 practice',60),y=mk('2026-11-02','SC1004','Orthogonality, projections',75);T.push(x,y);i.ids=[x.id,y.id];i.s='a'}else{T=T.filter(t=>!i.ids.includes(t.id));i.s='p'}go()}
+function ann(){T.push(mk('2026-11-05','SC2000','Review Lectures 7–8 + Tutorial 2',45));setS(2,'a')}
+function files(){const L=F.filter(f=>(!fm||f[1]==fm)&&f[0].toLowerCase().includes(q.toLowerCase()));
+return `<p class="eb">Library</p><h1>Files</h1><p class="sub">Private, synced, linked to modules and tasks.</p><div class="f"><input id="fq" placeholder="Search files" value="${esc(q)}" oninput="q=this.value;lst()"><select aria-label="Module" onchange="fm=this.value;lst()"><option value="">All modules</option>${MODS.map(m=>`<option ${m==fm?'selected':''}>${m}</option>`).join('')}</select><button class="btn p" onclick="F.unshift(['New_upload_'+(F.length+1)+'.pdf','SC1004','Notes','Personal','120 KB']);go()">Upload sample</button></div><div class="card" id="fl" style="margin-top:12px"></div>`}
+function lst(){const L=F.filter(f=>(!fm||f[1]==fm)&&f[0].toLowerCase().includes(q.toLowerCase()));document.getElementById('fl').innerHTML=L.map(f=>`<div class="tp"><span>${esc(f[0])}<br><small class="sub">${chip(f[1])}${f[2]} · ${f[4]}</small></span><span class="tag">${f[3]}</span></div>`).join('')||'<p class="sub">No files match.</p>'}
+function go(){const r=(location.hash||'#today').slice(1),V={today,plan,modules,inbox,files,settings}[r]||today;document.getElementById('v').innerHTML=V();document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')=='#'+r));const p=IN.filter(i=>i.s=='p').length;document.getElementById('bd').textContent=p||'';if(r=='files')lst()}
+
+// v2.1 demo-only data; no production integrations.
+let viewMode='week', imported=false, feedNote='', filePreview='', fileFilter='', testAssessment=false;
+let AS=[{mod:'CC0003',name:'Individual viva',date:'2026-11-02',time:'',type:'Viva'}, {mod:'SC2000',name:'Quiz 3',date:'2026-11-06',time:'09:30',type:'Quiz'}, {mod:'SC1004',name:'CA2',date:'2026-11-13',time:'08:15',type:'Quiz'}, {mod:'SC1001',name:'Quiz 2',date:'2026-11-16',time:'',type:'Coding quiz'}, {mod:'SC1004',name:'Final exam',date:'2026-11-23',time:'',type:'Exam'}, {mod:'SC1005',name:'Final exam',date:'2026-11-24',time:'',type:'Exam'}, {mod:'MH1812',name:'Final exam',date:'2026-11-28',time:'',type:'Exam'}];
+let CL=[{d:'Mon',at:14,mod:'SC1005',kind:'Lab',range:'14:30–16:30',venue:'Venue to confirm'}, {d:'Tue',at:10,mod:'SC1004',kind:'Lecture',range:'10:30–12:30',venue:'Venue to confirm'}, {d:'Wed',at:14,mod:'SC2000',kind:'Tutorial',range:'14:30–15:30',venue:'Venue to confirm'}, {d:'Thu',at:9,mod:'SC1001',kind:'Lecture',range:'09:30–11:30',venue:'Venue to confirm'}];
+let pendingClass={d:'Fri',mod:'MH1812',kind:'Tutorial',range:'10:30–11:30',venue:'Pending review'};
+const oldToday=today;
+today=function(){let original=oldToday();let upcoming=AS.filter(a=>a.date>=TODAY).slice(0,4).map(a=>`<div class="event" data-m="${a.mod}">${chip(a.mod)}<b>${esc(a.name)}</b><small>${dn(a.date)}${a.time?' · '+a.time:''} · ${esc(a.type)}</small></div>`).join('');return original+`<div class="cols"><section class="card"><h2>Upcoming assessments</h2><p class="sub">Dates shown for prototype review. Verify against NTU records.</p>${upcoming}</section><section class="card"><h2>Quick actions</h2><div class="toolbar"><a class="btn" href="#timetable">View timetable</a><a class="btn" href="#inbox">Review proposals</a><a class="btn" href="#files">Open files</a></div><p class="sub">AI plans will always wait for explicit approval in the Inbox.</p></section></div>`}
+function assessments(){return `<p class="eb">Assessments</p><h1>Upcoming assessments</h1><p class="sub">Separate from study tasks. Official dates should be verified before publishing.</p><br><section class="card">${AS.map(a=>`<div class="fileitem"><div>${chip(a.mod)}<b>${esc(a.name)}</b><small>${dn(a.date)} ${a.time?'· '+a.time:''} · ${esc(a.type)}</small></div><span class="tag">Fixed date</span></div>`).join('')}</section>`}
+function timetable(){const days=['Mon','Tue','Wed','Thu','Fri'];return `<p class="eb">Timetable</p><h1>Class timetable</h1><p class="sub">Fixed lessons and venues, separate from flexible study sessions. Sample semester entries.</p><div class="toolbar"><button class="btn ${viewMode==='week'?'on':''}" onclick="viewMode='week';go()">Time grid</button><button class="btn ${viewMode==='list'?'on':''}" onclick="viewMode='list';go()">Agenda</button><button class="btn p" onclick="showImport()">Import timetable image</button></div>${imported?'<p class="ok">Sample timetable import reviewed and added locally.</p>':''}${viewMode==='list'?`<div class="card">${CL.map(c=>`<div class="event" data-m="${c.mod}">${chip(c.mod)}<b>${esc(c.kind)} · ${c.d} ${esc(c.range)}</b><small>${esc(c.venue)}</small></div>`).join('')}</div>`:`<div class="card scroller"><div class="hourgrid"><div class="slot head">Time</div>${days.map(x=>`<div class="slot head">${x}</div>`).join('')}${[9,10,11,12,13,14,15,16,17].map(hour=>`<div class="slot time">${String(hour).padStart(2,'0')}:00</div>${days.map(day=>{const c=CL.find(c=>c.d===day&&c.at===hour);return c?`<div class="slot eventslot" data-m="${c.mod}">${chip(c.mod)}<b>${esc(c.kind)}</b><br>${esc(c.range)}<br><small>${esc(c.venue)}</small></div>`:'<div class="slot"></div>'}).join('')}`).join('')}</div></div>`}<section class="card"><h2>How photo import will work</h2><p class="sub">Upload screenshot → extract classes → flag unclear details → edit → confirm → save. The import button demonstrates the review flow; it does not read an actual image.</p></section>`}
+function showImport(){const x=IN.find(i=>i.id===3);x.s='p';location.hash='#inbox';go()}
+const oldInbox=inbox;
+inbox=function(){let html=oldInbox();return html+`<div class="card"><h2>Before approving changes</h2><div class="compare"><div><small>Existing schedule</small><b>Mon 2 Nov</b><p class="muted">10 min scheduled study + a sample class</p></div><div><small>Proposed additional work</small><b>+ 135 min</b><p class="muted">SC2000 60 min + SC1004 75 min</p></div></div><p class="notice">Review fixed class times, assessment dates and workload before approval. Actual conflict validation is not implemented in this prototype.</p></div>`}
+const oldFiles=files;
+files=function(){return `<p class="eb">Library</p><h1>Your study files</h1><p class="sub">Private module library concept · mock records only</p><div class="toolbar"><input class="sq" style="max-width:250px" placeholder="Search filename" aria-label="Filter files" value="${esc(q)}" oninput="q=this.value;lst()"><select class="btn" aria-label="Filter module" onchange="fm=this.value;lst()"><option value="">All modules</option>${MODS.map(m=>`<option ${m===fm?'selected':''}>${m}</option>`).join('')}</select><button class="btn p" onclick="demoUpload()">Upload file (demo)</button></div><div class="card" id="fl"></div>${filePreview?`<div class="card"><h2>File preview</h2><p><b>${esc(filePreview)}</b></p><p class="sub">The production version will offer previews and authenticated downloads. Sample files have no file bytes attached.</p><button class="btn" onclick="filePreview='';go()">Close</button></div>`:''}<div class="card"><h2>Planned production features</h2><p class="sub">Private Supabase Storage · per-module organisation · preview · download · controlled sharing · source metadata · cross-device sync</p></div>`}
+function demoUpload(){F.unshift(['Sample_upload_'+(F.length+1)+'.pdf','SC1004','Notes','Demo upload','120 KB']);go()}
+lst=function(){const el=document.getElementById('fl');if(!el)return;const L=F.filter(f=>(!fm||f[1]===fm)&&f[0].toLowerCase().includes(q.toLowerCase()));el.innerHTML=L.map((f,i)=>`<div class="fileitem"><div>${chip(f[1])}<b>${esc(f[0])}</b><small>${f[2]} · ${f[4]} · ${f[3]}</small></div><div class="file-actions"><button class="btn" onclick="filePreview=${JSON.stringify(f[0]).replace(/"/g,'&quot;')};go()">Details</button><button class="btn" disabled title="Sample files have no bytes">Download</button></div></div>`).join('')||'<p class="sub">No files match.</p>'}
+const oldModules=modules;
+modules=function(){const s=oldModules();return mod?s:s+`<section class="card" style="margin-top:14px"><h2>Assessments and syllabus</h2><p class="sub">Module topics, practice results and upcoming deadlines live together.</p><a class="btn" href="#assessments">View all assessments</a></section>`}
+const oldGo=go;
+go=function(){const r=(location.hash||'#today').slice(1);if(r==='timetable'||r==='assessments'){document.getElementById('v').innerHTML=(r==='timetable'?timetable:assessments)();document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+r));const badge=document.getElementById('bd');badge.textContent=IN.filter(i=>i.s==='p').length||'';}else oldGo();};
+// Use source prototype approval functions; demo only. Change imported badge on confirmation.
+const _setS=setS;
+setS=function(id,status){_setS(id,status);if(id===3&&status==='a'&&!imported){imported=true;CL.push(pendingClass);}}
+
+addEventListener('hashchange',()=>{mod=null;go()});bar();go();
+
+// v2.2 NTULearn Hub — demo/local data only. No NTULearn credentials or network calls.
+let HUB=[
+{id:1,type:'ann',mod:'SC2000',title:'Quiz 3 information',date:'30 Oct 2026',desc:'Example announcement: Quiz 3 covers sampling distributions and large-sample estimation. Verify details in NTULearn.',origin:'Sample announcement',unread:true},
+{id:2,type:'ann',mod:'SC1004',title:'Tutorial 6 guidance',date:'29 Oct 2026',desc:'Example announcement: tutorial guidance for orthogonality and Gram–Schmidt has been posted.',origin:'Sample announcement',unread:true},
+{id:3,type:'file',mod:'SC1004',title:'Tutorial 6 solutions.pdf',date:'29 Oct 2026',desc:'Example new course material. 260 KB · Tutorial. This is not an actual download.',origin:'Sample course file',unread:true},
+{id:4,type:'file',mod:'SC1005',title:'Number Systems lecture.pdf',date:'28 Oct 2026',desc:'Example lecture slides. A real connection would require authorised file access.',origin:'Sample course file',unread:false},
+{id:5,type:'deadline',mod:'SC2000',title:'Quiz 3 — 6 Nov 2026',date:'30 Oct 2026',desc:'Example deadline record. Compare against your existing assessment before adding.',origin:'Sample deadline',unread:false}
+];
+let hubTab='all',hubMod='all',hubMessages=[{role:'bot',text:'Ask about the example announcements, course files or deadlines. This demo is NOT connected to NTULearn.'}];
+function hubFiltered(){return HUB.filter(x=>(hubTab==='all'||x.type===hubTab)&&(hubMod==='all'||x.mod===hubMod));}
+function ntulearn(){const unread=HUB.filter(x=>x.unread).length;
+ return `<p class="eb">Academic connections</p><div class="hd"><div><h1>NTULearn Hub</h1><p class="sub">Course updates, materials and deadlines — with optional questions</p></div><span class="pill off">Manual/demo mode · Not connected</span></div>
+ <div class="hubsource"><b>No live NTULearn access.</b> Everything shown below is sample data or information you paste into this local prototype. Automatic sync and real downloads require approved access. <a href="#settings">Connection settings</a></div>
+ <div class="statgrid"><div class="card"><small class="sub">Unread example updates</small><h1>${unread}</h1></div><div class="card"><small class="sub">Example materials</small><h1>${HUB.filter(x=>x.type==='file').length}</h1></div><div class="card"><small class="sub">Example deadlines</small><h1>${HUB.filter(x=>x.type==='deadline').length}</h1></div></div>
+ <div class="hubgrid"><section><div class="card"><div class="hd"><div><h2>Course feed</h2><p class="sub">Filter what you want to see</p></div><select id="hubmod" aria-label="Filter module" onchange="hubMod=this.value;go()" class="btn"><option value="all">All modules</option>${MODS.map(m=>`<option value="${m}" ${hubMod===m?'selected':''}>${m}</option>`).join('')}</select></div>
+ <div class="hubtabs">${[['all','All'],['ann','Announcements'],['file','Materials'],['deadline','Deadlines']].map(([k,v])=>`<button class="btn ${hubTab===k?'active':''}" onclick="hubTab='${k}';go()">${v}</button>`).join('')}</div>
+ ${hubFiltered().map(x=>`<article class="hubitem"><div class="hubmeta">${chip(x.mod)} <span class="tag">${x.type==='ann'?'Announcement':x.type==='file'?'Course file':'Deadline'}</span> ${x.unread?'<span class="tag">Unread</span>':''}<span>${esc(x.date)}</span></div><h3>${esc(x.title)}</h3><p>${esc(x.desc)}</p><div class="hubmeta"><span>${esc(x.origin)}</span><button class="btn" onclick="hubRead(${x.id})">${x.unread?'Mark read':'Read'}</button> ${x.type==='ann'?`<button class="btn p" onclick="hubProposal(${x.id})">Propose study task</button>`:x.type==='file'?`<button class="btn" onclick="hubSaveFile(${x.id})">Save sample to Library</button>`:`<a class="btn" href="#assessments">Compare assessments</a>`}</div></article>`).join('')||'<p class="sub">No results for these filters.</p>'}</div>
+ <div class="card"><h2>Paste an announcement</h2><p class="sub">Manual mode: add a note to this preview. The content is not verified or synced.</p><form onsubmit="hubPaste(event)"><select id="hubpasteMod" class="btn" aria-label="Module">${MODS.map(m=>`<option>${m}</option>`).join('')}</select><textarea id="hubpasteText" class="hubtextarea" placeholder="Paste announcement text here..." required></textarea><button class="btn p" type="submit">Add to sample feed</button></form></div></section>
+ <aside><div class="card hubchat"><h2>Ask about your courses</h2><p class="sub">Optional demo assistant · Answers only from the visible sample feed</p><div class="hubmessages" id="hubmessages" aria-live="polite">${hubMessages.map(z=>`<div class="hubmsg ${z.role==='me'?'me':''}">${esc(z.text)}${z.role==='bot'?'<small>Source: local sample feed, not NTULearn</small>':''}</div>`).join('')}</div><div class="hubchips">${['What is new?','Show SC1004 files','Any deadlines?'].map(s=>`<button onclick="hubAsk(${JSON.stringify(s).replace(/"/g,'&quot;')})">${esc(s)}</button>`).join('')}</div><form class="hubform" onsubmit="hubSend(event)"><input id="hubq" placeholder="Ask about sample course updates" aria-label="Ask about course updates" required><button class="btn p" type="submit">Ask</button></form></div>
+ <div class="card"><h2>How it will work later</h2><p class="sub">Once authorised: detect new announcements → show original links → propose tasks in Inbox → approve changes. Files may be imported into private Library where permitted.</p><a href="#inbox" class="btn">Open Approval Inbox</a></div></aside></div>`;
+}
+function hubRead(id){const x=HUB.find(x=>x.id===id);if(x)x.unread=false;go()}
+function hubProposal(id){const x=HUB.find(x=>x.id===id);if(!x)return;let item=IN.find(i=>i.id===2);if(item)item.s='p';location.hash='#inbox';go();}
+function hubSaveFile(id){const x=HUB.find(x=>x.id===id);if(!x)return;F.unshift([x.title,x.mod,'Course material','Demo reference — no file contents','Not downloaded']);location.hash='#files';go()}
+function hubPaste(e){e.preventDefault();const s=document.getElementById('hubpasteText').value.trim();if(!s)return;const m=document.getElementById('hubpasteMod').value;HUB.unshift({id:Date.now(),type:'ann',mod:m,title:s.slice(0,65)+(s.length>65?'…':''),date:'Added locally',desc:s,origin:'Pasted manually · unverified',unread:true});hubTab='all';hubMod='all';go()}
+function hubAnswer(question){const q=question.toLowerCase();let xs=HUB;if(MODS.some(m=>q.includes(m.toLowerCase())))xs=HUB.filter(x=>q.includes(x.mod.toLowerCase()));if(/file|slide|material|pdf|document/.test(q))xs=xs.filter(x=>x.type==='file');else if(/deadline|due|quiz|exam/.test(q))xs=xs.filter(x=>x.type==='deadline'||x.title.toLowerCase().includes('quiz'));else if(/announce|new|update/.test(q))xs=xs.filter(x=>x.type==='ann'||x.unread);if(!xs.length)return 'No matching items in this local sample. This demo cannot check your real NTULearn account.';return 'From this local sample feed: '+xs.slice(0,4).map(x=>`${x.mod}: ${x.title}`).join('; ')+'. Verify all academic details in the original course source.';}
+function hubAsk(q){hubMessages.push({role:'me',text:q},{role:'bot',text:hubAnswer(q)});go();const el=document.getElementById('hubmessages');if(el)el.scrollTop=el.scrollHeight}
+function hubSend(e){e.preventDefault();const x=document.getElementById('hubq');if(x&&x.value.trim())hubAsk(x.value.trim())}
+const previousV22Go=go;
+go=function(){const r=(location.hash||'#today').slice(1);if(r==='ntulearn'){document.getElementById('v').innerHTML=ntulearn();document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+r));document.getElementById('bd').textContent=IN.filter(i=>i.s==='p').length||'';}else previousV22Go()};
+
+// Hybrid v2.3 dashboard, reuses the existing sample task state.
+today=function(){
+ const d=T.filter(t=>t.date===TODAY),complete=d.filter(t=>t.done).length,total=d.reduce((a,t)=>a+t.min,0),next=AS.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date))[0],alerts=HUB.filter(x=>x.unread).length;
+ const stat=(label,value,foot)=>`<div class="stat"><span class="sub">${label}</span><strong>${value}</strong><small>${foot}</small></div>`;
+ return `<p class="eb">${dn(TODAY)} · Sample week</p><h1>Your academic overview</h1><p class="sub">One place for your revision, classes, upcoming assessments and course updates.</p>
+ <section class="stat4">${stat('Tasks today',d.length,'Example study schedule')}${stat('Study workload',`${Math.floor(total/60)}h ${total%60}m`,'Today’s planned time')}${stat('Next assessment',next?dn(next.date).replace(/^\w+,? /,''):'None',next?next.mod+' '+next.name:'No upcoming assessments')}${stat('New updates',alerts,'Illustrative NTULearn alerts')}</section>
+ <div class="bigcols"><section class="card"><div class="dashline"><h2>Today's study plan</h2><a class="btn" href="#plan">View planner →</a></div>
+ ${d.map(t=>`<label class="dashtask ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="tog(${t.id})"><span class="body"><b>${esc(t.title)}</b><small>${esc(t.mod)} · ${t.min} minutes</small></span><span class="duetag ${t.done?'okt':''}">${t.done?'Done':'To do'}</span></label>`).join('')}
+ <form class="f" onsubmit="add(event)"><input id="nt" placeholder="Add another task for today" required><select id="nm" aria-label="Module">${MODS.map(m=>`<option>${m}</option>`).join('')}</select><button class="btn p">Add task</button></form></section>
+ <div><section class="card"><div class="dashline"><h2>Coming up</h2><a class="btn" href="#assessments">Exams →</a></div>${AS.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5).map(a=>{let days=Math.round((new Date(a.date+'T00:00:00Z')-new Date(TODAY+'T00:00:00Z'))/86400000);return `<div class="due"><div><b>${esc(a.mod)} · ${esc(a.name)}</b><small>${dn(a.date)}${a.time?' · '+a.time:''}</small></div><span class="duetag ${days<=3?'urg':days<=7?'soon':''}">${days===0?'Today':days===1?'Tomorrow':days+' days'}</span></div>`}).join('')}</section>
+ <section class="card"><div class="dashline"><h2>Needs your attention</h2><a class="btn" href="#inbox">Inbox →</a></div><p class="sub">${IN.filter(i=>i.s==='p').length} sample proposals await review.</p><p class="sub" style="margin-top:8px">${alerts} example course updates haven't been marked as read.</p><div class="quickrow"><a class="btn" href="#ntulearn">NTULearn Hub</a><a class="btn" href="#timetable">Timetable</a></div></section></div></div>
+ <p class="sectionhint">Prototype only · All data is simulated. No Supabase, NTULearn, file storage or real AI connection.</p>`;
+};
+const v23go=go;
+go=function(){v23go();const r=(location.hash||'#today').slice(1);if(r==='today'){document.getElementById('v').innerHTML=today()}else if(r==='files'){lst()}};
+go();
+
+/* Mobile navigation, accessible More sheet, and agenda default */
+(function(){
+const icons={today:'▦',plan:'☑',timetable:'▤',ntulearn:'♧',modules:'◎',assessments:'◷',inbox:'✉',files:'▣',settings:'⚙'};
+const labels={today:'Home',plan:'Planner',timetable:'Classes',ntulearn:'NTULearn',modules:'Modules',assessments:'Assessments',inbox:'Approval Inbox',files:'My Files',settings:'Settings'};
+const nav=document.getElementById('nav');
+nav.querySelectorAll('a[href^="#"]').forEach(a=>{const key=a.hash.slice(1); if(icons[key])a.innerHTML='<span class="navico" aria-hidden="true">'+icons[key]+'</span><span class="navlabel">'+labels[key]+'</span>'+(key==='inbox'?'<span class="bd" id="bd">0</span>':'')});
+const trigger=document.createElement('button');trigger.type='button';trigger.className='mobile-more-trigger';trigger.innerHTML='<span class="navico">☰</span><span class="navlabel">More</span>';trigger.setAttribute('aria-label','More sections');trigger.onclick=()=>openMore();nav.appendChild(trigger);
+const secondary=['modules','assessments','inbox','files','settings'];
+document.getElementById('moreLinks').innerHTML=secondary.map(k=>'<a href="#'+k+'"><span>'+icons[k]+'</span>'+labels[k]+'</a>').join('');
+document.getElementById('moreLinks').querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>window.closeMore()));
+const open=()=>document.getElementById('mobileMore').classList.contains('open');
+window.openMore=function(){document.getElementById('mobileScrim').classList.add('open');document.getElementById('mobileMore').classList.add('open');trigger.classList.add('active');document.getElementById('mobileMore').querySelector('button').focus()};
+window.closeMore=function(){document.getElementById('mobileScrim').classList.remove('open');document.getElementById('mobileMore').classList.remove('open');trigger.classList.remove('active')};
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&open())closeMore()});
+window.addEventListener('hashchange',()=>{closeMore(); updateNav()});
+function updateNav(){const current=(location.hash||'#today').slice(1);trigger.classList.toggle('active',secondary.includes(current));nav.querySelectorAll('a[href^="#"]').forEach(a=>a.classList.toggle('on',a.hash==='#'+current))}
+if(window.matchMedia('(max-width:800px)').matches && typeof viewMode!=='undefined' && !location.hash){viewMode='list'}
+updateNav();go();
+})();
+
+// Simulated authentication: fixed sample fields; only a boolean demo marker is saved.
+// No credential verification, account creation, email, network or database connection.
+(function(){
+const root=document.getElementById('authRoot'), ws=document.getElementById('workspace');
+const KEY='aa-reference-v29-demo-session', authRoutes=['signin','signup','forgot','recovery','reset','resetdone','signedout','restoring'];
+let signedIn=false,busy=false,remember=true,pendingRoute='today',restoreTimer;
+const route=()=>location.hash.slice(1)||'today';
+function saved(){if(ReferenceCloud.enabled)return false;try{return localStorage.getItem(KEY)==='demo'||sessionStorage.getItem(KEY)==='demo'}catch(e){return false}}
+function clear(){try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY)}catch(e){}}
+function save(){clear();try{(remember?localStorage:sessionStorage).setItem(KEY,'demo')}catch(e){}}
+const notice='<div class="auth-notice"><b>Interface demo only.</b> Uses a fixed sample account. Do not enter real credentials. No account is created, no email is sent, and nothing connects to Supabase or NTULearn.</div>';
+const email='<label class="auth-field" for="demoEmail">Sample email address</label><input class="auth-input" id="demoEmail" type="email" value="student@example.com" readonly autocomplete="off">';
+function password(id,label){return '<label class="auth-field" for="'+id+'">'+label+'</label><div class="auth-password"><input class="auth-input" id="'+id+'" type="password" value="demo-only" readonly autocomplete="off"><button type="button" data-show="'+id+'" aria-label="Show '+label.toLowerCase()+'">Show</button></div>'}
+function layout(content){return '<div class="auth-layout"><aside class="auth-story"><div class="auth-brand"><span class="lg">A</span>Academic Assistant <small style="font-size:12px;color:#bac8e5">v2.9</small></div><div><h2>A little clarity.<br>A better study day.</h2><p class="story-copy">Your classes, revision and next steps, together in one calm workspace.</p><div class="auth-preview"><small>YOUR WORKSPACE, AT A GLANCE</small><div><span>☑</span> Make room for focused revision</div><div><span>▤</span> See classes and assessments together</div><div><span>✧</span> Review course updates at your pace</div></div></div><footer>Responsive prototype · Desktop, tablet and phone<br>Sample data only · Works offline in one HTML file</footer></aside><div class="auth-panel"><div class="auth-card"><span class="auth-tag">SIMULATED AUTH · LOCAL DEMO</span>'+content+'</div></div></div>'}
+function show(mode){
+ document.body.classList.add('auth-mode');ws.hidden=true;ws.inert=true;root.hidden=false;closeMore();closeAccount();
+ let h='';
+ if(mode==='signup')h='<h1>Create your study space</h1><p class="sub">Preview the account creation experience.</p>'+notice+'<form id="authForm"><label class="auth-field" for="demoName">Sample display name</label><input class="auth-input" id="demoName" value="Demo Student" readonly>'+email+password('demoPass','Sample password')+password('demoConfirm','Confirm sample password')+'<p class="auth-foot">This is a preview, with no terms to accept and no real registration.</p><button class="btn p auth-submit">Create demo account</button><div class="auth-status" role="status"></div></form><p class="auth-foot">Already exploring? <a href="#signin">Sign in</a></p>';
+ else if(mode==='forgot')h='<h1>Forgot your password?</h1><p class="sub">Walk through the recovery experience with our sample account.</p>'+notice+'<form id="authForm">'+email+'<button class="btn p auth-submit">Preview recovery email</button></form><p class="auth-foot"><a href="#signin">← Back to sign in</a></p>';
+ else if(mode==='recovery')h='<div class="auth-success">✉</div><h1>Check your inbox</h1><p class="sub">In a connected app, a recovery link would be sent to your email.</p>'+notice+'<p class="sub">No email was sent to student@example.com. Use the button below to preview the next screen.</p><a class="btn p auth-submit" style="display:grid;place-items:center;text-decoration:none" href="#reset">Preview reset link</a><p class="auth-foot"><a href="#forgot">Try again</a> · <a href="#signin">Back to sign in</a></p>';
+ else if(mode==='reset')h='<h1>Choose a new password</h1><p class="sub">A sample recovery screen, with preset demo fields.</p>'+notice+'<form id="authForm">'+password('demoPass','New sample password')+password('demoConfirm','Confirm sample password')+'<button class="btn p auth-submit">Preview password update</button></form><p class="auth-foot"><a href="#signin">Back to sign in</a></p>';
+ else if(mode==='resetdone')h='<div class="auth-success">✓</div><h1>Recovery preview complete</h1><p class="sub">The password update screen is complete. No password was changed.</p>'+notice+'<a class="btn p auth-submit" style="display:grid;place-items:center;text-decoration:none" href="#signin">Return to sign in</a>';
+ else if(mode==='restoring')h='<div class="spinner" aria-hidden="true"></div><h1>Restoring your workspace</h1><p class="sub" role="status">Opening the sample session saved in this browser…</p>'+notice+'<button class="btn auth-submit" id="cancelRestore">Cancel and sign out</button>';
+ else if(mode==='signedout')h='<div class="auth-success">✓</div><h1>You’re signed out</h1><p class="sub">The demo session marker has been cleared from this browser.</p>'+notice+'<a class="btn p auth-submit" style="display:grid;place-items:center;text-decoration:none" href="#signin">Sign in again</a><p class="auth-foot"><a href="#signup">Explore sign up</a></p>';
+ else h='<h1>Welcome back</h1><p class="sub">A clear view of your academic day starts here.</p>'+notice+'<form id="authForm">'+email+password('demoPass','Sample password')+'<div class="auth-row"><label><input type="checkbox" id="remember" '+(remember?'checked':'')+'>Stay signed in (demo)</label><a href="#forgot">Forgot password?</a></div><button class="btn p auth-submit">Sign in to demo</button><div class="auth-status" role="status"></div></form><p class="auth-foot">New to Academic Assistant? <a href="#signup">Create a demo account</a></p>';
+ root.innerHTML=layout(h);if(ReferenceCloud.enabled)ReferenceCloud.decorateAuth(root,mode);root.querySelectorAll('[data-show]').forEach(b=>b.onclick=()=>{const x=document.getElementById(b.dataset.show);x.type=x.type==='password'?'text':'password';b.textContent=x.type==='password'?'Show':'Hide';b.setAttribute('aria-label',b.textContent+' '+root.querySelector('label[for="'+x.id+'"]').textContent.toLowerCase())});
+ const form=document.getElementById('authForm');if(form)form.onsubmit=e=>{e.preventDefault();if(ReferenceCloud.enabled){void submitTestAuth(mode,form);return;}if(busy)return;if(mode==='forgot'){location.hash='recovery';return}if(mode==='reset'){location.hash='resetdone';return}remember=mode==='signup'?false:document.getElementById('remember').checked;busy=true;form.querySelector('button[type="submit"],.auth-submit').disabled=true;const status=form.querySelector('[role="status"]');if(status)status.textContent=mode==='signup'?'Creating sample workspace…':'Opening sample workspace…';setTimeout(()=>{busy=false;signedIn=true;save();location.hash=pendingRoute;enter()},500)};
+ const cancel=document.getElementById('cancelRestore');if(cancel)cancel.onclick=signout;
+ if(mode!=='restoring'){const heading=root.querySelector('h1');heading.tabIndex=-1;heading.focus({preventScroll:true})}
+}
+function closeAccount(){document.querySelectorAll('.account-pop').forEach(x=>x.hidden=true);document.querySelectorAll('[data-account]').forEach(x=>x.setAttribute('aria-expanded','false'))}
+window.toggleDemoAccount=function(button){const pop=document.getElementById('accountPop');const was=pop.hidden;closeAccount();pop.hidden=!was;button.setAttribute('aria-expanded',String(was));if(was)pop.querySelector('a').focus()};
+function signout(){if(ReferenceCloud.enabled){void ReferenceCloud.signOut().catch(error=>{const note=document.querySelector('.preview-note');if(note)note.textContent=error.message;});return;}clearTimeout(restoreTimer);signedIn=false;busy=false;clear();closeAccount();location.hash='signedout';show('signedout')}
+window.demoSignout=signout;
+const oldBar=bar;bar=function(){oldBar();const b=document.createElement('div');b.className='account-wrap';b.innerHTML='<button class="btn account-button" data-account aria-expanded="false" aria-controls="accountPop" onclick="toggleDemoAccount(this)"><span class="avatar">DS</span>Demo Student ▾</button>';document.getElementById('tb').appendChild(b)};
+const pop=document.createElement('div');pop.id='accountPop';pop.className='account-pop';pop.hidden=true;pop.innerHTML='<b>Demo Student</b><p>student@example.com</p><small>Simulated account · No cloud sync</small><a class="btn" href="#settings" onclick="document.getElementById(\'accountPop\').hidden=true">Account settings</a><button class="btn" onclick="demoSignout()">Sign out of demo</button>';ws.appendChild(pop);
+const top=document.querySelector('.mobile-top');if(top){const b=document.createElement('button');b.className='mobile-account';b.setAttribute('aria-label','Account menu');b.setAttribute('data-account','');b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','accountPop');b.innerHTML='<span class="avatar">DS</span>';b.onclick=()=>toggleDemoAccount(b);top.appendChild(b)}
+const oldSettings=settings;settings=function(){return '<p class="eb">Demo account</p><section class="card"><h2>Demo Student</h2><p class="sub">student@example.com · Simulated account</p><p class="sub" style="margin:12px 0">No real sign-in or cloud sync. The demo session and study records stay in this browser. Study edits save locally in this browser.</p><div class="toolbar"><button class="btn" onclick="demoRestore()">Preview session restoring</button><button class="btn" onclick="demoSignout()">Sign out of demo</button></div></section>'+oldSettings().replace('<span class="pill">Connected</span>','<span class="pill off">Demo · Not connected</span>')};
+const workspaceGo=go;go=function(){const r=route();if(!signedIn){if(!authRoutes.includes(r))pendingRoute=['today','plan','timetable','modules','assessments','ntulearn','files','inbox','settings','semesters'].includes(r)?r:'today';show(authRoutes.includes(r)?r:'signin');return}if(authRoutes.includes(r)){location.hash='today';return}workspaceGo();};
+function enter(){root.hidden=true;ws.hidden=false;ws.inert=false;document.body.classList.remove('auth-mode');bar();if(authRoutes.includes(route()))location.hash=pendingRoute;else go()}
+window.demoRestore=function(){show('restoring');restoreTimer=setTimeout(()=>{signedIn=true;enter()},1300)};
+// More sheet: explicit state, keyboard focus containment, backdrop and Escape close.
+const trigger=document.querySelector('.mobile-more-trigger'),sheet=document.getElementById('mobileMore');let returnFocus;
+trigger.setAttribute('aria-controls','mobileMore');trigger.setAttribute('aria-expanded','false');sheet.setAttribute('role','dialog');sheet.setAttribute('aria-modal','true');sheet.tabIndex=-1;sheet.inert=true;
+window.openMore=function(){if(!signedIn)return;closeAccount();returnFocus=document.activeElement;sheet.inert=false;document.getElementById('mobileScrim').classList.add('open');sheet.classList.add('open');document.body.classList.add('more-open');trigger.setAttribute('aria-expanded','true');document.querySelector('main').inert=true;document.getElementById('nav').inert=true;if(top)top.inert=true;sheet.querySelector('button').focus()};
+window.closeMore=function(){const was=sheet.classList.contains('open');document.getElementById('mobileScrim').classList.remove('open');sheet.classList.remove('open');sheet.inert=true;document.body.classList.remove('more-open');trigger.setAttribute('aria-expanded','false');document.querySelector('main').inert=false;document.getElementById('nav').inert=false;if(top)top.inert=false;if(was&&returnFocus)returnFocus.focus()};
+// Replace original click listeners, which captured the old close handler.
+document.querySelectorAll('#moreLinks a').forEach(a=>{const clone=a.cloneNode(true);a.replaceWith(clone);clone.addEventListener('click',()=>closeMore())});
+sheet.insertAdjacentHTML('beforeend','<button class="btn account-mobile-only" style="width:100%;margin-top:16px" onclick="closeMore();demoSignout()">Sign out of demo</button>');
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeMore();closeAccount()}if(e.key==='Tab'&&sheet.classList.contains('open')){const xs=Array.from(sheet.querySelectorAll('button,a')).filter(x=>x.getClientRects().length);const first=xs[0],last=xs[xs.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+addEventListener('click',e=>{if(!e.target.closest('.account-pop,[data-account]'))closeAccount()});
+matchMedia('(max-width:800px)').addEventListener('change',()=>closeMore());
+if(matchMedia('(max-width:800px)').matches)viewMode='list';
+// Inside the original auth closure. Local mode retains the original demo flow.
+async function submitTestAuth(mode,form){
+ if(busy)return;busy=true;const button=form.querySelector('.auth-submit');if(button)button.disabled=true;
+ const status=form.querySelector('[role="status"]');if(status)status.textContent='Contacting the test project…';
+ try{const message=await ReferenceCloud.submit(mode,form);if(message){show(mode==='forgot'?'recovery':'signin');const s=root.querySelector('[role="status"]');if(s)s.textContent=message;}}
+ catch(error){const s=root.querySelector('[role="status"]')||root.querySelector('.sub');if(s)s.textContent=error.message;}
+ finally{busy=false;const b=root.querySelector('.auth-submit');if(b&&(!ReferenceCloud.recovering||mode==='reset'))b.disabled=false;}
+}
+window.ReferenceAuth={
+ loading(){signedIn=false;show('restoring');},
+ open(){signedIn=true;busy=false;if(['signin','signup','forgot','reset','signedout','restoring'].includes(route()))location.hash='settings';enter();},
+ closed(){signedIn=false;busy=false;clearTimeout(restoreTimer);closeAccount();show('signedout');},
+ recovery(){signedIn=false;busy=false;show('reset');},
+ error(error){if(ws.hidden){signedIn=false;busy=false;show('signin');const s=root.querySelector('[role="status"]');if(s)s.textContent=error.message;}},
+ signedOut(){signedIn=false;busy=false;show('signin');}
+};
+
+if(saved()){const r=route();pendingRoute=authRoutes.includes(r)?'today':r;show('restoring');restoreTimer=setTimeout(()=>{signedIn=true;location.hash=pendingRoute;enter()},1100)}else go();
+})();
+
+// v2.9: each semester owns its module enrolments and every academic record.
+(function(){
+const clone=x=>JSON.parse(JSON.stringify(x));
+const years=[{id:'y26',start:2026,label:'AY2026/27'},{id:'y27',start:2027,label:'AY2027/28'}];
+let studyYear='Year 1';const lastByYear={};
+const terms=[{id:'s1',yearId:'y26',label:'Semester 1',name:'AY2026/27 · Semester 1',start:'2026-08-10',end:'2026-12-04',weeks:13,date:TODAY,mods:MODS,tasks:T,classes:C,topics:TP,inbox:IN,files:F,assessments:AS,timetable:CL,hub:HUB,imported:false},
+{id:'s2',yearId:'y26',label:'Semester 2',name:'AY2026/27 · Semester 2',start:'2027-01-11',end:'2027-05-07',weeks:13,date:'2027-01-18',mods:['SC1002','SC1003','MH1810','CC0006'],tasks:[mk('2027-01-18','SC1002','Practise linked lists and stacks',45),mk('2027-01-18','MH1810','Revise differentiation exercises',30),mk('2027-01-19','SC1003','Work through processor examples',50)],classes:[['2027-01-18','SC1002','Tutorial','10:00–11:00'],['2027-01-19','SC1003','Lecture','14:00–16:00']],topics:{SC1002:[['Linked lists',1,0],['Stacks and queues',0,0]],MH1810:[['Differentiation',2,2]]},inbox:[{id:201,t:'semester',s:'p',mod:'SC1002',title:'Practise stacks before Tutorial 2',date:'2027-01-19',min:35}],files:[['SC1002_Week2_Notes.pdf','SC1002','Notes','Semester 2 sample','240 KB'],['MH1810_Practice.pdf','MH1810','Tutorial','Semester 2 sample','180 KB']],assessments:[{mod:'SC1002',name:'Sample CA1',date:'2027-02-05',time:'10:00',type:'Quiz'},{mod:'MH1810',name:'Sample midterm',date:'2027-02-19',time:'14:00',type:'Test'}],timetable:[{d:'Mon',at:10,mod:'SC1002',kind:'Tutorial',range:'10:00–11:00',venue:'Sample room A'},{d:'Tue',at:14,mod:'SC1003',kind:'Lecture',range:'14:00–16:00',venue:'Sample lecture theatre'}],hub:[{id:201,type:'ann',mod:'SC1002',title:'Week 2 tutorial preparation',date:'18 Jan 2027',desc:'Sample update for Semester 2 only. Review stacks before the next tutorial.',origin:'Semester 2 sample announcement',unread:true},{id:202,type:'file',mod:'MH1810',title:'Differentiation practice.pdf',date:'18 Jan 2027',desc:'Illustrative Semester 2 course material. No actual file bytes.',origin:'Semester 2 sample file',unread:true}],imported:false}];
+terms.push({id:'s3',yearId:'y27',label:'Semester 1',name:'AY2027/28 · Semester 1',start:'2027-08-09',end:'2027-12-03',weeks:13,date:'2027-08-16',mods:['SC1002','SC2002'],tasks:[mk('2027-08-16','SC2002','Sketch an object-oriented design',40)],classes:[['2027-08-16','SC2002','Lab','10:00–12:00']],topics:{SC1002:[['Linked lists',0,0]],SC2002:[['Classes and objects',1,0]]},inbox:[],files:[['SC2002_Design_Notes.pdf','SC2002','Notes','AY2027/28 sample','180 KB']],assessments:[{mod:'SC2002',name:'Sample design checkpoint',date:'2027-09-03',time:'10:00',type:'Project'}],timetable:[{d:'Mon',at:10,mod:'SC2002',kind:'Lab',range:'10:00–12:00',venue:'Sample lab'}],hub:[{id:301,type:'ann',mod:'SC2002',title:'Project briefing',date:'16 Aug 2027',desc:'Sample course announcement for AY2027/28 only.',origin:'AY2027/28 sample',unread:true}],imported:false});
+let active='s1',current='s1',message='';
+const yearOf=t=>years.find(y=>y.id===t.yearId);
+const yearStatus=y=>y.id===yearOf(terms.find(t=>t.id===current)).id?'Current academic year':y.start<yearOf(terms.find(t=>t.id===current)).start?'Past academic year':'Upcoming academic year';
+
+const term=()=>terms.find(x=>x.id===active);
+function status(t){return t.id===current?'Current':t.start<terms.find(x=>x.id===current).start?'Past':'Upcoming'}
+function capture(){Object.assign(term(),{date:TODAY,mods:MODS,tasks:T,classes:C,topics:TP,inbox:IN,files:F,assessments:AS,timetable:CL,hub:HUB,imported})}
+function load(id){capture();lastByYear[term().yearId]=active;active=id;lastByYear[term().yearId]=id;const t=term();TODAY=t.date;MODS=t.mods;T=t.tasks;C=t.classes;TP=t.topics;IN=t.inbox;F=t.files;AS=t.assessments;CL=t.timetable;HUB=t.hub;imported=t.imported;mod=null;q='';fm='';filePreview='';hubTab='all';hubMod='all';hubMessages=[{role:'bot',text:'Ask about '+t.name+' sample updates. No live NTULearn connection.'}];pendingClass={d:'Fri',at:11,mod:MODS[0]||'',kind:'Tutorial',range:'11:00–12:00',venue:'Sample room · review required'};}
+window.selectSemester=function(id){if(!terms.some(x=>x.id===id))return;load(id);message='Switched to '+term().name;go()};
+window.selectAcademicYear=function(id){const xs=terms.filter(t=>t.yearId===id);if(!xs.length)return;const target=xs.find(t=>t.id===lastByYear[id])||xs.find(t=>t.id===current)||xs[0];selectSemester(target.id)};
+window.makeCurrent=function(id){current=id;selectSemester(id);message='Current semester saved in this browser.';go()};
+
+function academicSelectors(){const t=term();return '<div class="year-select"><label for="academicYearSelect">Academic year</label><select id="academicYearSelect" onchange="selectAcademicYear(this.value)">'+years.map(y=>'<option value="'+y.id+'" '+(y.id===t.yearId?'selected':'')+'>'+esc(y.label)+'</option>').join('')+'</select></div><div class="year-select"><label for="semesterSelect">Semester / term</label><select id="semesterSelect" onchange="selectSemester(this.value)">'+terms.filter(x=>x.yearId===t.yearId).map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+esc(x.label)+' · '+status(x)+'</option>').join('')+'</select></div><div class="semester-meta"><span class="semester-status">'+status(t)+'</span>'+MODS.length+' modules<br>Sample week of '+esc(dn(TODAY))+'</div><a class="btn semester-link" href="#semesters">Manage years &amp; semesters →</a>';}
+function yearGroups(){return years.map(y=>'<section class="year-group"><div class="year-heading"><div><p class="eb">'+esc(yearStatus(y))+'</p><h2>'+esc(y.label)+'</h2></div><button class="btn" onclick="selectAcademicYear(\''+y.id+'\')">View academic year</button></div><div class="term-grid">'+terms.filter(t=>t.yearId===y.id).map(t=>'<section class="card term-card '+(t.id===active?'selected':'')+'"><span class="semester-status">'+status(t)+'</span>'+(t.id===active?'<span class="tag">Viewing</span>':'')+'<h3>'+esc(t.label)+'</h3><p class="sub">'+esc(t.start)+' → '+esc(t.end)+'<br>'+t.weeks+' teaching weeks · '+t.mods.length+' module enrolments</p><div class="term-codes">'+codes(t)+'</div><div class="toolbar"><button class="btn" onclick="selectSemester(\''+t.id+'\')">View semester</button>'+(t.id!==current?'<button class="btn p" onclick="makeCurrent(\''+t.id+'\')">Set as current</button>':'')+'</div></section>').join('')+'</div></section>').join('')}
+function yearForm(){return '<section class="card"><h2>Create an academic year</h2><p class="sub">A year groups semesters and special terms. New workspaces start empty.</p><form class="term-form" style="margin-top:18px" onsubmit="createAcademicYear(event)"><label>Starting calendar year<input type="number" id="academicStart" min="2000" max="2098" value="2028" required></label><div class="term-note">Example: 2028 creates AY2028/29.<br>Dates are illustrative and can be set when adding further terms.</div><div class="wide"><label class="term-check"><input type="checkbox" checked disabled>Semester 1 (included)</label><label class="term-check"><input type="checkbox" id="yearSem2" checked>Include Semester 2</label><label class="term-check"><input type="checkbox" id="yearSpecial">Include Special Term</label></div><p class="term-toast wide" id="yearError" role="alert"></p><button class="btn p wide">Create academic year</button></form></section>'}
+function studyProfile(){return '<section class="card"><h2>Your year of study</h2><p class="sub">This belongs to your profile. Switching academic years does not change it.</p><label class="study-field" for="studyYearSelect">Year of study<select id="studyYearSelect" class="btn" onchange="setStudyYear(this.value)">'+['Year 1','Year 2','Year 3','Year 4','Year 5+','Postgraduate','Other'].map(x=>'<option '+(x===studyYear?'selected':'')+'>'+x+'</option>').join('')+'</select></label></section>'}
+window.setStudyYear=function(value){if(!['Year 1','Year 2','Year 3','Year 4','Year 5+','Postgraduate','Other'].includes(value))return;studyYear=value;message='Profile year of study updated to '+value+'. Academic records are unchanged.';go()};
+window.createAcademicYear=function(e){e.preventDefault();const y=Number(document.getElementById('academicStart').value),err=document.getElementById('yearError');if(!Number.isInteger(y)||y<2000||y>2098){err.textContent='Enter a starting year from 2000 to 2098.';return}if(years.some(x=>x.start===y)){err.textContent='This academic year already exists.';return}const id='y'+y,label='AY'+y+'/'+String(y+1).slice(-2);years.push({id,start:y,label});const labels=['Semester 1'];if(document.getElementById('yearSem2').checked)labels.push('Semester 2');if(document.getElementById('yearSpecial').checked)labels.push('Special Term');let first;labels.forEach((name,i)=>{const start=name==='Semester 1'?y+'-08-09':name==='Semester 2'?(y+1)+'-01-10':(y+1)+'-05-10',end=name==='Semester 1'?y+'-12-03':name==='Semester 2'?(y+1)+'-05-07':(y+1)+'-07-20';const t={id:'s'+(terms.length+1),yearId:id,label:name,name:label+' · '+name,start,end,weeks:name==='Special Term'?6:13,date:start,mods:[],tasks:[],classes:[],topics:{},inbox:[],files:[],assessments:[],timetable:[],hub:[],imported:false};terms.push(t);if(i===0)first=t.id});load(first);message='Created '+label+' with '+labels.length+' empty term workspaces. Current semester and year of study are unchanged.';go()};
+function codes(t){return t.mods.map(m=>'<span class="tag">'+esc(m)+'</span>').join('')||'<span class="muted">No modules yet</span>'}
+function manager(){return '<p class="eb">Your academic journey</p><h1>Your academic years, together.</h1><p class="sub">Choose an academic year, then a semester. Each workspace keeps its own modules, classes, files and progress.</p><p class="term-note">Prototype only · All semesters and edits save in this browser and survive reload. The sample week changes with the selected semester; dates are illustrative, not an official NTU calendar.</p><div class="term-toast" role="status">'+esc(message)+'</div>'+yearGroups()+yearForm()+'<section class="card"><h2>Create a semester</h2><p class="sub">Start empty, or bring selected modules and sample materials forward. Tasks, deadlines and progress always start fresh.</p><form id="semesterForm" class="term-form" style="margin-top:20px" onsubmit="createSemester(event)"><label>Academic year<select id="termYear" onchange="updateSemesterDates()">'+years.map(y=>'<option value="'+y.id+'" '+(y.id===term().yearId?'selected':'')+'>'+esc(y.label)+'</option>').join('')+'</select></label><label>Semester / term name<input id="termName" maxlength="40" placeholder="e.g. Semester 2 or Special Term" required></label><label>Start date<input id="termStart" type="date" value="'+yearOf(term()).start+'-08-09" required></label><label>End date<input id="termEnd" type="date" value="'+yearOf(term()).start+'-12-03" required></label><label>Teaching weeks<input id="termWeeks" type="number" min="1" max="52" value="13" required></label><label>Copy from<select id="termSource" onchange="updateCopyChoices()">'+terms.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></label><div class="wide"><b>Select modules to copy (optional)</b><div id="copyChoices">'+copyChoices(active)+'</div><label class="term-check"><input type="checkbox" id="copyFiles">Also copy sample library references for selected modules</label></div><label class="wide">Additional module codes, separated by commas<input id="termModules" maxlength="300" placeholder="SC1002, MH1810"></label><label class="term-check wide"><input type="checkbox" id="termCurrent">Make this my current semester</label><p class="term-toast wide" id="termError" role="alert"></p><button class="btn p wide">Create semester</button></form></section><section class="card"><h2>Modules in '+esc(term().name)+'</h2><p class="sub">A repeated module is a separate enrolment, with its own progress and assessments.</p><div class="term-codes">'+codes(term())+'</div><form class="f" onsubmit="addSemesterModule(event)"><input id="newModule" placeholder="Module code, e.g. SC1002" aria-label="New module code" required maxlength="16" pattern="[A-Za-z0-9_-]{2,16}"><button class="btn">Add module to this semester</button></form></section>';}
+function copyChoices(id){return terms.find(x=>x.id===id).mods.map(m=>'<label class="term-check"><input type="checkbox" name="copyModule" value="'+esc(m)+'">'+esc(m)+'</label>').join('')||'<p class="sub">This semester has no modules to copy.</p>'}
+window.updateCopyChoices=()=>document.getElementById('copyChoices').innerHTML=copyChoices(document.getElementById('termSource').value);
+window.updateSemesterDates=function(){const y=years.find(x=>x.id===document.getElementById('termYear').value);document.getElementById('termStart').value=y.start+'-08-09';document.getElementById('termEnd').value=y.start+'-12-03'};
+window.createSemester=function(e){e.preventDefault();const label=document.getElementById('termName').value.trim(),yearId=document.getElementById('termYear').value,year=years.find(y=>y.id===yearId),name=(year?year.label:'')+' · '+label,start=document.getElementById('termStart').value,end=document.getElementById('termEnd').value;const err=document.getElementById('termError');if(!label||!year){err.textContent='Enter a semester name.';return}if(end<start){err.textContent='End date must be on or after the start date.';return}if(terms.some(t=>t.yearId===yearId&&t.label.toLowerCase()===label.toLowerCase())){err.textContent='That term already exists in this academic year. Choose a different name.';return}if(start<year.start+'-08-01'||end>(year.start+1)+'-07-31'){err.textContent='For this demo, term dates must fall within August to July of the selected academic year.';return}const extra=document.getElementById('termModules').value.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);if(extra.some(x=>!/^[-A-Z0-9_]{2,16}$/.test(x))){err.textContent='Use module codes of 2–16 letters, numbers, dashes or underscores.';return}const selected=Array.from(document.querySelectorAll('[name="copyModule"]:checked')).map(x=>x.value),source=terms.find(t=>t.id===document.getElementById('termSource').value),copy=document.getElementById('copyFiles').checked,id='s'+(terms.length+1),isCurrent=document.getElementById('termCurrent').checked;const t={id,yearId,label,name,start,end,weeks:Number(document.getElementById('termWeeks').value),date:start,mods:[...new Set([...selected,...extra])],tasks:[],classes:[],topics:{},inbox:[],files:copy?clone(source.files.filter(f=>selected.includes(f[1]))):[],assessments:[],timetable:[],hub:[],imported:false};terms.push(t);if(isCurrent)current=id;load(id);message='Created '+name+'. Tasks, assessments and topic progress start fresh.';go()};
+window.addSemesterModule=function(e){e.preventDefault();const el=document.getElementById('newModule'),code=el.value.trim().toUpperCase();if(!/^[-A-Z0-9_]{2,16}$/.test(code))return;if(!MODS.includes(code))MODS.push(code);message=code+' is enrolled in '+term().name;go()};
+const settingsBase=settings;settings=function(){const existing=settingsBase().replace("<p class=\"eb\">Settings</p><h1>Connections and preferences</h1><br>",'').replace("<div class=\"card\"><h2>Term</h2><div class=\"set\"><span>Current semester (sample)<br><small class=\"sub\">Start date, teaching weeks and recess are set here</small></span><button class=\"btn\">Edit</button></div></div>",'');return '<p class="eb">Preferences</p><h1>Settings</h1><p class="sub" style="margin-bottom:22px">Manage your academic workspace and account in one place.</p><section class="card"><h2>Academic year &amp; semester</h2><p class="sub">Choose which semester’s records to view across the app. These controls stay here in Settings.</p><div class="semester-bar settings-semester" style="margin-top:18px">'+academicSelectors()+'</div><p class="term-note"><b>Viewing:</b> '+esc(term().name)+'<br><b>Current semester:</b> '+esc(terms.find(t=>t.id===current).name)+'<br>Switching the view keeps all records separate. Use Manage years &amp; semesters to create terms or change the current semester.</p>'+(active!==current?'<button class="btn" style="margin-top:12px" onclick="selectSemester(\''+current+'\')">Return to current semester</button>':'')+'<div class="term-toast" role="status">'+esc(message)+'</div></section>'+studyProfile()+existing};
+
+const dashboardBase=today;today=function(){let h=dashboardBase();if(!MODS.length)h=h.replace(/<form class="f"[\s\S]*?<\/form>/,'<p class="term-note">Add modules before creating study tasks. <a href="#settings">Set up this semester in Settings →</a></p>');if(!T.some(t=>t.date===TODAY))h=h.replace('<form class="f"','<p class="sub" style="margin:20px 0">No study tasks for this sample day.</p><form class="f"');return h};
+const oldAssessments=assessments;assessments=function(){return oldAssessments()+(!AS.length?'<section class="card term-empty">No assessments in this semester yet.</section>':'')};
+const oldTimetable=timetable;timetable=function(){return oldTimetable()+(!CL.length?'<section class="card term-empty">No classes in this semester yet.</section>':'')};
+const originalInbox=inbox;inbox=function(){if(active==='s1'&&!ReferenceCloud.enabled)return '<div class="term-note">All proposals below belong to '+esc(term().name)+'.</div>'+originalInbox();return '<p class="eb">'+esc(term().name)+'</p><h1>Needs your decision</h1><p class="sub">Proposals apply only to this semester.</p><br>'+ (IN.map(i=>'<section class="card">'+chip(i.mod)+'<h2>'+esc(i.title)+'</h2><p class="sub">'+esc(i.date)+' · '+i.min+' min · '+esc(term().name)+'</p><div class="toolbar">'+(i.s==='p'?'<button class="btn p" onclick="approveSemesterProposal('+i.id+')">Approve for this semester</button><button class="btn" onclick="rejectSemesterProposal('+i.id+')">Dismiss</button>':'<span class="ok">'+(i.s==='a'?'Applied to this semester':'Dismissed')+'</span>')+'</div></section>').join('')||'<section class="card term-empty">No proposals for this semester.</section>')};
+window.approveSemesterProposal=function(id){const i=IN.find(x=>x.id===id);if(!i||i.s!=='p')return;if(i.class){CL.push(clone(i.class));const day=sh(TODAY,4);C.push([day,i.mod,i.class.kind,i.class.range]);imported=true}else T.push(mk(i.date,i.mod,i.title,i.min));i.s='a';go()};
+window.rejectSemesterProposal=function(id){const i=IN.find(x=>x.id===id);if(i)i.s='r';go()};
+hubProposal=function(id){const x=HUB.find(x=>x.id===id);if(!x)return;if(active==='s1'&&!ReferenceCloud.enabled){IN.find(x=>x.id===2).s='p'}else IN.push({id:Date.now(),t:'semester',s:'p',mod:x.mod,title:'Review: '+x.title,date:TODAY,min:30});location.hash='inbox';go()};
+const oldImport=showImport;showImport=function(){if(!MODS.length){location.hash='settings';return}if(active==='s1'){oldImport();return}IN.push({id:Date.now(),t:'semester',s:'p',mod:MODS[0],title:'Sample timetable import — review one class',date:sh(TODAY,4),min:60,class:{d:'Fri',at:11,mod:MODS[0],kind:'Tutorial',range:'11:00–12:00',venue:'Sample room · demo'}});location.hash='inbox';go()};
+demoUpload=function(){if(!MODS.length){location.hash='settings';return}F.unshift(['Sample_'+MODS[0]+'_upload.pdf',MODS[0],'Notes','Local sample reference','120 KB']);go()};
+// Keep semester management behind the existing simulated sign-in gate.
+const gatedGo=go;go=function(){gatedGo();if(document.getElementById('workspace').hidden)return;capture();if(location.hash==='#semesters'){document.getElementById('v').innerHTML='<a href="#settings" class="settings-back">← Back to Settings</a><p class="crumb">Settings / Academic years &amp; semesters</p>'+manager();document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#settings'));document.querySelector('.mobile-more-trigger').classList.add('active')}else if(location.hash==='#settings'){document.getElementById('v').innerHTML=settings()}};
+if(ReferenceCloud.enabled){
+// Inside the original semester closure. No page renderer or stylesheet is replaced.
+const testCapture=capture;
+capture=function(){testCapture();term().messages=clone(hubMessages);};
+const testLoad=load;
+load=function(id){testLoad(id);if(term().messages)hubMessages=clone(term().messages);};
+let cloudReady=false,cloudFailure='';
+function testSnapshot(){capture();return clone({years,terms,active,current,studyYear,n,lastByYear,theme:document.documentElement.dataset.theme||null});}
+function testHydrate(data){
+ years.splice(0,years.length,...data.years);terms.splice(0,terms.length,...data.terms);active=data.active;current=data.current;studyYear=data.studyYear;n=data.n;
+ Object.keys(lastByYear).forEach(key=>delete lastByYear[key]);Object.assign(lastByYear,data.lastByYear||{});
+ const t=term();TODAY=t.date;MODS=t.mods;T=t.tasks;C=t.classes;TP=t.topics;IN=t.inbox;F=t.files;AS=t.assessments;CL=t.timetable;HUB=t.hub;imported=!!t.imported;hubMessages=clone(t.messages||[]);
+ for(const t of terms)for(const task of t.tasks)n=Math.max(n,task.id);
+ mod=null;q='';fm='';filePreview='';hubTab='all';hubMod='all';
+}
+function testStatus(state){
+ const note=document.querySelector('.preview-note');if(!note)return;
+ const labels={loading:'Loading test workspace',saving:'Saving to test project',saved:'Saved to test project',error:'Changes need review'};
+ note.setAttribute('role','status');note.setAttribute('aria-live','polite');note.dataset.saveState=state;
+ note.innerHTML='<strong>v2.9 · '+esc(labels[state]||state)+'</strong> · NTULearn access, AI and image extraction are not connected.'+(cloudFailure?'<br><span class="notice">'+esc(cloudFailure)+'</span> <button class="btn" onclick="exportReferenceWorkspace()">Export this tab’s work</button>':'');
+}
+function viewKey(user){return 'aa-reference-staging-view:'+ReferenceCloud.config.supabaseUrl+':'+user.id;}
+function restoreView(data,user){document.documentElement.removeAttribute('data-theme');try{const p=JSON.parse(localStorage.getItem(viewKey(user))||'null');if(!p)return data;if(data.terms.some(t=>t.id===p.active))data.active=p.active;data.lastByYear=Object.fromEntries(Object.entries(p.lastByYear||{}).filter(([year,id])=>data.terms.some(t=>t.id===id&&t.yearId===year)));if(['light','dark'].includes(p.theme))document.documentElement.dataset.theme=p.theme;}catch{}return data;}
+function cloudChanged(){if(cloudReady){const data=testSnapshot();if(ReferenceCloud.user)try{localStorage.setItem(viewKey(ReferenceCloud.user),JSON.stringify({active:data.active,lastByYear:data.lastByYear,theme:data.theme}));}catch{}ReferenceCloud.bridge?.changed(data);}}
+const cloudGo=go;go=function(){cloudGo();if(!document.getElementById('workspace').hidden){ReferenceCloud.decorateWorkspace();queueMicrotask(cloudChanged);}};
+const testSettings=settings;settings=function(){let h=testSettings();const email=ReferenceCloud.user?.email||'';return h.replaceAll('Demo Student','Your test account').replaceAll('student@example.com',esc(email)).replaceAll('Demo account','Test account').replaceAll('Simulated account','Separate test project').replace('No real sign-in or cloud sync. The demo session and study records stay in this browser. Study edits save locally in this browser.','Signed in to the separate test project. Confirmed academic changes are saved to that project.').replaceAll('Sign out of demo','Sign out').replace('Current semester updated for this demo session.','Current semester updated.').replace('Current semester saved in this browser.','Current semester saved to the test project.');};
+// These controls retain their positions and explain the integration that is not yet available.
+window.demoRestore=function(){if(ReferenceCloud.bridge?.pending||ReferenceCloud.bridge?.blocked){cloudFailure='Finish saving or export unsaved work before reloading the test workspace.';testStatus('error');return;}if(ReferenceCloud.user)void ReferenceCloud.bridge.open(ReferenceCloud.user);};
+showImport=function(){cloudFailure='Timetable-image extraction is not connected in this test build. No classes were imported.';testStatus('error');};
+demoUpload=function(){cloudFailure='Actual file upload is not connected in this test build. No file was uploaded.';testStatus('error');};
+window.exportReferenceWorkspace=function(){const blob=new Blob([JSON.stringify({schemaVersion:1,exportedAt:new Date().toISOString(),reference:'v2.9',data:testSnapshot()},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Academic_Assistant_Test_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+document.addEventListener('click',event=>{const b=event.target.closest('button');if(b&&b.textContent.trim()==='Export'&&location.hash==='#settings')exportReferenceWorkspace();});
+for(const type of ['click','change','submit'])document.addEventListener(type,()=>queueMicrotask(cloudChanged));
+addEventListener('beforeunload',event=>{if(ReferenceCloud.bridge?.pending){event.preventDefault();event.returnValue='';}});
+void ReferenceCloud.start({
+ loading(){cloudReady=false;cloudFailure='';ReferenceAuth.loading();},
+ loaded(data,user){testHydrate(restoreView(data,user));cloudReady=true;cloudFailure='';ReferenceAuth.open();testStatus('saved');},
+ error(error){cloudFailure=error.message;ReferenceAuth.error(error);testStatus('error');},
+ status: testStatus,
+ closed(){cloudReady=false;ReferenceAuth.closed();},
+ recovery(){cloudReady=false;ReferenceAuth.recovery();},
+ signedOut(){cloudReady=false;ReferenceAuth.signedOut();}
+});
+
+// In the semester closure. Uses the reference toolbar, cards and file rows.
+let assetState={key:'',rows:[],loading:false,error:'',details:null,deleteId:null},assetBusy=false;
+const assetKey=()=>ReferenceCloud.user?.id+':'+active;
+const assetError=e=>['PGRST205','42P01'].includes(e?.code)?'Private file storage setup is pending. Your study records are unaffected.':e?.message||'File operation failed. Please try again.';
+async function assetLibrary(){return new AcademicFiles.Library(await ReferenceCloud.client());}
+function assetSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';}
+function resetAssetState(){if(assetState.key!==assetKey())assetState={key:assetKey(),rows:[],loading:false,error:'',details:null,deleteId:null};}
+function renderAssetList(){
+ resetAssetState();const el=document.getElementById('fl');if(!el)return;
+ if(assetState.loading){el.innerHTML='<p class="sub" role="status">Loading files…</p>';return;}
+ const rows=assetState.rows.filter(f=>(!fm||f.module===fm)&&f.name.toLowerCase().includes(q.toLowerCase()));
+ el.innerHTML=(assetState.error?'<p class="notice" role="alert">'+esc(assetState.error)+'</p>':'')+rows.map(f=>'<div class="fileitem"><div>'+chip(f.module)+'<b>'+esc(f.name)+'</b><small>'+esc(assetSize(f.bytes))+' · Private upload</small></div><div class="file-actions"><button class="btn" onclick="assetDetails(\''+f.id+'\')">Details</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDownload(\''+f.id+'\')">Download</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDeletePrompt(\''+f.id+'\')">Delete</button></div></div>').join('')+(!rows.length&&!assetState.error?'<p class="sub">'+(assetState.rows.length?'No files match.':'No files uploaded in this semester yet.')+'</p>':'');
+}
+async function fetchAssets(force=false){
+ resetAssetState();if(assetState.loading||assetState.fetched&&!force)return;const state=assetState,owner=ReferenceCloud.user?.id,semester=active;if(!owner)return;
+ state.loading=true;state.error='';renderAssetList();
+ try{state.rows=await (await assetLibrary()).list(owner,semester);state.fetched=true;}catch(error){state.error=assetError(error);state.fetched=true;}finally{state.loading=false;if(assetState===state&&assetKey()===state.key)renderAssetList();}
+}
+files=function(){
+ resetAssetState();const details=assetState.rows.find(x=>x.id===assetState.details),deleting=assetState.rows.find(x=>x.id===assetState.deleteId);
+ return '<p class="eb">Library</p><h1>Your study files</h1><p class="sub">Private files organised by module in this semester.</p><div class="toolbar"><input class="sq" style="max-width:250px" placeholder="Search filename" aria-label="Filter files" value="'+esc(q)+'" oninput="q=this.value;lst()"><select class="btn" aria-label="Filter module" onchange="fm=this.value;lst()"><option value="">All modules</option>'+MODS.map(m=>'<option '+(m===fm?'selected':'')+'>'+esc(m)+'</option>').join('')+'</select><button class="btn p" onclick="document.getElementById(\'assetUploadForm\').hidden=false">Upload file</button><button class="btn" onclick="refreshAssets()" '+(assetBusy?'disabled':'')+'>Refresh files</button></div><div class="card" id="fl" aria-live="polite"></div>'+
+ '<section class="card" id="assetUploadForm" hidden><h2>Upload a file</h2>'+(!MODS.length?'<p class="sub">Add a module in Settings before uploading a file.</p>':'<form class="term-form" onsubmit="assetUpload(event)"><label>Module<select id="assetModule" required>'+MODS.map(m=>'<option>'+esc(m)+'</option>').join('')+'</select></label><label>File<input id="assetInput" type="file" accept=".pdf,.txt,.md,.csv,.png,.jpg,.jpeg,.webp,.docx,.pptx,.xlsx,.zip" required></label><p class="sub wide">Up to 10 MB. PDF, text, CSV, images, Office documents or ZIP.</p><p id="assetUploadStatus" class="wide" role="status"></p><button class="btn p" '+(assetBusy?'disabled':'')+'>Upload</button><button type="button" class="btn" onclick="document.getElementById(\'assetUploadForm\').hidden=true">Cancel</button></form>')+'</section>'+
+ (details?'<section class="card"><h2>File details</h2><p><b>'+esc(details.name)+'</b></p><p class="sub">'+esc(details.module)+' · '+esc(assetSize(details.bytes))+'<br>Uploaded '+esc(new Date(details.created_at).toLocaleString())+'</p><button class="btn" onclick="assetDetails(null)">Close</button></section>':'')+
+ (deleting?'<section class="card" role="alert"><h2>Delete this file?</h2><p>'+esc(deleting.name)+'</p><p class="sub">This removes the stored file and its library entry.</p><button class="btn" onclick="assetRemove(\''+deleting.id+'\')" '+(assetBusy?'disabled':'')+'>Delete file</button> <button class="btn" onclick="assetDeletePrompt(null)">Cancel</button></section>':'');
+};
+lst=function(){renderAssetList();void fetchAssets();};
+window.refreshAssets=function(){void fetchAssets(true);};
+window.assetDetails=function(id){resetAssetState();assetState.details=id;go();};
+window.assetDeletePrompt=function(id){resetAssetState();assetState.deleteId=id;go();};
+window.assetUpload=async function(event){
+ event.preventDefault();if(assetBusy)return;const file=document.getElementById('assetInput').files[0],module=document.getElementById('assetModule').value,status=document.getElementById('assetUploadStatus'),state=assetState,owner=ReferenceCloud.user?.id,semester=active;
+ assetBusy=true;status.textContent='Uploading…';const button=event.target.querySelector('button');button.disabled=true;
+ try{
+  if(!cloudReady||ReferenceCloud.bridge?.blocked)throw Error('Reload the saved workspace before uploading.');
+  await ReferenceCloud.bridge?.queue;if(ReferenceCloud.bridge?.blocked)throw Error('Your workspace could not save. Resolve that before uploading.');
+  await (await assetLibrary()).upload(owner,semester,module,file);
+  if(assetState===state&&assetKey()===state.key){state.fetched=false;state.error='';state.details=null;go();}
+ }catch(error){if(assetKey()===state.key)status.textContent=assetError(error);}finally{assetBusy=false;button.disabled=false;if(assetKey()===state.key)renderAssetList();}
+};
+window.assetDownload=async function(id){
+ if(assetBusy)return;const state=assetState,row=state.rows.find(f=>f.id===id),owner=ReferenceCloud.user?.id;if(!row)return;assetBusy=true;
+ try{const blob=await (await assetLibrary()).download(owner,row);if(assetKey()!==state.key)return;const url=URL.createObjectURL(new Blob([blob],{type:'application/octet-stream'})),a=document.createElement('a');a.href=url;a.download=row.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);}
+ catch(error){if(assetKey()===state.key){state.error=assetError(error);renderAssetList();}}finally{assetBusy=false;}
+};
+window.assetRemove=async function(id){
+ if(assetBusy)return;const state=assetState,row=state.rows.find(f=>f.id===id),owner=ReferenceCloud.user?.id;if(!row)return;assetBusy=true;
+ try{await (await assetLibrary()).remove(owner,row);if(assetKey()===state.key){state.rows=state.rows.filter(f=>f.id!==id);state.deleteId=null;state.details=null;state.error='';go();}}
+ catch(error){if(assetKey()===state.key){state.error=assetError(error);renderAssetList();}}finally{assetBusy=false;if(assetKey()===state.key)renderAssetList();}
+};
+const assetSignOut=ReferenceCloud.signOut.bind(ReferenceCloud);ReferenceCloud.signOut=function(){if(assetBusy)return Promise.reject(Error('Wait for the file transfer to finish before signing out.'));return assetSignOut();};
+addEventListener('beforeunload',event=>{if(assetBusy){event.preventDefault();event.returnValue='';}});
+
+// Real academic record controls, styled with the reference form/card classes.
+let recordView='',assessmentEdit=null,classEdit=null,recordNotice='',recordDelete=null;
+function recordScope(){const scope=ReferenceCloud.user?.id+':'+active+':'+(typeof location==='undefined'?'':location.hash);if(recordView!==scope){recordView=scope;assessmentEdit=null;classEdit=null;recordNotice='';recordDelete=null;}}
+function moduleOptions(selected){return MODS.map(m=>'<option '+(m===selected?'selected':'')+'>'+esc(m)+'</option>').join('');}
+function recordWritable(){if(!cloudReady||ReferenceCloud.bridge?.blocked)throw Error('Reload the saved workspace before editing records.');}
+function recordDate(value){if(!/^\d{4}-\d\d-\d\d$/.test(value)||new Date(value+'T00:00:00Z').toISOString().slice(0,10)!==value)throw Error('Choose a valid date.');if(value<term().start||value>term().end)throw Error('Choose a date within this semester: '+term().start+' to '+term().end+'.');return value;}
+function downloadArtifact(text,type,name){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+assessments=function(){
+ recordScope();const a=assessmentEdit===null?null:AS[assessmentEdit];
+ return '<p class="eb">Assessments</p><h1>Upcoming assessments</h1><p class="sub">Assessment dates for your selected semester.</p><p class="term-toast" role="status">'+esc(recordNotice)+'</p><section class="card">'+(AS.map((x,i)=>'<div class="fileitem"><div>'+chip(x.mod)+'<b>'+esc(x.name)+'</b><small>'+esc(dn(x.date))+(x.time?' · '+esc(x.time):'')+' · '+esc(x.type)+'</small></div><div class="file-actions"><button class="btn" onclick="editAcademicAssessment('+i+')">Edit</button><button class="btn" onclick="askRecordDelete(\'assessment\','+i+')">Delete</button></div></div>').join('')||'<p class="sub">No assessments in this semester yet.</p>')+'</section>'+deleteRecordCard('assessment')+
+ '<section class="card"><h2>'+(a?'Edit assessment':'Add assessment')+'</h2>'+(!MODS.length?'<p class="sub">Add a module in Settings first.</p>':'<form class="term-form" onsubmit="saveAcademicAssessment(event)"><label>Module<select id="assessmentModule" required>'+moduleOptions(a?.mod)+'</select></label><label>Assessment name<input id="assessmentName" required maxlength="500" value="'+esc(a?.name||'')+'" placeholder="Quiz, project or final exam"></label><label>Date<input id="assessmentDate" type="date" min="'+term().start+'" max="'+term().end+'" value="'+esc(a?.date||TODAY)+'" required></label><label>Time (optional)<input id="assessmentTime" type="time" value="'+esc(a?.time||'')+'"></label><label>Type<input id="assessmentType" required maxlength="80" value="'+esc(a?.type||'Assessment')+'" placeholder="Exam, quiz, assignment"></label><p id="assessmentError" class="wide notice" role="alert"></p><button class="btn p">'+(a?'Save assessment':'Add assessment')+'</button>'+(a?'<button type="button" class="btn" onclick="editAcademicAssessment(null)">Cancel</button>':'')+'</form>')+'</section>';
+};
+window.editAcademicAssessment=function(i){assessmentEdit=i;recordNotice='';recordDelete=null;go();document.getElementById('assessmentName')?.focus();};
+window.saveAcademicAssessment=function(event){event.preventDefault();try{
+ recordWritable();const module=document.getElementById('assessmentModule').value,name=document.getElementById('assessmentName').value.trim(),date=recordDate(document.getElementById('assessmentDate').value),time=document.getElementById('assessmentTime').value,type=document.getElementById('assessmentType').value.trim();
+ if(!MODS.includes(module)||!name||name.length>500||!type||type.length>80)throw Error('Choose an enrolled module and enter an assessment name and type.');
+ const row={...(assessmentEdit===null?{id:crypto.randomUUID()}:AS[assessmentEdit]),mod:module,name,date,time,type};
+ if(assessmentEdit===null)AS.push(row);else AS[assessmentEdit]=row;AS.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));assessmentEdit=null;recordNotice='Assessment updated.';go();
+ }catch(error){document.getElementById('assessmentError').textContent=error.message;}};
+function deleteRecordCard(type){if(recordDelete?.type!==type)return '';const row=type==='assessment'?AS[recordDelete.index]:CL[recordDelete.index];if(!row)return '';return '<section class="card" role="alert"><h2>Delete '+(type==='assessment'?'assessment':'class')+'?</h2><p>'+esc(row.name||row.mod+' '+row.kind+' · '+row.d+' '+row.range)+'</p><button class="btn" onclick="confirmRecordDelete()">Delete</button> <button class="btn" onclick="cancelRecordDelete()">Cancel</button></section>';}
+window.askRecordDelete=function(type,index){recordScope();recordDelete={type,index};go();};
+window.cancelRecordDelete=function(){recordDelete=null;go();};
+window.confirmRecordDelete=function(){try{recordWritable();if(!recordDelete)return;const {type,index}=recordDelete;if(type==='assessment')AS.splice(index,1);else CL.splice(index,1);recordDelete=null;assessmentEdit=null;classEdit=null;recordNotice='Record deleted.';go();}catch(error){recordNotice=error.message;go();}};
+function liveTimetable(){
+ const days=CL.some(c=>['Sat','Sun'].includes(c.d))?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['Mon','Tue','Wed','Thu','Fri'];
+ const first=Math.min(9,...CL.map(c=>c.at)),last=Math.max(17,...CL.map(c=>Math.ceil(Number(c.range.slice(6,8))+Number(c.range.slice(9,11))/60)-1));
+ return '<p class="eb">Timetable</p><h1>Class timetable</h1><p class="sub">Fixed lessons and venues, separate from flexible study sessions.</p><div class="toolbar"><button class="btn '+(viewMode==='week'?'on':'')+'" onclick="viewMode=\'week\';go()">Time grid</button><button class="btn '+(viewMode==='list'?'on':'')+'" onclick="viewMode=\'list\';go()">Agenda</button></div>'+(viewMode==='list'?'<section class="card">'+CL.map(c=>'<div class="event" data-m="'+esc(c.mod)+'">'+chip(c.mod)+'<b>'+esc(c.kind+' · '+c.d+' '+c.range)+'</b><small>'+esc(c.venue)+'</small></div>').join('')+'</section>':'<div class="card scroller"><div class="hourgrid" style="grid-template-columns:58px repeat('+days.length+',minmax(110px,1fr))"><div class="slot head">Time</div>'+days.map(d=>'<div class="slot head">'+d+'</div>').join('')+Array.from({length:last-first+1},(_,i)=>first+i).map(hour=>'<div class="slot time">'+String(hour).padStart(2,'0')+':00</div>'+days.map(day=>'<div class="slot">'+CL.filter(c=>c.d===day&&c.at===hour).map(c=>'<div class="event" data-m="'+esc(c.mod)+'">'+chip(c.mod)+'<b>'+esc(c.kind)+'</b><br>'+esc(c.range)+'<br><small>'+esc(c.venue)+'</small></div>').join('')+'</div>').join('')).join('')+'</div></div>');
+}
+timetable=function(){
+ recordScope();const c=classEdit===null?null:CL[classEdit];
+ let h=liveTimetable();
+ h+='<p class="term-toast" role="status">'+esc(recordNotice)+'</p>'+deleteRecordCard('class')+'<section class="card"><h2>Manage classes</h2>'+(CL.map((x,i)=>'<div class="fileitem"><div>'+chip(x.mod)+'<b>'+esc(x.kind)+'</b><small>'+esc(x.d+' · '+x.range+' · '+x.venue)+'</small></div><div class="file-actions"><button class="btn" onclick="editAcademicClass('+i+')">Edit</button><button class="btn" onclick="askRecordDelete(\'class\','+i+')">Delete</button></div></div>').join('')||'<p class="sub">No classes yet.</p>')+'</section>';
+ return h+'<section class="card"><h2>'+(c?'Edit class':'Add class')+'</h2>'+(!MODS.length?'<p class="sub">Add a module in Settings first.</p>':'<form class="term-form" onsubmit="saveAcademicClass(event)"><label>Module<select id="classModule" required>'+moduleOptions(c?.mod)+'</select></label><label>Class type<input id="classKind" required maxlength="120" value="'+esc(c?.kind||'Lecture')+'"></label><label>Day<select id="classDay">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>'<option '+(d===c?.d?'selected':'')+'>'+d+'</option>').join('')+'</select></label><label>Venue<input id="classVenue" maxlength="500" value="'+esc(c?.venue||'')+'" placeholder="Room or online link"></label><label>Start time<input type="time" id="classStart" value="'+esc(c?.range?.split('–')[0]||'09:00')+'" required></label><label>End time<input type="time" id="classEnd" value="'+esc(c?.range?.split('–')[1]||'10:00')+'" required></label><p id="classError" class="notice wide" role="alert"></p><button class="btn p">'+(c?'Save class':'Add class')+'</button>'+(c?'<button type="button" class="btn" onclick="editAcademicClass(null)">Cancel</button>':'')+'</form>')+'</section>';
+};
+window.editAcademicClass=function(i){classEdit=i;recordDelete=null;recordNotice='';go();document.getElementById('classKind')?.focus();};
+window.saveAcademicClass=function(event){event.preventDefault();try{
+ recordWritable();const module=document.getElementById('classModule').value,kind=document.getElementById('classKind').value.trim(),day=document.getElementById('classDay').value,venue=document.getElementById('classVenue').value.trim(),start=document.getElementById('classStart').value,end=document.getElementById('classEnd').value;
+ if(!MODS.includes(module)||!kind||kind.length>120||venue.length>500||!/^\d\d:\d\d$/.test(start)||!/^\d\d:\d\d$/.test(end)||end<=start)throw Error('Choose a module, class type and an end time after the start.');
+ const overlap=CL.some((x,i)=>i!==classEdit&&x.d===day&&x.range.split('–')[0]<end&&x.range.split('–')[1]>start);if(overlap)throw Error('This class overlaps another class on '+day+'. Adjust the times before saving.');
+ const row={...(classEdit===null?{id:crypto.randomUUID()}:CL[classEdit]),mod:module,kind,d:day,at:Number(start.slice(0,2)),range:start+'–'+end,venue};
+ if(classEdit===null)CL.push(row);else CL[classEdit]=row;classEdit=null;recordNotice='Class updated.';go();
+ }catch(error){document.getElementById('classError').textContent=error.message;}};
+// Project recurring lessons into the planner without duplicating saved class records.
+const referencePlan=plan;
+plan=function(){const saved=C;try{
+ const recurring=[];for(let i=0;i<7;i++){const date=sh(TODAY,i);if(date<term().start||date>term().end)continue;const day=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(date+'T00:00:00Z').getUTCDay()];for(const c of CL.filter(x=>x.d===day))recurring.push([date,c.mod,c.kind,c.range]);}
+ C=[...saved,...recurring.filter(r=>!saved.some(c=>c.slice(0,4).join('|')===r.join('|')))];return referencePlan().replace('Sample classes shown.','').replaceAll('<span class="tag">sample</span>','').replaceAll('Nothing planned.','No study tasks.');
+ }finally{C=saved;}};
+
+const calendarSettings=settings;
+settings=function(){return calendarSettings().replace('Calendar feed','Calendar export').replace('Classes, deadlines and tasks in Apple or Google Calendar','Download this semester’s classes, assessments and study tasks as an .ics file').replace('<button class="btn" onclick="this.textContent=\'Link copied (sample)\'">Copy private link</button>','<button class="btn" onclick="exportAcademicCalendar()">Download calendar</button>').replace('<span class="pill">Connected</span>','<span class="pill off">Not connected</span>');};
+window.exportAcademicCalendar=function(){capture();downloadArtifact(AcademicCalendar.calendar(term(),ReferenceCloud.user.id),'text/calendar;charset=utf-8','Academic_Assistant_'+active+'.ics');};
+const productWorkspace=ReferenceCloud.decorateWorkspace.bind(ReferenceCloud);
+ReferenceCloud.decorateWorkspace=function(){
+ productWorkspace();document.title='Academic Assistant';
+ const view=document.getElementById('v');if(!view)return;
+ const textChanges=[['Sample week','Study week'],['sample week','study week'],['Example study schedule','Your study schedule'],['Illustrative NTULearn alerts','Manually added course updates'],['sample proposals','proposals'],['example course updates','course updates']];
+ const walker=document.createTreeWalker(view,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode())for(const [before,after] of textChanges)node.textContent=node.textContent.replaceAll(before,after);
+ const copy=document.getElementById('copyFiles');if(copy){copy.checked=false;copy.disabled=true;const label=copy.closest('label');for(const node of label.childNodes)if(node.nodeType===3)node.textContent=' Files stay in their original semester';}
+};
+
+// Manual course hub: all mutations use the existing per-semester snapshot save path.
+let hubEditor=null,hubNotice='',hubDelete=null,hubProposalId=null,hubScope='';
+function hubContext(){const key=ReferenceCloud.user?.id+':'+active;if(hubScope!==key){hubScope=key;hubEditor=null;hubNotice='';hubDelete=null;hubProposalId=null;}}
+function safeCourseLink(value){try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)&&!u.username&&!u.password?u.href:'';}catch{return '';}}
+function nextHubId(rows){return Math.max(Date.now(),...rows.map(x=>x.id+1));}
+ntulearn=function(){
+ hubContext();const editing=HUB.find(x=>x.id===hubEditor),proposal=HUB.find(x=>x.id===hubProposalId),deleting=HUB.find(x=>x.id===hubDelete);
+ return '<p class="eb">Course updates</p><h1>NTULearn Hub</h1><p class="sub">Your saved course announcements, materials and deadlines.</p><div class="hubsource"><b>Manual mode</b> · Add updates yourself. No live NTULearn connection or AI extraction.</div><p class="term-toast" role="status">'+esc(hubNotice)+'</p><div class="statgrid">'+[['Unread updates',HUB.filter(x=>x.unread).length],['Materials',HUB.filter(x=>x.type==='file').length],['Deadlines',HUB.filter(x=>x.type==='deadline').length]].map(([label,count])=>'<div class="card"><small class="sub">'+label+'</small><h1>'+count+'</h1></div>').join('')+'</div><div class="hubgrid"><section><div class="card"><div class="toolbar"><select class="btn" aria-label="Course update module" onchange="hubMod=this.value;go()"><option value="all">All modules</option>'+MODS.map(m=>'<option '+(m===hubMod?'selected':'')+'>'+esc(m)+'</option>').join('')+'</select><span class="tag">'+HUB.filter(x=>x.unread).length+' unread</span></div><div class="hubtabs">'+[['all','All'],['ann','Announcements'],['file','Materials'],['deadline','Deadlines']].map(([key,label])=>'<button class="btn '+(hubTab===key?'active':'')+'" onclick="hubTab=\''+key+'\';go()">'+label+'</button>').join('')+'</div>'+hubFiltered().map(x=>'<article class="hubitem"><div class="hubmeta">'+chip(x.mod)+' <span class="tag">'+({ann:'Announcement',file:'Material',deadline:'Deadline'}[x.type])+'</span> '+(x.unread?'<span class="tag">Unread</span>':'')+'<span>'+esc(x.date)+'</span></div><h3>'+esc(x.title)+'</h3><p style="white-space:pre-wrap">'+esc(x.desc)+'</p><div class="hubmeta"><span>Manually entered</span><button class="btn" onclick="hubRead('+x.id+')">'+(x.unread?'Mark read':'Read')+'</button><button class="btn" onclick="editCourseUpdate('+x.id+')">Edit</button><button class="btn" onclick="deleteCourseUpdate('+x.id+')">Delete</button><button class="btn p" onclick="hubProposal('+x.id+')">Propose study task</button>'+(safeCourseLink(x.url)?'<a class="btn" href="'+esc(safeCourseLink(x.url))+'" target="_blank" rel="noopener noreferrer">Open source</a>':'')+(x.type==='deadline'?'<a class="btn" href="#assessments">View assessments</a>':'')+'</div></article>').join('')+(!hubFiltered().length?'<p class="sub">No saved updates for these filters.</p>':'')+'</div>'+
+ (deleting?'<section class="card" role="alert"><h2>Delete this update?</h2><p>'+esc(deleting.title)+'</p><p class="sub">Existing tasks and assessments will be kept.</p><button class="btn" onclick="confirmCourseDelete()">Delete update</button> <button class="btn" onclick="deleteCourseUpdate(null)">Cancel</button></section>':'')+
+ (proposal?'<section class="card"><h2>Propose a study task</h2><p>'+esc(proposal.title)+'</p><form class="term-form" onsubmit="saveCourseProposal(event)"><label>Task title<input id="courseTaskTitle" value="'+esc('Review: '+proposal.title)+'" required maxlength="500"></label><label>Date<input id="courseTaskDate" type="date" min="'+term().start+'" max="'+term().end+'" value="'+TODAY+'" required></label><label>Duration (minutes)<input id="courseTaskMinutes" type="number" min="1" max="1440" value="30" required></label><p class="notice wide" id="courseProposalError" role="alert"></p><button class="btn p">Send to Inbox</button><button class="btn" type="button" onclick="hubProposal(null)">Cancel</button></form></section>':'')+
+ '<section class="card"><h2>'+(editing?'Edit course update':'Add course update')+'</h2>'+(!MODS.length?'<p class="sub">Add a module in Settings first.</p>':'<form class="term-form" onsubmit="saveCourseUpdate(event)"><label>Module<select id="courseModule">'+moduleOptions(editing?.mod)+'</select></label><label>Update type<select id="courseType">'+[['ann','Announcement'],['file','Material'],['deadline','Deadline']].map(([k,v])=>'<option value="'+k+'" '+(editing?.type===k?'selected':'')+'>'+v+'</option>').join('')+'</select></label><label class="wide">Title<input id="courseTitle" maxlength="500" required value="'+esc(editing?.title||'')+'"></label><label class="wide">Announcement or notes<textarea class="hubtextarea" id="courseText" maxlength="5000" required>'+esc(editing?.desc||'')+'</textarea></label><label>Deadline (optional)<input type="date" id="courseDeadline" min="'+term().start+'" max="'+term().end+'" value="'+esc(editing?.deadlineDate||'')+'"></label><label>Source link (optional)<input type="url" id="courseUrl" maxlength="2000" placeholder="https://…" value="'+esc(editing?.url||'')+'"></label><p id="courseError" class="notice wide" role="alert"></p><button class="btn p">'+(editing?'Save update':'Add update')+'</button>'+(editing?'<button class="btn" type="button" onclick="editCourseUpdate(null)">Cancel</button>':'')+'</form>')+'</section></section><aside><section class="card hubchat"><h2>Search saved updates</h2><p class="sub">Searches your manually saved text. No AI responses or live NTULearn lookup.</p><div class="hubmessages" aria-live="polite">'+hubMessages.map(m=>'<div class="hubmsg '+(m.role==='me'?'me':'')+'">'+esc(m.text)+'</div>').join('')+'</div><form class="hubform" onsubmit="hubSend(event)"><input id="hubq" aria-label="Search saved updates" placeholder="Module code or keyword" maxlength="200" required><button class="btn p">Search</button></form></section></aside></div>';
+};
+window.editCourseUpdate=function(id){hubEditor=id;hubNotice='';go();document.getElementById('courseTitle')?.focus();};
+window.saveCourseUpdate=function(event){event.preventDefault();try{
+ recordWritable();const mod=document.getElementById('courseModule').value,type=document.getElementById('courseType').value,title=document.getElementById('courseTitle').value.trim(),desc=document.getElementById('courseText').value.trim(),rawUrl=document.getElementById('courseUrl').value.trim(),deadlineDate=document.getElementById('courseDeadline').value;
+ if(!MODS.includes(mod)||!['ann','file','deadline'].includes(type)||!title||title.length>500||!desc||desc.length>5000)throw Error('Choose an enrolled module and enter a title and notes.');
+ if(rawUrl&&(rawUrl.length>2000||!safeCourseLink(rawUrl)))throw Error('Use an http or https source link without a username or password.');
+ if(type==='deadline'&&!deadlineDate)throw Error('Enter the deadline date.');if(deadlineDate)recordDate(deadlineDate);
+ const old=HUB.find(x=>x.id===hubEditor),row={...(old||{}),id:old?.id||nextHubId(HUB),mod,type,title,desc,date:deadlineDate||TODAY,deadlineDate,url:rawUrl?safeCourseLink(rawUrl):'',origin:'Manually entered · verify against course source',unread:true};
+ if(old)HUB[HUB.indexOf(old)]=row;else HUB.unshift(row);hubEditor=null;hubNotice='Course update saved.';go();
+ }catch(error){document.getElementById('courseError').textContent=error.message;}};
+window.deleteCourseUpdate=function(id){hubDelete=id;go();};
+window.confirmCourseDelete=function(){try{recordWritable();HUB=HUB.filter(x=>x.id!==hubDelete);hubDelete=null;hubEditor=null;hubNotice='Update deleted. Existing tasks and assessments were kept.';go();}catch(error){hubNotice=error.message;go();}};
+hubProposal=function(id){hubProposalId=id;hubNotice='';go();};
+window.saveCourseProposal=function(event){event.preventDefault();try{
+ recordWritable();const source=HUB.find(x=>x.id===hubProposalId);if(!source)throw Error('The course update is no longer available.');
+ if(IN.some(x=>x.sourceHubId===source.id&&['p','a'].includes(x.s)))throw Error('This update already has a pending or approved proposal in Inbox.');
+ const title=document.getElementById('courseTaskTitle').value.trim(),date=recordDate(document.getElementById('courseTaskDate').value),min=Number(document.getElementById('courseTaskMinutes').value);
+ if(!title||title.length>500||!Number.isInteger(min)||min<1||min>1440)throw Error('Enter a task title and a duration of 1–1440 minutes.');
+ IN.push({id:nextHubId(IN),t:'semester',s:'p',mod:source.mod,title,date,min,sourceHubId:source.id});hubProposalId=null;location.hash='#inbox';go();
+ }catch(error){document.getElementById('courseProposalError').textContent=error.message;}};
+hubAsk=function(query){const text=query.trim().slice(0,200);if(!text)return;const words=text.toLowerCase().split(/\s+/),matches=HUB.filter(x=>words.every(w=>(x.mod+' '+x.title+' '+x.desc).toLowerCase().includes(w)));hubMessages.push({role:'me',text},{role:'bot',text:matches.length?matches.slice(0,8).map(x=>x.mod+' · '+x.title+'\n'+x.desc.slice(0,350)).join('\n\n'):'No saved updates match. Try a module code or a shorter keyword.'});hubMessages=hubMessages.slice(-20);go();};
+
+
+// Real task and syllabus editing through the existing semester save pipeline.
+let studyScope='',taskEdit=null,taskDelete=null,topicEdit=null,topicDelete=null,studyNotice='';
+function studyContext(){const key=ReferenceCloud.user?.id+':'+active+':'+mod;if(studyScope!==key){studyScope=key;taskEdit=null;taskDelete=null;topicEdit=null;topicDelete=null;studyNotice='';}}
+function taskEditor(){studyContext();const task=T.find(t=>t.id===taskEdit),deleting=T.find(t=>t.id===taskDelete);return (deleting?'<section class="card" role="alert"><h2>Delete study task?</h2><p>'+esc(deleting.title)+'</p><button class="btn" onclick="deleteStudyTask()">Delete task</button> <button class="btn" onclick="askStudyDelete(null)">Cancel</button></section>':'')+'<section class="card"><h2>'+(task?'Edit study task':'Plan a study task')+'</h2><p class="term-toast" role="status">'+esc(studyNotice)+'</p>'+(!MODS.length?'<p class="sub">Add a module in Settings first.</p>':'<form class="term-form" onsubmit="saveStudyTask(event)"><label>Module<select id="studyModule">'+moduleOptions(task?.mod||mod)+'</select></label><label>Task title<input id="studyTitle" value="'+esc(task?.title||'')+'" maxlength="500" required></label><label>Date<input type="date" id="studyDate" min="'+term().start+'" max="'+term().end+'" value="'+esc(task?.date||TODAY)+'" required></label><label>Minutes<input type="number" id="studyMinutes" min="1" max="1440" value="'+(task?.min||30)+'" required></label><label class="wide">Notes<textarea class="hubtextarea" id="studyNotes" maxlength="5000">'+esc(typeof task?.notes==='string'?task.notes:'')+'</textarea></label><label class="term-check"><input id="studyFixed" type="checkbox" '+(task?.fix?'checked':'')+'>Fixed commitment</label><p class="notice wide" id="studyError" role="alert"></p><button class="btn p">'+(task?'Save task':'Add study task')+'</button>'+(task?'<button class="btn" type="button" onclick="editStudyTask(null)">Cancel</button>':'')+'</form>')+'</section>';}
+function taskControls(html){for(const task of T)html=html.replace(row(task),row(task)+'<div class="toolbar"><button class="btn" onclick="editStudyTask('+task.id+')">Edit task</button><button class="btn" onclick="askStudyDelete('+task.id+')">Delete task</button></div>');return html+taskEditor();}
+window.editStudyTask=function(id){taskEdit=id;studyNotice='';go();document.getElementById('studyTitle')?.focus();};
+window.askStudyDelete=function(id){taskDelete=id;go();};
+window.deleteStudyTask=function(){try{recordWritable();T=T.filter(t=>t.id!==taskDelete);taskDelete=null;taskEdit=null;studyNotice='Task deleted.';go();}catch(error){studyNotice=error.message;go();}};
+window.saveStudyTask=function(event){event.preventDefault();try{
+ recordWritable();const module=document.getElementById('studyModule').value,title=document.getElementById('studyTitle').value.trim(),date=recordDate(document.getElementById('studyDate').value),min=Number(document.getElementById('studyMinutes').value),notes=document.getElementById('studyNotes').value,fix=document.getElementById('studyFixed').checked;
+ if(!MODS.includes(module)||!title||title.length>500||!Number.isInteger(min)||min<1||min>1440||notes.length>5000)throw Error('Choose a module and enter a title and 1–1440 minutes.');
+ const old=T.find(t=>t.id===taskEdit);if(taskEdit!==null&&!old)throw Error('This task no longer exists. Cancel editing and try again.');
+ const task={...(old||{id:++n,done:false}),mod:module,title,date,min,notes,fix};if(old)T[T.indexOf(old)]=task;else T.push(task);taskEdit=null;studyNotice='Task saved.';go();
+ }catch(error){document.getElementById('studyError').textContent=error.message;}};
+tog=function(id){try{recordWritable();const task=T.find(t=>t.id===id);if(!task)return;task.done=!task.done;task.done_at=task.done?new Date().toISOString():null;go();}catch(error){studyNotice=error.message;go();}};
+add=function(event){event.preventDefault();try{recordWritable();const title=document.getElementById('nt').value.trim(),module=document.getElementById('nm').value;recordDate(TODAY);if(!title||title.length>500||!MODS.includes(module))throw Error('Choose a module and enter a title of up to 500 characters.');T.push({id:++n,date:TODAY,mod:module,title,min:30,fix:false,done:false});studyNotice='Task added (30 minutes). Use Edit task to change its duration.';go();}catch(error){studyNotice=error.message;go();}};
+const studyToday=today;today=function(){studyContext();return taskControls(studyToday());};
+const studyPlan=plan;plan=function(){studyContext();return '<section class="card"><label>Study week starting<input class="btn" type="date" aria-label="Study week starting" min="'+term().start+'" max="'+term().end+'" value="'+TODAY+'" onchange="setStudyDate(this.value)"></label></section>'+taskControls(studyPlan());};
+window.setStudyDate=function(value){try{recordWritable();TODAY=recordDate(value);studyNotice='Study date updated.';go();}catch(error){studyNotice=error.message;go();}};
+function topicDays(topic){return topic[3]?Math.max(0,Math.floor((Date.parse(TODAY)-Date.parse(topic[3]))/86400000)):topic[2];}
+detail=function(){
+ studyContext();const topics=TP[mod]||[],editing=topicEdit===null?null:topics[topicEdit];const next=topics.filter(t=>t[1]<3).sort((a,b)=>a[1]-b[1]||topicDays(b)-topicDays(a))[0];
+ return '<button class="btn" onclick="mod=null;go()">← Modules</button><h1>'+chip(mod)+' '+esc(mod)+'</h1>'+(next?'<div class="nx"><b>Revise next: '+esc(next[0])+'</b><p class="sub">Suggested from your topic status and last review date.</p></div>':'')+'<section class="card"><h2>Topics</h2>'+topics.map((t,i)=>'<div class="tp"><span>'+esc(t[0])+'<br><small class="sub">'+(t[3]?'Last reviewed '+esc(t[3]):'No review date recorded')+'</small></span><div class="file-actions"><button class="st s'+t[1]+'" onclick="cyc(\''+mod+'\','+i+')">'+esc(ST[t[1]])+'</button><button class="btn" onclick="editStudyTopic('+i+')">Edit</button><button class="btn" onclick="askTopicDelete('+i+')">Delete</button></div></div>').join('')+(topics.length?'':'<p class="sub">Add topics from your syllabus below.</p>')+'</section>'+
+ (topicDelete!==null&&topics[topicDelete]?'<section class="card" role="alert"><h2>Delete topic?</h2><p>'+esc(topics[topicDelete][0])+'</p><button class="btn" onclick="deleteStudyTopic()">Delete topic</button> <button class="btn" onclick="askTopicDelete(null)">Cancel</button></section>':'')+
+ '<section class="card"><h2>'+(editing?'Edit topic':'Add syllabus topic')+'</h2><form class="term-form" onsubmit="saveStudyTopic(event)"><label>Topic name<input id="studyTopic" maxlength="500" required value="'+esc(editing?.[0]||'')+'"></label><label>Status<select id="studyTopicStatus">'+ST.map((s,i)=>'<option value="'+i+'" '+(i===(editing?.[1]||0)?'selected':'')+'>'+esc(s)+'</option>').join('')+'</select></label><p class="notice wide" id="topicError" role="alert"></p><button class="btn p">'+(editing?'Save topic':'Add topic')+'</button>'+(editing?'<button class="btn" type="button" onclick="editStudyTopic(null)">Cancel</button>':'')+'</form></section><section class="card"><h2>Open tasks</h2>'+T.filter(t=>t.mod===mod&&!t.done).map(row).join('')+'</section><section class="card"><h2>Files</h2><p class="sub">Open this module’s private library.</p><button class="btn" onclick="fm=mod;location.hash=\'#files\'">Open module files</button></section>'+taskEditor();
+};
+const topicDetail=detail;detail=function(){let html=topicDetail();for(const task of T)html=html.replace(row(task),row(task)+'<div class="toolbar"><button class="btn" onclick="editStudyTask('+task.id+')">Edit task</button><button class="btn" onclick="askStudyDelete('+task.id+')">Delete task</button></div>');return html;};
+window.editStudyTopic=function(i){topicEdit=i;go();document.getElementById('studyTopic')?.focus();};
+window.askTopicDelete=function(i){topicDelete=i;go();};
+window.deleteStudyTopic=function(){try{recordWritable();if(TP[mod]&&topicDelete!==null)TP[mod].splice(topicDelete,1);topicDelete=null;topicEdit=null;go();}catch(error){studyNotice=error.message;go();}};
+window.saveStudyTopic=function(event){event.preventDefault();try{recordWritable();const title=document.getElementById('studyTopic').value.trim(),status=Number(document.getElementById('studyTopicStatus').value);if(!MODS.includes(mod)||!title||title.length>500||![0,1,2,3].includes(status))throw Error('Enter a topic and choose a status.');const topics=TP[mod]||(TP[mod]=[]);if(topics.some((t,i)=>i!==topicEdit&&t[0].toLowerCase()===title.toLowerCase()))throw Error('This topic already exists. Edit its existing entry.');if(topicEdit===null)topics.push([title,status,0]);else{if(!topics[topicEdit])throw Error('This topic no longer exists.');topics[topicEdit][0]=title;topics[topicEdit][1]=status;}topicEdit=null;go();}catch(error){document.getElementById('topicError').textContent=error.message;}};
+cyc=function(module,index){try{recordWritable();const t=TP[module]?.[index];if(!t)return;t[1]=(t[1]+1)%4;t[2]=0;t[3]=TODAY;go();}catch(error){studyNotice=error.message;go();}};
+
+// Status remains honest until a server verifies a linked ChatGPT account.
+const assistantSettings=settings;
+settings=function(){return assistantSettings()
+ .replace('Reads your plan; its changes arrive as proposals in the Inbox','Account linking is being prepared. ChatGPT cannot access this workspace yet.')
+ .replace('Demo · Not connected','Not connected')
+ .replace('Preview session restoring','Reload saved workspace');};
+
+// External edits are announced without replacing an open form or unsaved work.
+let revisionWatcher=null,revisionWatcherBridge=null;
+async function checkExternalWorkspace(){
+ if(document.hidden||!cloudReady)return;
+ const b=ReferenceCloud.bridge;
+ if(!b)return;
+ if(revisionWatcherBridge!==b){revisionWatcherBridge=b;revisionWatcher=new AcademicRevisionWatch(b.client,b,()=>{
+  let notice=document.getElementById('externalWorkspaceUpdate');
+  if(!notice){notice=document.createElement('section');notice.id='externalWorkspaceUpdate';notice.className='card';notice.setAttribute('role','status');const before=document.querySelector('.preview-note');if(!before)return;before.after(notice);}
+  notice.replaceChildren();
+  const p=document.createElement('p');p.textContent='Your saved plan changed in another session. Reload to see the latest tasks. Finish or copy any open form before reloading.';
+  const button=document.createElement('button');button.className='btn';button.textContent='Reload saved workspace';button.onclick=()=>window.demoRestore();notice.append(p,button);
+ });}
+ try{await revisionWatcher.check();}catch{/* Keep current work available during temporary network failures. */}
+}
+const revisionHydrate=testHydrate;
+testHydrate=function(data){revisionHydrate(data);document.getElementById('externalWorkspaceUpdate')?.remove();};
+addEventListener('focus',()=>void checkExternalWorkspace());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void checkExternalWorkspace();});
+setInterval(()=>void checkExternalWorkspace(),60000);
+
+}else{
+// Injected INSIDE the original v2.9 semester closure. Renderers and CSS are retained.
+const localAPI=globalThis.ReferenceLocalStore;
+let localRevision=0,localSignature='',localBlocked=false,localError='',localPending=0;
+let localQueue=Promise.resolve(),localStore;
+const previewNote=document.querySelector('.preview-note');
+const localCapture=capture;
+capture=function(){localCapture();term().messages=clone(hubMessages);};
+const referenceLoad=load;
+load=function(id){referenceLoad(id);if(term().messages)hubMessages=clone(term().messages);};
+function hydrateReference(data){
+ years.splice(0,years.length,...data.years);terms.splice(0,terms.length,...data.terms);
+ active=data.active;current=data.current;studyYear=data.studyYear;n=data.n;
+ Object.keys(lastByYear).forEach(key=>delete lastByYear[key]);Object.assign(lastByYear,data.lastByYear||{});
+ const t=term();TODAY=t.date;MODS=t.mods;T=t.tasks;C=t.classes;TP=t.topics;IN=t.inbox;F=t.files;AS=t.assessments;CL=t.timetable;HUB=t.hub;imported=!!t.imported;
+ if(t.messages)hubMessages=clone(t.messages);
+ for(const item of terms)for(const task of item.tasks)n=Math.max(n,task.id);
+ if(data.theme)document.documentElement.dataset.theme=data.theme;
+ mod=null;q='';fm='';filePreview='';hubTab='all';hubMod='all';
+}
+function referenceSnapshot(){capture();return clone({years,terms,active,current,studyYear,n,lastByYear,theme:document.documentElement.dataset.theme||null});}
+function localStatus(label,bad=false){
+ if(!previewNote)return;previewNote.setAttribute('role','status');previewNote.setAttribute('aria-live','polite');
+ previewNote.innerHTML='<strong>v2.9 · '+esc(label)+'</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.'+(bad?'<br><span class="notice">'+esc(localError)+'</span> <button class="btn" type="button" onclick="exportReferenceWorkspace()">Export this tab’s work</button>':'');
+ previewNote.dataset.saveState=bad?'error':localPending?'saving':'saved';
+}
+function queueReferenceSave(){
+ if(localBlocked)return;
+ const snapshot=referenceSnapshot(),signature=JSON.stringify(snapshot);
+ if(signature===localSignature&&localPending===0)return;
+ localPending++;localStatus('Saving locally');
+ localQueue=localQueue.then(async()=>{
+  if(localBlocked)return;
+  if(signature===localSignature)return;
+  const saveNow=()=>localStore.save(snapshot,localRevision);
+  const saved=globalThis.navigator?.locks?await navigator.locks.request('aa-reference-v29-save',saveNow):saveNow();
+  localRevision=saved.revision;localSignature=signature;
+ }).catch(error=>{localBlocked=true;localError=error.message||String(error);}).finally(()=>{localPending--;localStatus(localBlocked?'Changes not saved':localPending?'Saving locally':'Saved locally',localBlocked);});
+}
+window.exportReferenceWorkspace=function(){
+ const snapshot=referenceSnapshot();const payload={schemaVersion:1,exportedAt:new Date().toISOString(),reference:'Academic_Assistant_v2_9_Settings.html',data:snapshot};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='Academic_Assistant_v2_9_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+try{
+ localStore=new localAPI.Store(localStorage);
+ const saved=localStore.load();
+ if(saved){hydrateReference(saved.data);localRevision=saved.revision;localSignature=JSON.stringify(referenceSnapshot());}
+}catch(error){localBlocked=true;localError='Saved data was not replaced. '+error.message;}
+// Save after the original handler finishes, including handlers that mutate after go().
+const referenceGo=go;
+go=function(){referenceGo();queueMicrotask(queueReferenceSave);};
+for(const type of ['click','change','submit'])document.addEventListener(type,()=>queueMicrotask(queueReferenceSave));
+document.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&button.textContent.trim()==='Export'&&location.hash==='#settings')exportReferenceWorkspace();});
+addEventListener('storage',event=>{if(event.key===localAPI.KEY&&localStore){try{const other=localStore.load();if(other&&other.revision!==localRevision){localBlocked=true;localError='Another tab changed this workspace. Export any unsaved work here, then reload to view the saved version.';localStatus('Review newer changes',true);}}catch(error){localBlocked=true;localError=error.message;localStatus('Saved data needs review',true);}}});
+addEventListener('beforeunload',event=>{if(localPending){event.preventDefault();event.returnValue='';}});
+localStatus(localBlocked?'Saved data needs review':localRevision?'Saved locally':'Local saving ready',localBlocked);
+
+}
+go();
+})();
+</script></body></html>
