@@ -1,9 +1,9 @@
 let ntuPDFBusy=false,ntuPDFCursor=0,ntuPDFScope='',ntuPDFSeen=new Set(),ntuPDFOffsets=new Map(),ntuPDFNotice='';
 function ntuPDFConfig(){const c=term().ntuPDF;return c?.owner===ReferenceCloud.user?.id&&c.enabled===true?c:null;}
 function ntuPDFStatus(message){ntuPDFNotice=message;const el=document.getElementById('ntuPDFStatus');if(el)el.textContent=message;}
-window.setNTUPDFImport=async function(enable){const context=ntuContext();try{recordWritable();if(enable){const mapping=ntuAutoConfig()?.mapping;if(!mapping||!Object.keys(mapping).length)throw Error('Set up course-to-module mappings under Courses and automatic updates first.');const status=await ntuRequest('APP_STATUS',context);if(!ntuSame(context,ntuContext()))return;if(!status.paired||!status.capabilities?.includes('pdf-library')||!status.libraryApproved)throw Error('Install connector 0.5, reconnect this semester, and tick approval for PDF copies in the extension.');recordWritable();term().ntuPDF={owner:context.owner,enabled:true,mapping:{...mapping}};}else if(term().ntuPDF)term().ntuPDF.enabled=false;ntuPDFSeen.clear();ntuPDFNotice=enable?'Automatic PDF copies enabled. Checking…':'Automatic PDF copies off. A transfer already started may finish; existing files are kept.';go();if(enable)window.runNTUPDFImport();}catch(error){ntuPDFStatus(error.message);}};
+window.setNTUPDFImport=async function(enable){const context=ntuContext();try{recordWritable();if(enable){const mapping=term().ntuAuto?.owner===ReferenceCloud.user?.id?term().ntuAuto.mapping:null;if(!mapping||!Object.keys(mapping).length)throw Error('Set up course-to-module mappings under Courses and automatic updates first.');const status=await ntuRequest('APP_STATUS',context);if(!ntuSame(context,ntuContext()))return;if(!status.paired||!status.capabilities?.includes('pdf-library')||!status.libraryApproved)throw Error('Install connector 0.5, reconnect this semester, and tick approval for PDF copies in the extension.');recordWritable();term().ntuPDF={owner:context.owner,enabled:true,mapping:{...mapping}};}else if(term().ntuPDF)term().ntuPDF.enabled=false;ntuPDFSeen.clear();ntuPDFNotice=enable?'Automatic PDF copies enabled. Checking…':'Automatic PDF copies off. A transfer already started may finish; existing files are kept.';go();if(enable)window.runNTUPDFImport();}catch(error){ntuPDFStatus(error.message);}};
 window.runNTUPDFImport=async function(){
- const config=ntuPDFConfig();if(!config||ntuPDFBusy||assetBusy||!ntuAutoIdle())return;const context=ntuContext(),signature=JSON.stringify(config);ntuPDFBusy=true;
+ const config=ntuPDFConfig();if(!config||ntuPDFBusy||assetBusy||!ntuAutoIdle())return;const context=ntuContext(),signature=JSON.stringify(config);ntuPDFBusy=true;let currentMaterial=null;
  const current=()=>ntuSame(context,ntuContext())&&signature===JSON.stringify(ntuPDFConfig());
  try{
   recordWritable();const parsed=NTULearnSync.parse(JSON.stringify(await ntuRequest('APP_SNAPSHOT',context)));if(!current())return;
@@ -13,7 +13,7 @@ window.runNTUPDFImport=async function(){
   const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0,checkedMaterials=0,emptyMaterials=0;
   // Keep each pass small; remaining materials continue on the next timer tick.
   for(let checked=0;checked<Math.min(3,items.length);checked++){
-   if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;
+   if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;currentMaterial=item;
    const listing=await ntuRequest('APP_PDF_LIST',context,item.sourceKey);if(!current())return;
    if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');checkedMaterials++;if(!listing.files.length)emptyMaterials++;
    let complete=true;
@@ -27,7 +27,7 @@ window.runNTUPDFImport=async function(){
    if(complete){ntuPDFSeen.add(scan);ntuPDFOffsets.delete(scan);}
   }
   if(current()){if(!checkedMaterials&&!copied&&!skipped)return;ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped · '+checkedMaterials+' materials checked · '+emptyMaterials+' returned no PDF attachments. '+(emptyMaterials?'Use Upload downloaded PDF on those materials if their source offers a PDF. ':'')+'More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
- }catch(error){if(current())ntuPDFStatus('PDF copies paused: '+error.message);}
+ }catch(error){if(current()){ntuPDFStatus('PDF copies paused: '+error.message);if(typeof noteNTUPDFProblem==='function')noteNTUPDFProblem(currentMaterial,error.message);}}
  finally{ntuPDFBusy=false;}
 };
 const ntuPDFSettings=settings;

@@ -321,6 +321,8 @@ html.mopen{overflow:hidden}
 .ntu-search-form{margin:12px 0}.ntu-search-controls{display:flex;gap:8px;align-items:center}.ntu-search-controls input{flex:1;min-width:0;border:1px solid var(--ln);border-radius:12px;background:var(--sf);color:var(--txt);padding:12px 14px;font:inherit}.ntu-search-controls input:focus{outline:2px solid var(--acc);outline-offset:2px}.ntu-search-controls .btn{flex-shrink:0}@media(max-width:600px){.ntu-search-controls{flex-wrap:wrap}.ntu-search-controls input{flex-basis:100%}}
 
 .ntu-copy-panel{border-top:1px solid var(--ln);margin-top:14px;padding-top:14px}.ntu-copy-panel .study-field{margin-top:12px}.ntu-copy-panel input[type=file]{max-width:100%}
+
+.ntu-bulk-bar{border-top:1px solid var(--ln);padding-top:14px;margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ntu-bulk-bar p{width:100%;margin:4px 0}.ntu-material-selection{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--mut)}.ntu-download-icon{width:36px;height:36px;padding:0;font-size:22px}
 </style><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
 <header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
 <div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
@@ -1526,9 +1528,9 @@ window.openNTUMaterial=async function(id){
 let ntuPDFBusy=false,ntuPDFCursor=0,ntuPDFScope='',ntuPDFSeen=new Set(),ntuPDFOffsets=new Map(),ntuPDFNotice='';
 function ntuPDFConfig(){const c=term().ntuPDF;return c?.owner===ReferenceCloud.user?.id&&c.enabled===true?c:null;}
 function ntuPDFStatus(message){ntuPDFNotice=message;const el=document.getElementById('ntuPDFStatus');if(el)el.textContent=message;}
-window.setNTUPDFImport=async function(enable){const context=ntuContext();try{recordWritable();if(enable){const mapping=ntuAutoConfig()?.mapping;if(!mapping||!Object.keys(mapping).length)throw Error('Set up course-to-module mappings under Courses and automatic updates first.');const status=await ntuRequest('APP_STATUS',context);if(!ntuSame(context,ntuContext()))return;if(!status.paired||!status.capabilities?.includes('pdf-library')||!status.libraryApproved)throw Error('Install connector 0.5, reconnect this semester, and tick approval for PDF copies in the extension.');recordWritable();term().ntuPDF={owner:context.owner,enabled:true,mapping:{...mapping}};}else if(term().ntuPDF)term().ntuPDF.enabled=false;ntuPDFSeen.clear();ntuPDFNotice=enable?'Automatic PDF copies enabled. Checking…':'Automatic PDF copies off. A transfer already started may finish; existing files are kept.';go();if(enable)window.runNTUPDFImport();}catch(error){ntuPDFStatus(error.message);}};
+window.setNTUPDFImport=async function(enable){const context=ntuContext();try{recordWritable();if(enable){const mapping=term().ntuAuto?.owner===ReferenceCloud.user?.id?term().ntuAuto.mapping:null;if(!mapping||!Object.keys(mapping).length)throw Error('Set up course-to-module mappings under Courses and automatic updates first.');const status=await ntuRequest('APP_STATUS',context);if(!ntuSame(context,ntuContext()))return;if(!status.paired||!status.capabilities?.includes('pdf-library')||!status.libraryApproved)throw Error('Install connector 0.5, reconnect this semester, and tick approval for PDF copies in the extension.');recordWritable();term().ntuPDF={owner:context.owner,enabled:true,mapping:{...mapping}};}else if(term().ntuPDF)term().ntuPDF.enabled=false;ntuPDFSeen.clear();ntuPDFNotice=enable?'Automatic PDF copies enabled. Checking…':'Automatic PDF copies off. A transfer already started may finish; existing files are kept.';go();if(enable)window.runNTUPDFImport();}catch(error){ntuPDFStatus(error.message);}};
 window.runNTUPDFImport=async function(){
- const config=ntuPDFConfig();if(!config||ntuPDFBusy||assetBusy||!ntuAutoIdle())return;const context=ntuContext(),signature=JSON.stringify(config);ntuPDFBusy=true;
+ const config=ntuPDFConfig();if(!config||ntuPDFBusy||assetBusy||!ntuAutoIdle())return;const context=ntuContext(),signature=JSON.stringify(config);ntuPDFBusy=true;let currentMaterial=null;
  const current=()=>ntuSame(context,ntuContext())&&signature===JSON.stringify(ntuPDFConfig());
  try{
   recordWritable();const parsed=NTULearnSync.parse(JSON.stringify(await ntuRequest('APP_SNAPSHOT',context)));if(!current())return;
@@ -1538,7 +1540,7 @@ window.runNTUPDFImport=async function(){
   const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0,checkedMaterials=0,emptyMaterials=0;
   // Keep each pass small; remaining materials continue on the next timer tick.
   for(let checked=0;checked<Math.min(3,items.length);checked++){
-   if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;
+   if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;currentMaterial=item;
    const listing=await ntuRequest('APP_PDF_LIST',context,item.sourceKey);if(!current())return;
    if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');checkedMaterials++;if(!listing.files.length)emptyMaterials++;
    let complete=true;
@@ -1552,7 +1554,7 @@ window.runNTUPDFImport=async function(){
    if(complete){ntuPDFSeen.add(scan);ntuPDFOffsets.delete(scan);}
   }
   if(current()){if(!checkedMaterials&&!copied&&!skipped)return;ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped · '+checkedMaterials+' materials checked · '+emptyMaterials+' returned no PDF attachments. '+(emptyMaterials?'Use Upload downloaded PDF on those materials if their source offers a PDF. ':'')+'More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
- }catch(error){if(current())ntuPDFStatus('PDF copies paused: '+error.message);}
+ }catch(error){if(current()){ntuPDFStatus('PDF copies paused: '+error.message);if(typeof noteNTUPDFProblem==='function')noteNTUPDFProblem(currentMaterial,error.message);}}
  finally{ntuPDFBusy=false;}
 };
 const ntuPDFSettings=settings;
@@ -1602,6 +1604,44 @@ window.uploadNTUMaterialPDF=async function(id,file){if(!file)return;if(assetBusy
 };
 const ntuCopyHub=ntulearn;
 ntulearn=function(){const template=document.createElement('template');template.innerHTML=ntuCopyHub();const page=hubFiltered();for(const [i,article] of [...template.content.querySelectorAll('.hubitem')].entries()){const row=page[i];if(row?.type!=='file')continue;const panel=document.createElement('div');panel.className='ntu-copy-panel';panel.innerHTML='<button class="btn p" onclick="prepareNTUMaterialCopy('+row.id+')">Copy to My Files</button><label class="study-field">Upload downloaded PDF<input type="file" accept=".pdf,application/pdf" onchange="uploadNTUMaterialPDF('+row.id+',this.files[0]);this.value=\'\'"></label><div id="ntuCopyChoices-'+row.id+'"></div><p class="sub" role="status" id="ntuCopyStatus-'+row.id+'">Copies a PDF into this semester’s private Library; the material entry stays here.</p>';article.append(panel);}return template.innerHTML;};
+
+let ntuSelectedMaterials=new Set(),ntuSelectionScope='',ntuBulkBusy=false,ntuBulkCancelled=false,ntuBulkFailures=[],ntuBulkNotice='';
+function ntuBulkScope(){const key=ReferenceCloud.user?.id+':'+active;if(ntuSelectionScope!==key){ntuSelectionScope=key;ntuSelectedMaterials.clear();ntuBulkFailures=[];ntuBulkNotice='';}}
+function noteNTUPDFProblem(item,message){ntuBulkScope();const row=HUB.find(x=>x.type==='file'&&x.ntulearnSyncKey===item?.sourceKey);if(!row)return;const previous=ntuBulkFailures.find(x=>x.id===row.id);if(previous)previous.message=message;else ntuBulkFailures.push({id:row.id,title:row.title,message});}
+window.selectNTUMaterial=function(id,checked){ntuBulkScope();checked?ntuSelectedMaterials.add(id):ntuSelectedMaterials.delete(id);const el=document.getElementById('ntuSelectedCount');if(el)el.textContent=ntuSelectedMaterials.size+' selected';};
+window.selectAllNTUMaterials=function(){ntuBulkScope();for(const row of ntuFeedAll().filter(x=>x.type==='file'))ntuSelectedMaterials.add(row.id);go();};
+window.clearNTUMaterials=function(){ntuSelectedMaterials.clear();go();};
+window.toggleNTUPDFCopies=async function(box){await setNTUPDFImport(box.checked);box.checked=!!ntuPDFConfig();};
+function ntuBulkStatus(text){ntuBulkNotice=text;const el=document.getElementById('ntuBulkStatus');if(el)el.textContent=text;}
+window.stopNTUMaterialCopy=function(){ntuBulkCancelled=true;ntuBulkStatus('Stopping after the current PDF transfer…');};
+window.copyNTUMaterials=async function(retry=false){
+ ntuBulkScope();if(ntuBulkBusy||assetBusy||ntuPDFBusy){ntuBulkStatus('Wait for the current file transfer to finish.');return;}
+ const context=ntuContext(),ids=retry?ntuBulkFailures.map(x=>x.id):[...ntuSelectedMaterials],rows=ids.map(id=>HUB.find(x=>x.id===id&&x.type==='file')).filter(Boolean);if(!rows.length){ntuBulkStatus('Select materials first.');return;}
+ ntuBulkBusy=true;ntuBulkCancelled=false;assetBusy=true;const stop=document.getElementById('ntuBulkStop');if(stop)stop.hidden=false;ntuBulkFailures=[];let copied=0,existing=0;
+ try{ntuCopyCurrent(context);let connectorError='';try{const status=await ntuRequest('APP_STATUS',context);if(!status.paired||!status.libraryApproved||!status.capabilities?.includes('pdf-library'))connectorError='Connect this semester and approve PDF copies in the connector first.';}catch(error){connectorError=error.message;}ntuCopyCurrent(context);
+  for(const row of rows){if(ntuBulkCancelled)break;ntuCopyCurrent(context);try{
+   if(!row.ntulearnSyncKey)throw Error('No connector attachment identity. Open source or upload its downloaded PDF here.');if(connectorError)throw Error(connectorError);
+   ntuBulkStatus('Checking '+row.title+'…');const result=await ntuRequest('APP_PDF_LIST',context,row.ntulearnSyncKey);ntuCopyCurrent(context);
+   if(!Array.isArray(result.files)||result.files.length>100)throw Error('Unexpected PDF listing.');if(!result.files.length)throw Error('NTULearn returned no PDF attachments.');
+   for(const file of result.files){if(ntuBulkCancelled)throw Error('Copy stopped. Retry to continue; existing copies will be skipped.');ntuCopyCurrent(context);ntuBulkStatus('Copying '+file.name+'…');const data=await ntuRequest('APP_PDF_BYTES',context,row.ntulearnSyncKey,file.url);const added=await ntuStorePDF(context,row.mod,row.ntulearnSyncKey+file.url,data);added?copied++:existing++;}
+   ntuSelectedMaterials.delete(row.id);
+  }catch(error){if(!ntuSame(context,ntuContext()))throw error;ntuBulkFailures.push({id:row.id,title:row.title,message:error.message});}}
+  ntuBulkNotice=copied+' PDFs saved · '+existing+' already in My Files · '+ntuBulkFailures.length+' materials need attention · '+ntuSelectedMaterials.size+' remain selected.';
+ }catch(error){if(ntuSame(context,ntuContext()))ntuBulkNotice=error.message;}
+ finally{assetBusy=false;ntuBulkBusy=false;if(ntuSame(context,ntuContext()))go();}
+};
+const ntuSimpleCopyHub=ntulearn;
+ntulearn=function(){ntuBulkScope();const template=document.createElement('template');template.innerHTML=ntuSimpleCopyHub();const page=hubFiltered(),articles=template.content.querySelectorAll('.hubitem');
+ for(const [i,article] of [...articles].entries()){const row=page[i];if(row?.type!=='file')continue;article.querySelector('.ntu-copy-panel')?.remove();
+  const label=document.createElement('label');label.className='ntu-material-selection';label.innerHTML='<input type="checkbox" aria-label="Select '+esc(row.title)+'" '+(ntuSelectedMaterials.has(row.id)?'checked':'')+' onchange="selectNTUMaterial('+row.id+',this.checked)"> Select';article.prepend(label);
+  const button=article.querySelector('button[onclick="openNTUMaterial('+row.id+')"]');if(button){button.textContent='↓';button.title='Download PDFs';button.setAttribute('aria-label','Download PDFs for '+row.title);button.className='btn ntu-download-icon';}
+ }
+ const toolbar=template.content.querySelector('.ntu-browse');if(toolbar){const selection=document.createElement('div');selection.className='ntu-bulk-bar';selection.innerHTML='<span id="ntuSelectedCount">'+ntuSelectedMaterials.size+' selected</span><button class="btn" onclick="selectAllNTUMaterials()">Select all results</button><button class="btn" onclick="clearNTUMaterials()">Clear selection</button><button class="btn p" '+(ntuBulkBusy?'disabled':'')+' onclick="copyNTUMaterials()">Save selected to My Files</button><button id="ntuBulkStop" class="btn" hidden onclick="stopNTUMaterialCopy()">Stop copying</button><p id="ntuBulkStatus" role="status">'+esc(ntuBulkNotice)+'</p>';toolbar.append(selection);
+  if(ntuBulkFailures.length){const details=document.createElement('details');details.open=true;details.className='ntu-settings-details';details.innerHTML='<summary>Needs attention ('+ntuBulkFailures.length+')</summary><button class="btn" onclick="copyNTUMaterials(true)">Retry failed</button>'+ntuBulkFailures.map(x=>{const row=HUB.find(r=>r.id===x.id);return '<div class="review"><b>'+esc(x.title)+'</b><p class="sub">'+esc(x.message)+'</p>'+(safeCourseLink(row?.url)?'<a class="btn" target="_blank" rel="noopener noreferrer" href="'+esc(safeCourseLink(row.url))+'">Open source</a>':'')+'<label class="study-field">Upload downloaded PDF<input type="file" accept=".pdf,application/pdf" onchange="uploadNTUMaterialPDF('+x.id+',this.files[0]);this.value=\'\'"></label><p id="ntuCopyStatus-'+x.id+'" role="status"></p></div>';}).join('');toolbar.append(details);}
+ }return template.innerHTML;};
+const ntuSimplePDFSettings=settings;
+settings=function(){const template=document.createElement('template');template.innerHTML=ntuSimplePDFSettings();const status=template.content.querySelector('#ntuPDFStatus'),details=status?.closest('details');if(details){details.innerHTML='<summary>Save PDFs to My Files</summary><label class="study-field"><span><input type="checkbox" '+(ntuPDFConfig()?'checked':'')+' onchange="toggleNTUPDFCopies(this)"> Save available PDFs from my mapped courses to My Files automatically</span></label><p class="sub">Uses this semester’s course mappings and private Library. Enable PDF permission when connecting. Existing copies are skipped; originals stay in NTULearn. Keep the planner open. For older materials, select them in Materials and use Save selected to My Files.</p><p id="ntuPDFStatus" role="status">'+esc(ntuPDFNotice)+'</p>';}
+ return template.innerHTML;};
 
 }else{
 // Injected INSIDE the original v2.9 semester closure. Renderers and CSS are retained.

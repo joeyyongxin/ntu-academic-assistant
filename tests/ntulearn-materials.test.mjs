@@ -8,7 +8,7 @@ const request={key,expires:Date.now()+60000};
 const json=data=>new Response(JSON.stringify(data),{headers:{'content-type':'application/json'}});
 test('PDF download destinations are built from verified source identities, never attachment URLs',async()=>{
  const calls=[];const result=await pdfAttachments(state,request,async url=>{calls.push(url);return url.endsWith('/users/me')?json({id:'student'}):json({results:[{id:'pdf/id',fileName:'Lecture.pdf',url:'https://evil.example/stolen'},{id:'exe',fileName:'program.exe'},{id:'doc',fileName:'notes.docx'}]});});
- assert.equal(result.files.length,1);assert.equal(result.files[0].url,'https://ntulearn.ntu.edu.sg/learn/api/public/v1/courses/c1/contents/file1/attachments/pdf%2Fid/download');assert.equal(calls.length,2);
+ assert.equal(result.files.length,1);assert.equal(result.files[0].url,'https://ntulearn.ntu.edu.sg/learn/api/public/v1/courses/c1/contents/file1/attachments/pdf%2Fid/download');assert.equal(calls.length,3);
 });
 test('unknown materials, expired requests and different NTULearn accounts cannot list PDFs',async()=>{
  assert.throws(()=>materialInSnapshot(state,'not a synced identity'));
