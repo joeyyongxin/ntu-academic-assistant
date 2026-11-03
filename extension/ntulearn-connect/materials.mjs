@@ -15,13 +15,30 @@ export function materialInSnapshot(state,key){if(typeof key!=='string'||key.leng
 export async function pdfAttachments(state,request,fetcher=fetch){
  if(!request||request.expires<Date.now())throw Error('Download request expired. Open it again from the planner.');
  const me=await getJson('/learn/api/public/v1/users/me',fetcher);if(me?.id!==state.subject)throw Error('NTULearn account changed or signed out. Reconnect before downloading.');
- const item=materialInSnapshot(state,request.key),contentPath='/learn/api/public/v1/courses/'+encodeURIComponent(item.courseId)+'/contents/'+encodeURIComponent(item.id),base=contentPath+'/attachments';
- let content=null;try{content=await getJson(contentPath,fetcher);}catch(error){if([401,403].includes(error.status))throw error;}
- const direct=directPDFEntries(content);
- if(direct.length&&['resource/x-bb-document','resource/x-bb-file'].includes(content?.contentHandler?.id))return {title:item.title,files:direct};
- let rows;try{rows=await collection(base+'?limit=100',fetcher);}catch(error){if([400,404,405].includes(error.status)&&direct.length)return {title:item.title,files:direct};throw Error('PDF attachment discovery: '+error.message);}
- const files=rows.filter(x=>typeof x.id==='string'&&x.id.length<=200&&typeof x.fileName==='string'&&/\.pdf$/i.test(x.fileName)).map(x=>({name:x.fileName.slice(0,500),url:HOST+base+'/'+encodeURIComponent(x.id)+'/download'}));
- if(!files.length&&direct.length)return {title:item.title,files:direct};
- for(const file of files){const matches=direct.filter(x=>x.name.toLowerCase()===file.name.toLowerCase());if(matches.length===1)file.directUrl=matches[0].url;else if(files.length===1&&direct.length===1)file.directUrl=direct[0].url;}
+ const item=materialInSnapshot(state,request.key);
+ // Ultra documents may keep their BBML attachment links in child content blocks.
+ // Stay within this selected material's authenticated subtree, never the whole course.
+ const queue=[{id:item.id,depth:0}],seen=new Set(),files=[];
+ while(queue.length){
+  const {id,depth}=queue.shift();if(seen.has(id))continue;
+  if(seen.size>=25)throw Error('Material contains too many content blocks to check completely. Open its NTULearn source.');seen.add(id);
+  const path='/learn/api/public/v1/courses/'+encodeURIComponent(item.courseId)+'/contents/'+encodeURIComponent(id),attachments=path+'/attachments';
+  let content=null;try{content=await getJson(path,fetcher);}catch(error){if([401,403].includes(error.status)||depth)throw error;}
+  const children=content?.hasChildren===true||content?.contentHandler?.id==='resource/x-bb-folder',direct=directPDFEntries(content);
+  let found=direct;
+  if(!(direct.length&&['resource/x-bb-document','resource/x-bb-file'].includes(content?.contentHandler?.id))){
+   let rows=[];try{rows=await collection(attachments+'?limit=100',fetcher);}catch(error){if(!([400,404,405].includes(error.status)&&(direct.length||children)))throw Error('PDF attachment discovery: '+error.message);}
+   const attached=rows.filter(x=>typeof x.id==='string'&&x.id.length<=200&&typeof x.fileName==='string'&&/\.pdf$/i.test(x.fileName)).map(x=>({name:x.fileName.slice(0,500),url:HOST+attachments+'/'+encodeURIComponent(x.id)+'/download'}));
+   for(const file of attached){const matches=direct.filter(x=>x.name.toLowerCase()===file.name.toLowerCase());if(matches.length===1)file.directUrl=matches[0].url;else if(attached.length===1&&direct.length===1)file.directUrl=direct[0].url;}
+   found=attached.length?attached:direct;
+  }
+  for(const file of found)if(!files.some(x=>x.url===file.url||x.directUrl&&x.directUrl===file.directUrl))files.push(file);
+  if(children){
+   if(depth>=4)throw Error('Material nesting is too deep to check completely. Open its NTULearn source.');
+   const rows=await collection(path+'/children?limit=100',fetcher);
+   for(const row of rows){if(row.availability?.available==='No')continue;if(typeof row.id!=='string'||!row.id||row.id.length>200)throw Error('Unexpected child content identity.');if(!seen.has(row.id))queue.push({id:row.id,depth:depth+1});}
+   if(queue.length+seen.size>100)throw Error('Material contains too many content blocks to check completely. Open its NTULearn source.');
+  }
+ }
  return {title:item.title,files};
 }

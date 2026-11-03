@@ -1,3 +1,15 @@
+# Connector 0.8 — PDFs inside Ultra child blocks
+
+Replace all files in the SAME installed connector folder, Reload at chrome://extensions, confirm version 0.8.0, then refresh the planner. Pairing and permissions are unchanged.
+
+The PDF checker now follows authenticated child content blocks of the selected material, where Blackboard Ultra can store the actual attachment link. It checks up to 25 blocks and four child levels, skips unavailable items, and refuses incomplete checks instead of reporting a misleading empty result. It does not scan other courses or unrelated course items. Each byte request rechecks the selected material subtree, account identity, approved NTULearn destination, PDF signature and size.
+
+Regression checks cover a parent with an empty attachment list and a child containing an extensionless PDF link, actual synthetic PDF byte retrieval, restricted children, cycles and depth limits. This is a documented structure the previous checker missed; the user's Quiz 1 Answer Key remains unverified until retried. A material may genuinely contain no PDF. No cloud data, database configuration or website deployment is changed by this connector-only update.
+
+Reference: https://docs.blackboard.com/docs/blackboard/rest-apis/demo-code/curl-attach-demo
+
+---
+
 # Connector 0.7 — Ultra attachment discovery fix
 
 Replace ALL files in the SAME installed connector folder, Reload at chrome://extensions, verify Version 0.7.0, and refresh the planner. No new permissions are added; existing pairing and PDF-copy approval are preserved when the folder path stays the same.
