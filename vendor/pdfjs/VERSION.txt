@@ -1,0 +1,3 @@
+pdfjs-dist 6.5.438
+https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.5.438.tgz
+Apache-2.0; see LICENSE

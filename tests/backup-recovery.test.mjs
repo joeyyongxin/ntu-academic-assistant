@@ -86,3 +86,16 @@ test('restored file downloads through the actual Library adapter with matching b
  const downloaded=new Uint8Array(await (await library.download('fixture-owner',rows[0])).arrayBuffer());
  assert.deepEqual(downloaded,original);assert.equal(await api.digest(downloaded),packed.assets[0].sha256);
 });
+
+test('backup restores missing study metadata without overwriting current sessions, grades or reminder choices',async()=>{
+ const current=workspace(term([task],[assessment])),incoming=workspace(term([task],[assessment]));
+ current.terms[0].studyTools={owner:'owner',rules:[],sessions:[{id:'same',minutes:25}],grades:{g:{weight:20,score:9}},reminders:{enabled:false}};
+ incoming.terms[0].studyTools={owner:'owner',rules:[{id:'weekly'}],sessions:[{id:'same',minutes:10},{id:'missing',minutes:15}],grades:{g:{weight:20,score:7},restored:{weight:10}},reminders:{enabled:true}};
+ const archive=await api.parse(JSON.stringify(await api.create(incoming,[])),validate);
+ const first=api.merge(current,archive.data,validate).snapshot;
+ assert.equal(first.terms[0].studyTools.sessions.length,2);assert.equal(first.terms[0].studyTools.sessions[0].minutes,25);assert.equal(first.terms[0].studyTools.grades.g.score,9);assert.equal(first.terms[0].studyTools.grades.restored.weight,10);assert.equal(first.terms[0].studyTools.reminders.enabled,false);
+ const again=api.merge(first,archive.data,validate).snapshot;assert.equal(again.terms[0].studyTools.sessions.length,2);assert.equal(again.terms[0].studyTools.rules.length,1);assert.equal(current.terms[0].studyTools.sessions.length,1);
+});
+test('backup does not combine study metadata owned by different accounts',()=>{
+ const current=workspace(),incoming=workspace();current.terms[0].studyTools={owner:'a',sessions:[]};incoming.terms[0].studyTools={owner:'b',sessions:[{id:'foreign'}]};const result=api.merge(current,incoming,validate);assert.equal(result.snapshot.terms[0].studyTools.sessions.length,0);
+});

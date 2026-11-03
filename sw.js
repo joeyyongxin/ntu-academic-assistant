@@ -1,7 +1,9 @@
-const CACHE='academic-assistant-shell-v33';
-const ASSETS=['./','./index.html','./workspace.html','./legacy.html','./app.js','./data-service.js','./account.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg','./workspace/backup-recovery.js','./workspace/ntulearn-calendar.js','./workspace/ntulearn-announcements.js','./workspace/ntulearn-sync.js','./workspace/ntulearn-library.js','./workspace/ntulearn-answers.js'];
+const CACHE='academic-assistant-shell-v34';
+const ASSETS=['./','./index.html','./workspace.html','./legacy.html','./app.js','./data-service.js','./account.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg','./workspace/backup-recovery.js','./workspace/ntulearn-calendar.js','./workspace/ntulearn-announcements.js','./workspace/ntulearn-sync.js','./workspace/ntulearn-library.js','./workspace/ntulearn-answers.js','./workspace/study-tools.js','./workspace/pdf-study-search.js','./vendor/pdfjs/pdf.mjs','./vendor/pdfjs/pdf.worker.mjs'];
 const HOSTS=['cdn.jsdelivr.net','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||!(u.origin===location.origin||HOSTS.includes(u.hostname)))return;
 e.respondWith(fetch(e.request).then(r=>{if(r.ok||r.type==='opaque'){const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c))}return r}).catch(()=>caches.match(e.request)))});
+
+self.addEventListener('notificationclick',event=>{event.notification.close();const route=['#assessments','#ntulearn'].includes(event.notification.data?.route)?event.notification.data.route:'#today';const url=new URL('./index.html'+route,self.registration.scope).href;event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(async windows=>{const target=windows.find(w=>w.url.startsWith(self.registration.scope));if(target){await target.navigate(url);return target.focus();}return clients.openWindow(url);}));});
