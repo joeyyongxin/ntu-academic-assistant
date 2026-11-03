@@ -1,3 +1,13 @@
+# Connector 0.7 — Ultra attachment discovery fix
+
+Replace ALL files in the SAME installed connector folder, Reload at chrome://extensions, verify Version 0.7.0, and refresh the planner. No new permissions are added; existing pairing and PDF-copy approval are preserved when the folder path stays the same.
+
+This patch reads authenticated Ultra content metadata before choosing a download route. It recognizes PDF attachment names/MIME metadata even when the WebDAV URL has no .pdf extension. Ultra documents with these links no longer require the Original-course attachment-list endpoint that can reject the request with HTTP 400. Original attachment-list discovery is retained where supported, and access denials remain errors. Every byte request is still checked against freshly retrieved content metadata, fixed NTULearn HTTPS destinations, PDF signature/size checks and source account checks. No credentials or signed source URLs are logged.
+
+Retry ONE previously failing PDF from Materials using Save selected to My Files. If successful, open My Files and download it once to verify a completed private copy. Real account verification is pending; automated tests use synthetic Ultra metadata and PDFs. No website deployment is required just to use this connector patch with the currently published copy workflow.
+
+Official behavior reference: https://docs.blackboard.com/docs/blackboard/rest-apis/demo-code/curl-attach-demo
+
 # Connector 0.6 — simpler saving and direct PDF fallback
 
 Update ALL files in the SAME installed extension folder, Reload at chrome://extensions, verify Version 0.6.0 and refresh the planner. No new permissions are added; existing account/semester pairing and PDF-copy approval remain required.

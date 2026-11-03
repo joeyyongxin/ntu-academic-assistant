@@ -19,7 +19,7 @@ export async function getJson(path, fetcher = fetch) {
       method: 'GET', credentials: 'include', redirect: 'error',
       cache: 'no-store', headers: {Accept: 'application/json'}, signal: abort.signal
     });
-    if (!response.ok) throw new Error(`NTULearn returned HTTP ${response.status}. Sign in again for 401; access may be restricted for 403.`);
+    if (!response.ok) { const error = new Error(`NTULearn returned HTTP ${response.status}.`); error.status = response.status; throw error; }
     if (!/application\/(?:[\w.+-]*\+)?json\b/i.test(response.headers.get('content-type') || '')) {
       throw new Error('NTULearn did not return JSON. Sign in to NTULearn and try again.');
     }
