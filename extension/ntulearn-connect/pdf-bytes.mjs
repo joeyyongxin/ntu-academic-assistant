@@ -1,15 +1,15 @@
 import {apiUrl,getJson} from './api.mjs';
-import {pdfAttachments} from './materials.mjs';
+import {pdfAttachments,safeDirectPDF} from './materials.mjs';
 export async function readPDF(state,key,attachment,fetcher=fetch){
  const listing=await pdfAttachments(state,{key,expires:Date.now()+60000},fetcher);
  const file=listing.files.find(f=>f.url===attachment);if(!file)throw Error('Choose an attachment returned by NTULearn.');
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),25000);
  try{
   const options={method:'GET',credentials:'include',redirect:'error',cache:'no-store',headers:{Accept:'application/pdf'},signal:controller.signal};
-  let response;try{response=await fetcher(apiUrl(file.url),options);}catch(error){
+  let response;try{response=await fetcher(file.directUrl===file.url&&safeDirectPDF(file.url)?file.url:apiUrl(file.url),options);}catch(error){
    if(!(error instanceof TypeError)||!file.directUrl)throw error;
    // Only the current material's verified same-host PDF link can be used as a fallback.
-   const direct=new URL(file.directUrl);if(direct.origin!=='https://ntulearn.ntu.edu.sg'||!direct.pathname.startsWith('/bbcswebdav/')||direct.username||direct.password||!/\.pdf$/i.test(direct.pathname))throw Error('Unsupported PDF destination.');
+   const direct=new URL(file.directUrl);if(direct.origin!=='https://ntulearn.ntu.edu.sg'||!direct.pathname.startsWith('/bbcswebdav/')||direct.username||direct.password)throw Error('Unsupported PDF destination.');
    response=await fetcher(direct.href,options);
   }
   if(!response.ok)throw Error('PDF fetch returned HTTP '+response.status+'.');
