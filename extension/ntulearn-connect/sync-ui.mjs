@@ -14,6 +14,6 @@ $('connect').onclick=()=>run(async()=>{
 });
 $('save').onclick=()=>run(async()=>{status('Syncing selected courses…');const data=await request('CONFIG',{ids:[...$('courses').querySelectorAll('input:checked')].map(x=>x.value),auto:$('auto').checked});status('Local sync finished. '+data.count+' items. '+(data.warnings.length?data.warnings.join(' '):'No reported category errors.'));});
 $('sync').onclick=()=>run(async()=>{status('Syncing…');const data=await request('SYNC');status('Local sync finished. '+data.count+' items. '+(data.warnings.length?data.warnings.join(' '):'No reported category errors.'));});
-$('approve').onclick=()=>run(async()=>{await request('APPROVE',{pending});status('Approved. Return to planner Settings, check connection, then review latest updates.');});
+$('approve').onclick=()=>run(async()=>{await request('APPROVE',{pending,libraryApproved:$('libraryApproval').checked});status('Approved. Return to planner Settings, check connection, then review latest updates.');});
 $('disconnect').onclick=async()=>{try{await request('RESET');$('courses').replaceChildren();$('coursesPanel').hidden=true;status('Disconnected and cleared local course data. Existing planner records are kept.');await refresh();}catch(error){status(error.message);}};
 refresh().catch(error=>status(error.message));

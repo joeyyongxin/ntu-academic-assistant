@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Connect NTULearn · Academic Assistant</title><link rel="stylesheet" href="connect.css"></head>
 <body><main>
-<p class="eyebrow">ACADEMIC ASSISTANT · NTULEARN CONNECTOR 0.2</p>
+<p class="eyebrow">ACADEMIC ASSISTANT · NTULEARN CONNECTOR 0.5</p>
 <h1>Connect NTULearn</h1>
 <p>Read announcements, published deadlines and material listings from courses you choose. This is an unofficial, read-only NTULearn connection.</p>
 <section><h2>You're in control</h2><p>Sign in on NTULearn itself. Your browser handles your session; we never read or save your password or cookie values. Selected course content is saved locally in this extension. Only an approved planner account and semester can request it for review.</p>
@@ -10,6 +10,6 @@
 <button id="connect">Connect and list courses</button> <button id="disconnect" class="secondary">Disconnect and clear local data</button></section>
 <p id="status" role="status" aria-live="polite">Not connected.</p>
 <section id="coursesPanel" hidden><h2>Choose up to five courses</h2><div id="courses"></div><label><input type="checkbox" id="auto"> Refresh these courses about every 30 minutes while my browser is running</label><p>Uses your NTULearn session. Reconnect when it expires. Deadlines cover the next 30 days; dates in announcement prose are not guessed. Material folders are explored, but files are not downloaded.</p><button id="save">Save courses and sync</button></section>
-<section id="approvalPanel" hidden><h2>Approve planner connection</h2><p id="approval"></p><p>This lets the selected planner account request your locally synced course content. Saving reviewed items there uses your planner's existing cloud save. You can disconnect later.</p><button id="approve">Approve this account and semester</button></section>
+<section id="approvalPanel" hidden><h2>Approve planner connection</h2><p id="approval"></p><p>This lets the selected planner account request your locally synced course content. Saving reviewed items there uses your planner's existing cloud save. You can disconnect later.</p><p><label><input id="libraryApproval" type="checkbox"> Allow this planner account and semester to request PDF bytes for copying to its private Supabase Library, when I enable file imports in Settings.</label></p><button id="approve">Approve this account and semester</button></section>
 <section><h2>Sync status</h2><p id="summary" role="status"></p><button id="sync" class="secondary">Sync now</button><p id="pair"></p><p>Sync updates the local source snapshot. New or changed items enter the planner only after you review and save them in Settings. Your own tasks and edits are kept.</p></section>
 </main><script type="module" src="sync-ui.mjs"></script></body></html>

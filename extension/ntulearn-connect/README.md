@@ -1,3 +1,18 @@
+# Connector 0.5 — optional automatic PDF copies
+
+Update ALL extension files in the SAME installed folder, Reload at chrome://extensions, verify Version 0.5.0, and refresh the planner. There are no new browser host permissions.
+
+After the matching website update is published:
+1. Settings → NTULearn connection → Connect NTULearn. In the extension approval tab, check the planner account/semester and tick the new permission for PDF copies to private Supabase Library. Approve the connection.
+2. Set up course-to-module mappings under Courses and automatic updates.
+3. Open PDF copies to My Files and select Approve and enable PDF copies. This opt-in transfers actual NTULearn PDF contents to your existing private Supabase storage. Files are assigned to this semester and its mapped modules.
+4. Keep the planner open and NTULearn signed in. The importer checks up to three materials and transfers at most three PDFs each pass. Remaining work continues on later one-minute passes. Status is shown in the same Settings section; My Files can refresh after an import.
+5. Turn off PDF copies at any time. A transfer already started may finish in its original semester; existing files remain.
+
+Up to 10 MB per PDF. Strict PDF header checks reject HTML/login responses. Names contain a stable source marker and SHA-256 content hash so retries/reloads find existing copies without overwriting files. Different content receives a separate version. Renaming is not currently a Library feature; manually deleting an imported file can cause it to be imported again on a later source refresh while automatic copies remain enabled. Change course mappings, then enable PDF copies again to adopt those new mappings.
+
+Fetches use the fixed authenticated attachment API and refuse redirects. An unsupported/redirecting download is reported and can be downloaded manually via Download PDFs. Real NTULearn bytes still need verification; automated tests use synthetic PDFs. No file content is sent to an AI provider. The new answer panel uses saved Hub deadlines and announcement snippets only, without PDF text extraction or an AI service.
+
 # Connector 0.4 — download compatibility feedback
 
 Replace the extension files in the SAME installed folder, click Reload on its card at chrome://extensions, and verify Version 0.4.0. Then refresh the planner with Ctrl+Shift+R. Keeping the folder path preserves the extension ID and local pairing. No new permissions are added.
