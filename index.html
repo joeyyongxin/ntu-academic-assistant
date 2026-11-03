@@ -1410,7 +1410,16 @@ localStatus(localBlocked?'Saved data needs review':localRevision?'Saved locally'
  for(const n of ['saveStudyTask','deleteStudyTask']){const f=window[n];if(typeof f==='function')window[n]=function(){saved=true;try{return f.apply(this,arguments)}finally{saved=false}}}
  const a0=add;add=function(){saved=true;try{return a0.apply(this,arguments)}finally{saved=false}};
  const g=go;go=function(){const r=g.apply(this,arguments);try{decorate()}catch(e){}return r};
- document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+ // Keep keyboard navigation inside the active form dialog.
+ document.addEventListener('keydown',e=>{
+  const dialog=document.querySelector('.mback.open');if(!dialog)return;
+  if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeM();return;}
+  if(e.key!=='Tab')return;
+  const fields=[...dialog.querySelectorAll('button,a[href],input,select,textarea,[tabindex]')].filter(x=>!x.disabled&&x.tabIndex>=0&&!x.closest('[hidden],[inert]')&&x.getClientRects().length);
+  if(!fields.length){e.preventDefault();dialog.tabIndex=-1;dialog.focus();return;}
+  const first=fields[0],last=fields[fields.length-1],current=document.activeElement;
+  if(!fields.includes(current)||(e.shiftKey?current===first:current===last)){e.preventDefault();(e.shiftKey?last:first).focus();}
+ },true);
  const v=V();if(v){new MutationObserver(()=>{if(!v.querySelector('[data-mdec]')&&v.children.length)try{decorate()}catch(e){}}).observe(v,{childList:true});try{decorate()}catch(e){}}
 })();
 
