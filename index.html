@@ -42,7 +42,7 @@ h1{font-size:30px;letter-spacing:-.02em;margin:2px 0}h2{font-size:17px;margin:0 
 .gear{margin-left:auto;text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
 .wk{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}.wk .card{margin:0}.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.wk .ld{max-width:none;margin-bottom:6px}
 .cv{display:flex;height:6px;gap:2px;margin-top:10px}.cv i{flex:1;border-radius:3px}
-.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--ln)}.set:first-of-type{border-top:0}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--ln)}.set:first-of-type{border-top:0}.backup-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0 10px}.backup-tools .sub{flex:1 1 100%}.backup-tools #fullBackupStatus{margin:0}.backup-tools .notice{color:var(--wn)}
 .tag{font-size:12px}@media(max-width:800px){.lib{display:none}.sq{max-width:none}.pill{display:none}}
 
 /* v2.1 enhancements */
@@ -318,7 +318,7 @@ html.mopen{overflow:hidden}
 </style><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
 <header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
 <div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
-<script src="config.js"></script><script src="data-service.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
+<script src="config.js"></script><script src="data-service.js"></script><script src="workspace/backup-recovery.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
 (function(root){
  const KEY='aa-reference-v29-workspace-v1';
  const copy=value=>JSON.parse(JSON.stringify(value));
@@ -1296,6 +1296,66 @@ settings=function(){return assistantSettings()
  .replace('Reads your plan; its changes arrive as proposals in the Inbox','Task changes can use the existing planner connection in ChatGPT. Sign-in status is managed there.')
  .replace('Demo · Not connected','Check in ChatGPT')
  .replace('Preview session restoring','Reload saved workspace');};
+
+// Full, integrity-checked backups of cloud records and private Library files.
+let pendingFullBackup=null,backupRestoreBusy=false;
+const activeBackupSettings=settings;
+settings=function(){
+ let html=activeBackupSettings();
+ if(!ReferenceCloud.bridge?.preferencesAvailable)return html;
+ const tools='<div class="backup-tools"><p class="sub">Full backup includes semester settings, tasks, assessments and private file contents. Keep the downloaded backup private.</p><button class="btn" type="button" onclick="document.getElementById(\'fullBackupFile\').click()">Restore from backup</button><input id="fullBackupFile" type="file" accept=".json,application/json" hidden onchange="previewFullBackup(this.files[0]);this.value=\'\'"><p id="fullBackupStatus" class="sub" role="status" aria-live="polite"></p><button id="fullBackupApply" class="btn p" type="button" hidden onclick="applyFullBackup()">Restore this backup</button></div>';
+ const backupRow=/<div class="set"><span>Backup[\s\S]*?<\/div>/;
+ return backupRow.test(html)?html.replace(backupRow,row=>row+tools):html+'<section class="card"><h2>Backup and recovery</h2><p class="sub">Full backup includes semester settings, tasks, assessments and private file contents.</p>'+tools+'</section>';
+};
+function setBackupMessage(text,error=false){const el=document.getElementById('fullBackupStatus');if(el){el.textContent=text;el.classList.toggle('notice',!!error);}}
+function fullBackupReady(){
+ const b=ReferenceCloud.bridge;
+ if(!ReferenceCloud.user||!b)throw Error('Sign in before making or restoring a backup.');
+ if(!b.preferencesAvailable)throw Error('Semester settings are not connected to cloud storage yet. The app cannot create a complete backup.');
+ if(b.blocked)throw Error('Resolve the pending cloud save before making or restoring a backup.');
+ if(assetBusy||backupRestoreBusy)throw Error('Wait for the current Library operation to finish.');
+ return b;
+}
+function bytesFile(data,name,type){return new File([data],name,{type:type||'application/octet-stream'});}
+function allRecords(s,field){return s.terms.reduce((out,t)=>out.concat(t[field]||[]),[]);}
+window.exportReferenceWorkspace=async function(){
+ try{
+  const bridge=fullBackupReady();await bridge.queue;if(bridge.blocked||bridge.pending)throw Error('Wait for the current save to finish, then try again.');
+  const owner=ReferenceCloud.user.id,snapshot=testSnapshot(),signature=JSON.stringify(snapshot),assets=[];assetBusy=true;
+  for(const termRecord of snapshot.terms){const library=await assetLibrary(),rows=await library.list(owner,termRecord.id);for(const row of rows){if(row.user_id!==owner||row.semester_id!==termRecord.id)throw Error('A Library file belongs to a different account or semester. Backup stopped.');const blob=await library.download(owner,row);assets.push({row,blob});}}
+  if(JSON.stringify(testSnapshot())!==signature)throw Error('Your workspace changed while the backup was being created. Download a fresh backup.');
+  const payload=await AcademicBackup.create(snapshot,assets),blob=new Blob([JSON.stringify(payload)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Academic_Assistant_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  setBackupMessage('Full backup downloaded · '+snapshot.terms.reduce((n,t)=>n+t.tasks.length,0)+' tasks · '+allRecords(snapshot,'assessments').length+' assessments · '+assets.length+' private files.');
+ }catch(error){setBackupMessage(error.message||'Backup failed.',true)}finally{assetBusy=false;}
+};
+window.previewFullBackup=async function(file){
+ pendingFullBackup=null;const button=document.getElementById('fullBackupApply');if(button)button.hidden=true;
+ try{const bridge=fullBackupReady();await bridge.queue;if(bridge.blocked||bridge.pending)throw Error('Wait for the current save to finish, then try again.');if(!file)throw Error('Choose a backup file.');
+  if(file.size>72*1024*1024)throw Error('This backup is larger than the supported 72 MB limit.');const parsed=await AcademicBackup.parse(await file.text(),ReferenceLocalStore.validate);pendingFullBackup={...parsed,owner:ReferenceCloud.user.id};
+  const tasks=allRecords(parsed.data,'tasks').length,assessments=allRecords(parsed.data,'assessments').length;
+  setBackupMessage((parsed.legacy?'Older backup checked · no private file contents were included. ':'Backup checked · ')+parsed.data.terms.length+' semesters · '+tasks+' tasks · '+assessments+' assessments · '+parsed.assets.length+' private files. Restore adds missing records and skips exact duplicates; current records are kept.');if(button)button.hidden=false;
+ }catch(error){setBackupMessage(error.message||'This backup could not be checked.',true);}
+};
+window.applyFullBackup=async function(){
+ if(!pendingFullBackup||backupRestoreBusy)return;
+ const approved=confirm('Restore this backup into the signed-in workspace? Missing records and files will be added. Existing records and files will not be deleted. Exact duplicates will be skipped. If a saved record differs, the backup copy will be added separately.');if(!approved)return;
+ let bridge;
+ try{
+  bridge=fullBackupReady();if(pendingFullBackup.owner!==ReferenceCloud.user.id)throw Error('The signed-in account changed. Check the backup again.');
+  await bridge.queue;if(bridge.blocked||bridge.pending)throw Error('Wait for the current save to finish, then try again.');
+  backupRestoreBusy=true;assetBusy=true;
+  const library=await assetLibrary(),owner=ReferenceCloud.user.id;
+  const done=await AcademicBackup.restore(testSnapshot(),pendingFullBackup,{
+   async saveWorkspace(snapshot){testHydrate(snapshot);bridge.changed(snapshot,true);await bridge.queue;if(bridge.blocked||bridge.pending)throw Error('Some workspace data may have been restored. Reload the saved workspace, then choose the same backup again to safely continue.');},
+   listFiles:semesterId=>library.list(owner,semesterId),
+   downloadFile:row=>library.download(owner,row),
+   async uploadFile(file){await bridge.ensurePreferences();return library.upload(owner,file.semesterId,file.module,bytesFile(file.bytesData,file.name,file.mime));},
+   progress(p){setBackupMessage('Restoring files · '+p.added+' added · '+p.skipped+' already present · '+p.done+' of '+p.total+'.');}
+  },ReferenceLocalStore.validate);
+  pendingFullBackup=null;go();setBackupMessage('Restore complete · '+done.addedTerms+' semesters · '+done.addedTasks+' tasks · '+done.addedAssessments+' assessments · '+done.addedFiles+' files added · '+(done.duplicates+done.skippedFiles)+' exact duplicates skipped. Existing records were kept.');
+ }catch(error){setBackupMessage((error.message||'Restore did not finish.')+' If cloud records were already saved, reload and retry the same backup; exact duplicates are skipped.',true);}
+ finally{backupRestoreBusy=false;assetBusy=false;}
+};
 
 
 }else{
