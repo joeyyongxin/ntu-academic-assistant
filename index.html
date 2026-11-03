@@ -319,6 +319,8 @@ html.mopen{overflow:hidden}
 .ntu-settings-details{border-top:1px solid var(--ln);margin-top:18px;padding-top:16px}.ntu-settings-details>summary{font-weight:600;cursor:pointer;padding:8px 0}.ntu-settings-details section{margin-top:16px}.ntu-module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;max-height:230px;overflow:auto;margin-top:14px}.ntu-module-grid .btn{text-align:left;white-space:normal}.ntu-pager{justify-content:flex-end;flex-wrap:wrap;margin-top:16px}.hubitem summary{cursor:pointer;color:var(--mut);overflow-wrap:anywhere}.ntu-browse input{width:100%}@media(max-width:800px){.ntu-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ntu-connection .btn{margin-bottom:8px}}
 
 .ntu-search-form{margin:12px 0}.ntu-search-controls{display:flex;gap:8px;align-items:center}.ntu-search-controls input{flex:1;min-width:0;border:1px solid var(--ln);border-radius:12px;background:var(--sf);color:var(--txt);padding:12px 14px;font:inherit}.ntu-search-controls input:focus{outline:2px solid var(--acc);outline-offset:2px}.ntu-search-controls .btn{flex-shrink:0}@media(max-width:600px){.ntu-search-controls{flex-wrap:wrap}.ntu-search-controls input{flex-basis:100%}}
+
+.ntu-copy-panel{border-top:1px solid var(--ln);margin-top:14px;padding-top:14px}.ntu-copy-panel .study-field{margin-top:12px}.ntu-copy-panel input[type=file]{max-width:100%}
 </style><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
 <header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
 <div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
@@ -1533,12 +1535,12 @@ window.runNTUPDFImport=async function(){
   const scope=context.owner+':'+context.semester;if(scope!==ntuPDFScope){ntuPDFScope=scope;ntuPDFCursor=0;ntuPDFSeen.clear();}
   const items=parsed.items.filter(x=>x.kind==='file'&&x.date>=term().start&&x.date<=term().end&&MODS.includes(config.mapping?.[x.courseId]));
   if(!items.length){ntuPDFStatus('No mapped materials in this semester’s snapshot.');return;}
-  const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0;
+  const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0,checkedMaterials=0,emptyMaterials=0;
   // Keep each pass small; remaining materials continue on the next timer tick.
   for(let checked=0;checked<Math.min(3,items.length);checked++){
    if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;
    const listing=await ntuRequest('APP_PDF_LIST',context,item.sourceKey);if(!current())return;
-   if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');
+   if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');checkedMaterials++;if(!listing.files.length)emptyMaterials++;
    let complete=true;
    for(let offset=ntuPDFOffsets.get(scan)||0;offset<listing.files.length;offset++){const attachment=listing.files[offset];if(!current()||!ntuAutoIdle())return;if(transfers>=3){complete=false;break;}transfers++;
     ntuPDFStatus('Checking PDF: '+attachment.name);const data=await ntuRequest('APP_PDF_BYTES',context,item.sourceKey,attachment.url);if(!current())return;
@@ -1549,7 +1551,7 @@ window.runNTUPDFImport=async function(){
    }
    if(complete){ntuPDFSeen.add(scan);ntuPDFOffsets.delete(scan);}
   }
-  if(current()){ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped. More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
+  if(current()){if(!checkedMaterials&&!copied&&!skipped)return;ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped · '+checkedMaterials+' materials checked · '+emptyMaterials+' returned no PDF attachments. '+(emptyMaterials?'Use Upload downloaded PDF on those materials if their source offers a PDF. ':'')+'More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
  }catch(error){if(current())ntuPDFStatus('PDF copies paused: '+error.message);}
  finally{ntuPDFBusy=false;}
 };
@@ -1563,6 +1565,43 @@ hubAsk=function(query){const text=query.trim().slice(0,200);if(!text)return;cons
 const ntuAnswerHub=ntulearn;
 ntulearn=function(){const template=document.createElement('template');template.innerHTML=ntuAnswerHub();const heading=template.content.querySelector('.hubchat h2');if(heading)heading.textContent='Ask about saved updates';const hint=template.content.querySelector('.hubchat .sub');if(hint)hint.textContent='Short answers from saved deadlines and announcement text, with sources. PDF contents are not searched yet. No AI service is used.';const input=template.content.querySelector('#hubq');if(input)input.placeholder='When is the SC2000 quiz?';
  const messages=template.content.querySelectorAll('.hubmessages .hubmsg');hubMessages.forEach((message,i)=>{for(const source of message.sources||[]){const url=safeCourseLink(source.url);const link=document.createElement('a');link.className='btn';link.textContent='Source: '+source.title;link.href=url||'#ntulearn';if(url){link.target='_blank';link.rel='noopener noreferrer';}else{link.setAttribute('onclick','hubMod=\''+(HUB.find(x=>x.id===source.id)?.mod||'all')+'\';go()');}messages[i]?.append(document.createElement('br'),link);}});return template.innerHTML;};
+
+let ntuMaterialCopy=null;
+function ntuCopyMessage(id,text){const el=document.getElementById('ntuCopyStatus-'+id);if(el)el.textContent=text;}
+function ntuCopyCurrent(context){if(!ntuSame(context,ntuContext()))throw Error('Account or semester changed. Open the material again.');recordWritable();}
+async function ntuStorePDF(context,module,source,data){
+ ntuCopyCurrent(context);if(!MODS.includes(module))throw Error('Choose an enrolled module for this material first.');
+ const decoded=await NTULearnLibrary.decodePDF(data),name=await NTULearnLibrary.nameFor(source,data,decoded.hash),library=await assetLibrary(),rows=await library.list(context.owner,context.semester);ntuCopyCurrent(context);
+ if(rows.some(x=>x.module===module&&(x.name===name||x.name.includes('-'+decoded.hash+'] '))))return false;
+ await ReferenceCloud.bridge?.queue;ntuCopyCurrent(context);await ReferenceCloud.bridge.ensurePreferences();ntuCopyCurrent(context);
+ await library.upload(context.owner,context.semester,module,new File([decoded.bytes],name,{type:'application/pdf'}));
+ ntuCopyCurrent(context);resetAssetState();assetState.fetched=false;return true;
+}
+window.prepareNTUMaterialCopy=async function(id){const context=ntuContext(),row=HUB.find(x=>x.id===id);if(!row||row.type!=='file')return;ntuMaterialCopy=null;try{
+ ntuCopyCurrent(context);if(!row.ntulearnSyncKey)throw Error('This older material is a link or note. Download its PDF from Open source, then use Upload downloaded PDF below.');
+ ntuCopyMessage(id,'Checking available PDFs…');const status=await ntuRequest('APP_STATUS',context);ntuCopyCurrent(context);
+ if(!status.paired||!status.capabilities?.includes('pdf-library')||!status.libraryApproved)throw Error('Connect this semester with connector 0.5 or newer and approve PDF copies. Or use Upload downloaded PDF below.');
+ const result=await ntuRequest('APP_PDF_LIST',context,row.ntulearnSyncKey);ntuCopyCurrent(context);
+ if(!Array.isArray(result.files)||result.files.length>100)throw Error('Unexpected attachment listing.');
+ if(!result.files.length)throw Error('NTULearn returned no PDF attachments for this material. It may be a page or external resource. Open its source, download the PDF if available, then use Upload downloaded PDF.');
+ ntuMaterialCopy={context,id,source:row.ntulearnSyncKey,module:row.mod,files:result.files};const panel=document.getElementById('ntuCopyChoices-'+id);if(!panel)return;
+ panel.innerHTML=result.files.map((f,i)=>'<label class="study-field"><span><input type="checkbox" data-ntu-copy="'+i+'"> '+esc(f.name)+'</span></label>').join('')+'<button class="btn p" onclick="copySelectedNTUPDFs('+id+')">Copy selected PDFs to My Files</button>';
+ ntuCopyMessage(id,result.files.length+' PDFs available. Choose the files to copy.');
+ }catch(error){if(ntuSame(context,ntuContext()))ntuCopyMessage(id,error.message);}};
+window.copySelectedNTUPDFs=async function(id){if(assetBusy||ntuPDFBusy){ntuCopyMessage(id,'A file transfer is running. Try again after it finishes.');return;}const pending=ntuMaterialCopy;if(!pending||pending.id!==id)return;
+ assetBusy=true;let copied=0,skipped=0;
+ try{ntuCopyCurrent(pending.context);const selected=[...document.querySelectorAll('#ntuCopyChoices-'+id+' [data-ntu-copy]:checked')];if(!selected.length||selected.length>10)throw Error('Choose 1–10 PDFs per copy action.');
+ const files=selected.map(box=>pending.files[Number(box.dataset.ntuCopy)]);if(files.some(x=>!x))throw Error('Review the attachment choices again.');
+ for(const file of files){ntuCopyCurrent(pending.context);ntuCopyMessage(id,'Copying '+file.name+'…');const data=await ntuRequest('APP_PDF_BYTES',pending.context,pending.source,file.url);const added=await ntuStorePDF(pending.context,pending.module,pending.source+file.url,data);added?copied++:skipped++;}
+ ntuCopyMessage(id,copied+' PDFs copied to My Files · '+skipped+' already there. The original material is kept.');
+ }catch(error){if(ntuSame(pending.context,ntuContext()))ntuCopyMessage(id,copied+' copied before stopping. '+error.message+' You can upload a downloaded PDF below.');}finally{assetBusy=false;}
+};
+window.uploadNTUMaterialPDF=async function(id,file){if(!file)return;if(assetBusy||ntuPDFBusy){ntuCopyMessage(id,'Wait for the current file transfer to finish.');return;}const row=HUB.find(x=>x.id===id),context=ntuContext();if(!row||row.type!=='file')return;assetBusy=true;
+ try{ntuCopyCurrent(context);if(!file.name.toLowerCase().endsWith('.pdf')||!file.size||file.size>10*1024*1024)throw Error('Choose a PDF up to 10 MB.');ntuCopyMessage(id,'Copying your downloaded PDF to My Files…');const bytes=new Uint8Array(await file.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));const added=await ntuStorePDF(context,row.mod,(row.ntulearnSyncKey||'material-'+id)+file.name,{name:file.name,size:file.size,base64:btoa(binary)});ntuCopyMessage(id,added?'PDF copied to My Files under '+row.mod+'. Original material kept.':'This PDF is already in My Files.');
+ }catch(error){if(ntuSame(context,ntuContext()))ntuCopyMessage(id,error.message);}finally{assetBusy=false;}
+};
+const ntuCopyHub=ntulearn;
+ntulearn=function(){const template=document.createElement('template');template.innerHTML=ntuCopyHub();const page=hubFiltered();for(const [i,article] of [...template.content.querySelectorAll('.hubitem')].entries()){const row=page[i];if(row?.type!=='file')continue;const panel=document.createElement('div');panel.className='ntu-copy-panel';panel.innerHTML='<button class="btn p" onclick="prepareNTUMaterialCopy('+row.id+')">Copy to My Files</button><label class="study-field">Upload downloaded PDF<input type="file" accept=".pdf,application/pdf" onchange="uploadNTUMaterialPDF('+row.id+',this.files[0]);this.value=\'\'"></label><div id="ntuCopyChoices-'+row.id+'"></div><p class="sub" role="status" id="ntuCopyStatus-'+row.id+'">Copies a PDF into this semester’s private Library; the material entry stays here.</p>';article.append(panel);}return template.innerHTML;};
 
 }else{
 // Injected INSIDE the original v2.9 semester closure. Renderers and CSS are retained.
