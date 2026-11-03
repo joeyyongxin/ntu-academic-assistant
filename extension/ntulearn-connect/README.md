@@ -1,4 +1,12 @@
-# Academic Assistant NTULearn connector — 0.2.0
+# PDF downloads in connector 0.3
+
+Update the installed connector to 0.3 for the Hub’s **Download PDFs** button. Extract the new ZIP, copy the files inside `ntulearn-connect` into the same folder used by your installed extension, replacing old files, then open chrome://extensions and click the connector’s Reload button. Keep the folder path the same to preserve its ID, selected courses and pairing. Refresh the planner afterward. No new permissions are requested.
+
+In NTULearn Hub, select a module and Materials, then choose Download PDFs. A local extension window lists PDF attachments returned by the authenticated NTULearn API. Choose a filename. The browser downloads from NTULearn or opens its PDF viewer, where the Download button saves it. No PDF is copied to Supabase. Non-PDF materials, external resources and pages without attachment metadata retain Open source. An empty list or denied API access is shown explicitly.
+
+Real attachment access and a completed PDF download still need user verification; synthetic tests cannot confirm NTULearn’s account-specific file access. The implementation follows the documented [Blackboard attachment route](https://docs.blackboard.com/docs/blackboard/rest-apis/demo-code/curl-attach-demo).
+
+# Academic Assistant NTULearn connector — 0.3.0
 
 An unofficial browser connector for selected courses. Your successful 0.1 access check verified announcements and top-level materials on one course; the next 30 days of assignment-calendar entries returned zero. Nested materials, scheduling and planner pairing still need your real-browser check.
 

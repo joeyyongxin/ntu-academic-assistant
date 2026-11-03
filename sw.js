@@ -1,4 +1,4 @@
-const CACHE='academic-assistant-shell-v28';
+const CACHE='academic-assistant-shell-v29';
 const ASSETS=['./','./index.html','./workspace.html','./legacy.html','./app.js','./data-service.js','./account.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg','./workspace/backup-recovery.js','./workspace/ntulearn-calendar.js','./workspace/ntulearn-announcements.js','./workspace/ntulearn-sync.js'];
 const HOSTS=['cdn.jsdelivr.net','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
