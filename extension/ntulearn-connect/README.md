@@ -1,3 +1,13 @@
+# Copy existing materials to My Files
+
+The planner now adds Copy to My Files and Upload downloaded PDF to material entries. Connector 0.5 remains compatible; no new extension update is needed.
+
+For synced materials: Copy to My Files checks the paired connector and lists available PDFs. Select the files, then Copy selected PDFs to My Files. This copies real bytes into your private Library under the material module and currently viewed semester; it does not remove the source entry.
+
+For older link-only entries or unsupported attachments: Open source, download the PDF normally, then Upload downloaded PDF on that material. This path uses the existing private Library upload adapter and does not depend on connector access. Up to 10 MB per PDF. Existing matching content is skipped; original material and files are preserved.
+
+The automatic-copy status now distinguishes materials checked, duplicate copies and materials returning no PDF attachments, instead of only reporting zero copied. Copies remain opt-in. Existing automatic-import limitations, including refused PDF redirects, still apply.
+
 # Connector 0.5 — optional automatic PDF copies
 
 Update ALL extension files in the SAME installed folder, Reload at chrome://extensions, verify Version 0.5.0, and refresh the planner. There are no new browser host permissions.

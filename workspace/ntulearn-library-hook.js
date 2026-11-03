@@ -10,12 +10,12 @@ window.runNTUPDFImport=async function(){
   const scope=context.owner+':'+context.semester;if(scope!==ntuPDFScope){ntuPDFScope=scope;ntuPDFCursor=0;ntuPDFSeen.clear();}
   const items=parsed.items.filter(x=>x.kind==='file'&&x.date>=term().start&&x.date<=term().end&&MODS.includes(config.mapping?.[x.courseId]));
   if(!items.length){ntuPDFStatus('No mapped materials in this semester’s snapshot.');return;}
-  const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0;
+  const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);let copied=0,skipped=0,transfers=0,checkedMaterials=0,emptyMaterials=0;
   // Keep each pass small; remaining materials continue on the next timer tick.
   for(let checked=0;checked<Math.min(3,items.length);checked++){
    if(!current()||!ntuAutoIdle()||assetBusy)return;const item=items[ntuPDFCursor++%items.length],scan=parsed.exportedAt+item.sourceKey+config.mapping[item.courseId];if(ntuPDFSeen.has(scan))continue;
    const listing=await ntuRequest('APP_PDF_LIST',context,item.sourceKey);if(!current())return;
-   if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');
+   if(!Array.isArray(listing.files)||listing.files.length>100)throw Error('Unexpected PDF listing.');checkedMaterials++;if(!listing.files.length)emptyMaterials++;
    let complete=true;
    for(let offset=ntuPDFOffsets.get(scan)||0;offset<listing.files.length;offset++){const attachment=listing.files[offset];if(!current()||!ntuAutoIdle())return;if(transfers>=3){complete=false;break;}transfers++;
     ntuPDFStatus('Checking PDF: '+attachment.name);const data=await ntuRequest('APP_PDF_BYTES',context,item.sourceKey,attachment.url);if(!current())return;
@@ -26,7 +26,7 @@ window.runNTUPDFImport=async function(){
    }
    if(complete){ntuPDFSeen.add(scan);ntuPDFOffsets.delete(scan);}
   }
-  if(current()){ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped. More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
+  if(current()){if(!checkedMaterials&&!copied&&!skipped)return;ntuPDFStatus(copied+' PDFs copied to My Files · '+skipped+' existing copies skipped · '+checkedMaterials+' materials checked · '+emptyMaterials+' returned no PDF attachments. '+(emptyMaterials?'Use Upload downloaded PDF on those materials if their source offers a PDF. ':'')+'More materials are checked on the next pass.');resetAssetState();assetState.fetched=false;if(document.getElementById('fl'))void fetchAssets(true);}
  }catch(error){if(current())ntuPDFStatus('PDF copies paused: '+error.message);}
  finally{ntuPDFBusy=false;}
 };
