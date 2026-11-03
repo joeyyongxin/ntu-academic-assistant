@@ -23,3 +23,27 @@ test('an unsupported attachment list can use authenticated direct metadata, whil
  const state={subject:'student',snapshot:{items:[{kind:'file',courseId:'c',id:'f',title:'Notes'}]}},request={key:JSON.stringify(['c','file','f']),expires:Date.now()+1000};
  for(const status of [400,403]){const fake=async url=>url.endsWith('/users/me')?json({id:'student'}):url.endsWith('/contents/f')?json({body:'<a href="/bbcswebdav/Notes.pdf">Notes.pdf</a>'}):new Response('',{status});if(status===400)assert.equal((await pdfAttachments(state,request,fake)).files.length,1);else await assert.rejects(pdfAttachments(state,request,fake),/403/);}
 });
+
+// Ultra parent documents expose attachment-bearing body blocks through /children.
+test('selected Ultra parent discovers child PDF bytes without reading unrelated course content',async()=>{
+ const state={subject:'student',snapshot:{items:[{kind:'file',courseId:'c',id:'parent',title:'Quiz answer key'}]}},key=JSON.stringify(['c','file','parent']),seen=[];
+ const fake=async(url,options)=>{seen.push(url);if(url.endsWith('/users/me'))return json({id:'student'});
+  if(url.endsWith('/contents/parent'))return json({hasChildren:true,contentHandler:{id:'resource/x-bb-document'}});
+  if(url.includes('/contents/parent/attachments?'))return json({results:[]});
+  if(url.includes('/contents/parent/children?'))return json({results:[{id:'body'},{id:'hidden',availability:{available:'No'}}]});
+  if(url.endsWith('/contents/body'))return json({contentHandler:{id:'resource/x-bb-document'},body:'<a href="/bbcswebdav/pid-1/xid-2" data-bbfile=\'{"mimeType":"application/pdf","linkName":"Answers.pdf"}\'>Answers</a>'});
+  if(url.endsWith('/bbcswebdav/pid-1/xid-2')){assert.equal(options.redirect,'error');return new Response('%PDF-1.7\nSynthetic child PDF');}
+  throw Error('Unexpected request');
+ };
+ const result=await pdfAttachments(state,{key,expires:Date.now()+1000},fake);assert.equal(result.files.length,1);assert.equal(result.files[0].name,'Answers.pdf');
+ assert.ok((await readPDF(state,key,result.files[0].url,fake)).size>0);assert.ok(!seen.some(x=>x.includes('hidden')));
+});
+test('child access denial is reported rather than a false empty PDF list',async()=>{
+ const state={subject:'student',snapshot:{items:[{kind:'file',courseId:'c',id:'f',title:'Parent'}]}};
+ await assert.rejects(pdfAttachments(state,{key:JSON.stringify(['c','file','f']),expires:Date.now()+1000},async url=>url.endsWith('/users/me')?json({id:'student'}):url.endsWith('/contents/f')?json({hasChildren:true}):url.includes('/attachments?')?json({results:[]}):new Response('',{status:403})),/403/);
+});
+test('nested children are bounded and duplicate child identities do not loop',async()=>{
+ const state={subject:'student',snapshot:{items:[{kind:'file',courseId:'c',id:'f',title:'Parent'}]}},request={key:JSON.stringify(['c','file','f']),expires:Date.now()+1000};
+ const cycle=await pdfAttachments(state,request,async url=>url.endsWith('/users/me')?json({id:'student'}):url.endsWith('/contents/f')?json({hasChildren:true}):url.includes('/children?')?json({results:[{id:'f'}]}):json({results:[]}));assert.deepEqual(cycle.files,[]);
+ await assert.rejects(pdfAttachments(state,request,async url=>url.endsWith('/users/me')?json({id:'student'}):url.includes('/children?')?json({results:[{id:'child'+url.split('/contents/')[1].split('/')[0]}]}):url.includes('/attachments?')?json({results:[]}):json({hasChildren:true})),/too deep/);
+});
