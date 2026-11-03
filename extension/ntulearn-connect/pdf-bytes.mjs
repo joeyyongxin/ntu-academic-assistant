@@ -5,7 +5,13 @@ export async function readPDF(state,key,attachment,fetcher=fetch){
  const file=listing.files.find(f=>f.url===attachment);if(!file)throw Error('Choose an attachment returned by NTULearn.');
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),25000);
  try{
-  const response=await fetcher(apiUrl(file.url),{method:'GET',credentials:'include',redirect:'error',cache:'no-store',headers:{Accept:'application/pdf'},signal:controller.signal});
+  const options={method:'GET',credentials:'include',redirect:'error',cache:'no-store',headers:{Accept:'application/pdf'},signal:controller.signal};
+  let response;try{response=await fetcher(apiUrl(file.url),options);}catch(error){
+   if(!(error instanceof TypeError)||!file.directUrl)throw error;
+   // Only the current material's verified same-host PDF link can be used as a fallback.
+   const direct=new URL(file.directUrl);if(direct.origin!=='https://ntulearn.ntu.edu.sg'||!direct.pathname.startsWith('/bbcswebdav/')||direct.username||direct.password||!/\.pdf$/i.test(direct.pathname))throw Error('Unsupported PDF destination.');
+   response=await fetcher(direct.href,options);
+  }
   if(!response.ok)throw Error('PDF fetch returned HTTP '+response.status+'.');
   const reader=response.body.getReader(),parts=[];let size=0;
   try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>10*1024*1024)throw Error('PDF exceeds the Library limit of 10 MB.');parts.push(value);}}finally{await reader.cancel();}
@@ -14,5 +20,5 @@ export async function readPDF(state,key,attachment,fetcher=fetch){
   const after=await getJson('/learn/api/public/v1/users/me',fetcher);if(after.id!==state.subject)throw Error('NTULearn account changed during download.');
   let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
   return {name:file.name,base64:btoa(binary),size};
- }catch(error){if(error instanceof TypeError)throw Error('PDF fetch or redirect was blocked. Use Download PDFs to save it manually; automatic import will retry later.');throw error;}finally{clearTimeout(timer);}
+ }catch(error){if(error instanceof TypeError)throw Error('This PDF could not be fetched, including its available direct NTULearn link. It remains in Needs attention for retry or a downloaded-file upload.');throw error;}finally{clearTimeout(timer);}
 }

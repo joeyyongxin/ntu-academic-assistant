@@ -1,3 +1,13 @@
+# Connector 0.6 — simpler saving and direct PDF fallback
+
+Update ALL files in the SAME installed extension folder, Reload at chrome://extensions, verify Version 0.6.0 and refresh the planner. No new permissions are added; existing account/semester pairing and PDF-copy approval remain required.
+
+The website now uses one Settings checkbox under Save PDFs to My Files for future mapped course imports. Existing materials use selection checkboxes, Select all results (all matching materials, not only the visible page), and one Save selected to My Files action. Successful materials are deselected; failures remain selected and appear together in Needs attention. Retry failed repeats only those materials; deduplication skips already-copied PDFs. Stop copying stops after the in-flight transfer. Originals are kept, not moved/deleted. A download icon opens available attachments. Downloaded-file upload is shown only for failures needing that fallback.
+
+For blocked attachment API downloads, the connector reads the current material metadata and looks for a direct PDF link under https://ntulearn.ntu.edu.sg/bbcswebdav/. Only an unambiguous matching filename (or one PDF link for one PDF attachment) is eligible. It retries that verified same-host URL while continuing to refuse redirects and external destinations. Header, size and account checks still apply. This follows Blackboard’s documented content links: https://docs.blackboard.com/docs/blackboard/rest-apis/demo-code/curl-attach-demo . It cannot guarantee access where no eligible direct link is exposed or the direct route is itself blocked.
+
+Tests use synthetic PDF responses; the user’s original failing PDF still needs a real check after updating. No new Supabase configuration is needed. All prior byte limits and consent rules remain.
+
 # Copy existing materials to My Files
 
 The planner now adds Copy to My Files and Upload downloaded PDF to material entries. Connector 0.5 remains compatible; no new extension update is needed.
