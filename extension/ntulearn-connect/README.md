@@ -1,3 +1,9 @@
+# Connector 0.4 — download compatibility feedback
+
+Replace the extension files in the SAME installed folder, click Reload on its card at chrome://extensions, and verify Version 0.4.0. Then refresh the planner with Ctrl+Shift+R. Keeping the folder path preserves the extension ID and local pairing. No new permissions are added.
+
+The planner now checks PDF capability before requesting a download window and displays progress/errors directly under the selected material. Older connectors that ignore the PDF command now produce an explicit update instruction. A completed real NTULearn PDF download still needs account-specific verification.
+
 # PDF downloads in connector 0.3
 
 Update the installed connector to 0.3 for the Hub’s **Download PDFs** button. Extract the new ZIP, copy the files inside `ntulearn-connect` into the same folder used by your installed extension, replacing old files, then open chrome://extensions and click the connector’s Reload button. Keep the folder path the same to preserve its ID, selected courses and pairing. Refresh the planner afterward. No new permissions are requested.

@@ -41,7 +41,7 @@ async function handle(message,sender){
  switch(message.type){
   case 'APP_MATERIAL':{if(!paired)throw Error('Approve this account and semester in the connector first.');materialInSnapshot(state,message.sourceKey);state.materialRequest={id:crypto.randomUUID(),key:message.sourceKey,context:message.context,expires:Date.now()+5*60000};await store(state);await chrome.tabs.create({url:chrome.runtime.getURL('material.html')+'?request='+encodeURIComponent(state.materialRequest.id)});return {opened:true};}
   case 'APP_CONNECT':{state.pending={id:crypto.randomUUID(),context:message.context,expires:Date.now()+5*60000};await store(state);await chrome.tabs.create({url:chrome.runtime.getURL('connect.html')+'?approve='+encodeURIComponent(state.pending.id)});return {approvalRequired:true};}
-  case 'APP_STATUS':return {paired,lastSync:paired?state.snapshot?.exportedAt||'':'',count:paired?state.snapshot?.items.length||0:0,auto:paired&&!!state.auto,error:paired?state.lastError||'':''};
+  case 'APP_STATUS':return {version:chrome.runtime.getManifest().version,capabilities:['pdf'],paired,lastSync:paired?state.snapshot?.exportedAt||'':'',count:paired?state.snapshot?.items.length||0:0,auto:paired&&!!state.auto,error:paired?state.lastError||'':''};
   case 'APP_SNAPSHOT':if(!paired)throw Error('Approve this account and semester in the extension first.');if(!state.snapshot)throw Error('No snapshot yet. Choose courses and sync in the extension.');return state.snapshot;
   case 'APP_DISCONNECT':if(paired)delete state.pair;if(sameContext(state.pending?.context,message.context))delete state.pending;await store(state);return {disconnected:true};
   default:throw Error('Unsupported app request.');

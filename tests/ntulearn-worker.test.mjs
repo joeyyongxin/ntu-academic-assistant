@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 const listener={},storage={},alarms=new Set(),opened=[];
 const event=name=>({addListener(fn){listener[name]=fn;}});
 const own='chrome-extension://test-extension/';
-globalThis.chrome={runtime:{id:'test-extension',getURL:path=>own+path,onMessage:event('message'),onStartup:event('startup')},action:{onClicked:event('click')},tabs:{async create(data){opened.push(data);}},
+globalThis.chrome={runtime:{id:'test-extension',getManifest:()=>({version:'0.4.0'}),getURL:path=>own+path,onMessage:event('message'),onStartup:event('startup')},action:{onClicked:event('click')},tabs:{async create(data){opened.push(data);}},
  storage:{local:{async get(key){return structuredClone({[key]:storage[key]});},async set(data){Object.assign(storage,structuredClone(data));},async remove(key){delete storage[key];}}},
  permissions:{async contains(){return true;},async remove(){return true;},onRemoved:event('remove')},
  alarms:{async create(name){alarms.add(name);},async clear(name){alarms.delete(name);},onAlarm:event('alarm')}};
@@ -32,6 +32,7 @@ test('worker requires explicit pairing and confines snapshot access to approved 
  const pending=storage.ntuConnector.pending.id;
  assert.equal((await send('APPROVE',{pending:'wrong'})).ok,false);
  assert.equal((await send('APPROVE',{pending})).ok,true);
+ const status=await send('APP_STATUS',{context},web);assert.equal(status.data.version,'0.4.0');assert.ok(status.data.capabilities.includes('pdf'));
  const snapshot=await send('APP_SNAPSHOT',{context},web);assert.equal(snapshot.ok,true);assert.equal(snapshot.data.items.length,1);
  assert.equal((await send('APP_SNAPSHOT',{context:{...context,owner:'other'}},web)).ok,false);
  assert.equal((await send('APP_SNAPSHOT',{context:{...context,semester:'other'}},web)).ok,false);
