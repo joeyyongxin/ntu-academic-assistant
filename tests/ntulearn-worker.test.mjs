@@ -50,3 +50,18 @@ test('NTULearn account change clears source snapshot and stops scheduled refresh
  subject='different-student';const reply=await send('SYNC');assert.equal(reply.ok,false);assert.match(reply.error,/account changed/);assert.equal(storage.ntuConnector.snapshot,null);assert.equal(storage.ntuConnector.auto,false);assert.equal(alarms.size,0);
  await send('RESET');assert.equal(storage.ntuConnector,undefined);
 });
+test('material downloads require paired context, synced membership and a current request token',async()=>{
+ await send('LIST');await send('CONFIG',{ids:['course1'],auto:false});
+ storage.ntuConnector.snapshot.items.push({kind:'file',id:'f1',courseId:'course1',title:'Synthetic material'});
+ const sourceKey=JSON.stringify(['course1','file','f1']);
+ assert.equal((await send('APP_MATERIAL',{context,sourceKey},web)).ok,false);
+ await send('APP_CONNECT',{context},web);await send('APPROVE',{pending:storage.ntuConnector.pending.id});
+ assert.equal((await send('APP_MATERIAL',{context,sourceKey:'untrusted'},web)).ok,false);
+ assert.equal((await send('APP_MATERIAL',{context,sourceKey},web)).ok,true);
+ assert.match(opened.at(-1).url,/material.html\?request=/);
+ const request=storage.ntuConnector.materialRequest.id;
+ assert.equal((await send('PDF_FILES',{request:'wrong'})).ok,false);
+ assert.equal((await send('PDF_FILES',{request})).ok,true);
+ await send('APP_DISCONNECT',{context},web);
+ assert.equal((await send('PDF_FILES',{request})).ok,false);
+});

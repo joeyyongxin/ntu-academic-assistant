@@ -1,6 +1,7 @@
 import {getJson} from './api.mjs';
 import {collectCourse,listCourses,safeError} from './collect.mjs';
 import {appUrl,validContext,sameContext} from './policy.mjs';
+import {materialInSnapshot,pdfAttachments} from './materials.mjs';
 const origins=['https://ntulearn.ntu.edu.sg/*'],KEY='ntuConnector',ALARM='ntu-refresh';
 let queue=Promise.resolve(),syncAbort=null;
 function serial(fn){const next=queue.then(fn);queue=next.catch(()=>{});return next;}
@@ -31,12 +32,14 @@ async function handle(message,sender){
   case 'SYNC':return sync();
   case 'LOCAL_STATUS':{const state=await load();return {selected:state.selected||[],auto:!!state.auto,pair:state.pair||null,lastSync:state.snapshot?.exportedAt||'',lastError:state.lastError||'',count:state.snapshot?.items.length||0,pending:state.pending?.id===message.pending&&state.pending.expires>Date.now()?state.pending:null};}
   case 'APPROVE':{const state=await load();if(!state.subject||!state.selected?.length||!state.snapshot)throw Error('Connect, choose courses and sync before approving the planner.');if(!state.pending||state.pending.id!==message.pending||state.pending.expires<Date.now())throw Error('Connection request expired. Press Connect in app Settings again.');state.pair=state.pending.context;delete state.pending;await store(state);return {paired:true};}
+  case 'PDF_FILES':{await permission();const state=await load();if(state.materialRequest?.id!==message.request||!sameContext(state.pair,state.materialRequest?.context))throw Error('Download approval is no longer valid. Open it again from the planner.');return pdfAttachments(state,state.materialRequest);}
   case 'RESET':await reset();await chrome.permissions.remove({origins});return {disconnected:true};
   default:throw Error('Unsupported extension request.');
  }}
  if(!appUrl(sender.url)||sender.frameId!==0||!validContext(message?.context))throw Error('Open the signed-in Academic Assistant Settings page.');
  const state=await load(),paired=sameContext(state.pair,message.context);
  switch(message.type){
+  case 'APP_MATERIAL':{if(!paired)throw Error('Approve this account and semester in the connector first.');materialInSnapshot(state,message.sourceKey);state.materialRequest={id:crypto.randomUUID(),key:message.sourceKey,context:message.context,expires:Date.now()+5*60000};await store(state);await chrome.tabs.create({url:chrome.runtime.getURL('material.html')+'?request='+encodeURIComponent(state.materialRequest.id)});return {opened:true};}
   case 'APP_CONNECT':{state.pending={id:crypto.randomUUID(),context:message.context,expires:Date.now()+5*60000};await store(state);await chrome.tabs.create({url:chrome.runtime.getURL('connect.html')+'?approve='+encodeURIComponent(state.pending.id)});return {approvalRequired:true};}
   case 'APP_STATUS':return {paired,lastSync:paired?state.snapshot?.exportedAt||'':'',count:paired?state.snapshot?.items.length||0:0,auto:paired&&!!state.auto,error:paired?state.lastError||'':''};
   case 'APP_SNAPSHOT':if(!paired)throw Error('Approve this account and semester in the extension first.');if(!state.snapshot)throw Error('No snapshot yet. Choose courses and sync in the extension.');return state.snapshot;
