@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Academic Assistant — NTULearn connector",
+  "version": "0.2.0",
+  "description": "Unofficial read-only course sync with local approval and reviewed planner import. No password or cookie extraction.",
+  "permissions": ["storage", "alarms"],
+  "optional_host_permissions": ["https://ntulearn.ntu.edu.sg/*"],
+  "background": {"service_worker": "background.js", "type": "module"},
+  "content_scripts": [{"matches": ["https://joeyyongxin.github.io/ntu-academic-assistant/", "https://joeyyongxin.github.io/ntu-academic-assistant/index.html", "https://joeyyongxin.github.io/ntu-academic-assistant/workspace.html"], "js": ["bridge.js"], "all_frames": false}],
+  "action": {"default_title": "Connect NTULearn"}
+}

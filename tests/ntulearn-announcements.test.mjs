@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFile} from 'node:fs/promises';
+const c=vm.createContext({TextEncoder,Date,Set,JSON,Error});
+vm.runInContext(await readFile(new URL('../workspace/ntulearn-announcements.js',import.meta.url),'utf8'),c);
+const api=c.NTULearnAnnouncements;
+const item={id:'ann1',courseId:'course1',courseName:'SC1004',title:'Review vectors',text:'Read chapter 2',created:'2026-11-03T18:00:00Z'};
+const pack=items=>JSON.stringify({format:'academic-assistant-ntulearn-announcements',schemaVersion:1,items});
+test('announcement import keeps text, detects module and converts creation date to Singapore',()=>{const p=api.parse(pack([item]));assert.equal(p.items[0].date,'2026-11-04');assert.equal(p.items[0].text,item.text);assert.equal(p.items[0].suggestedModules[0],'SC1004');});
+test('source identity deduplicates repeated announcements without guessing changed versions',()=>{const p=api.parse(pack([item,{...item,title:'Edited'}]));assert.equal(p.items.length,1);assert.equal(p.duplicates,1);assert.equal(p.items[0].sourceKey,JSON.stringify(['course1','ann1']));});
+test('rejects unrelated JSON, missing identities and dates without timezones',()=>{assert.throws(()=>api.parse('{}'));for(const change of [{id:''},{created:'not a date'},{created:'2026-11-03T10:00:00'},{text:null}])assert.throws(()=>api.parse(pack([{...item,...change}])));});
+test('both complete entry points parse with announcement importer',async()=>{for(const file of ['index.html','workspace.html']){const html=await readFile(new URL('../'+file,import.meta.url),'utf8');assert.ok(html.includes('saveNTULearnAnnouncements'));for(const m of html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi))new vm.Script(m[1]);}});
+const hook=await readFile(new URL('../workspace/ntulearn-announcements-hook.js',import.meta.url),'utf8');
+function setup(){const error={textContent:''},ctx=vm.createContext({settings:()=>'',ReferenceCloud:{user:{id:'owner'}},active:'s1',HUB:[],MODS:['SC1004'],recordWritable(){},recordDate:d=>d,nextHubId:a=>a.length+1,go(){},esc:s=>s,document:{querySelectorAll:()=>[{dataset:{ntuAnn:'0'}}],querySelector:()=>({value:'SC1004'}),getElementById:()=>error}});ctx.window=ctx;vm.runInContext(hook,ctx);vm.runInContext("announcementPreview={owner:'owner',semester:'s1',items:[{title:'Announcement',text:'Read this',date:'2026-11-03',sourceKey:'course-ann-1'}]}",ctx);return {ctx,error};}
+test('reviewed save preserves origin and repeated source IDs are skipped',()=>{const {ctx}=setup();ctx.saveNTULearnAnnouncements();assert.equal(ctx.HUB.length,1);assert.equal(ctx.HUB[0].announcementSourceKey,'course-ann-1');assert.equal(ctx.HUB[0].type,'ann');assert.equal(ctx.HUB[0].deadlineDate,'');vm.runInContext("announcementPreview={owner:'owner',semester:'s1',items:[{title:'Changed',text:'Changed',date:'2026-11-03',sourceKey:'course-ann-1'}]}",ctx);ctx.saveNTULearnAnnouncements();assert.equal(ctx.HUB.length,1);assert.equal(ctx.HUB[0].title,'Announcement');});
+test('account, semester and write guards prevent importing announcements',()=>{for(const change of ["active='s2'","ReferenceCloud.user.id='other'","MODS=[]","recordWritable=()=>{throw Error('blocked')}"]){const {ctx,error}=setup();vm.runInContext(change,ctx);ctx.saveNTULearnAnnouncements();assert.equal(ctx.HUB.length,0);assert.ok(error.textContent);}});
