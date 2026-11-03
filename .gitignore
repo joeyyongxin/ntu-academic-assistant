@@ -5,3 +5,8 @@ node_modules/
 *.log
 __pycache__/
 NTULearn_Announcements_*.json
+
+# Local synthetic browser fixture outputs
+/tests/study-ui-fixture.html
+/verification/study-sample.pdf
+/.git-pr-*.txt

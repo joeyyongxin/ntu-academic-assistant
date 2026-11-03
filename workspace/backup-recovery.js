@@ -39,6 +39,14 @@
    for(const a of src.assessments){const key=JSON.stringify(canonical(assessmentKey(a))),seen=assessmentUsed.get(key)||0;assessmentUsed.set(key,seen+1);if(seen<(assessmentCounts.get(key)||0)){duplicates++;continue;}const row=copy(a);row.id=++nextId;target.assessments.push(row);addedAssessments++;}
    for(const field of ['classes','files','timetable','hub','inbox','messages'])mergeUnique(target[field]||(target[field]=[]),src[field]||[]);
    for(const [mod,topics] of Object.entries(src.topics||{})){target.topics[mod]??=[];for(const topic of topics){if(target.topics[mod].some(x=>String(x[0]).toLowerCase()===String(topic[0]).toLowerCase())){duplicates++;continue;}target.topics[mod].push(copy(topic));}}
+   if(src.studyTools){
+    if(!target.studyTools)target.studyTools=copy(src.studyTools);
+    else if(target.studyTools.owner===src.studyTools.owner){
+     for(const field of ['rules','sessions']){const current=target.studyTools[field]||[],incoming=src.studyTools[field]||[];check(Array.isArray(current)&&Array.isArray(incoming),'Invalid backed-up study tools.');const ids=new Set(current.map(x=>x.id));for(const item of incoming)if(!ids.has(item.id)){current.push(copy(item));ids.add(item.id);}target.studyTools[field]=current;}
+     target.studyTools.grades={...copy(src.studyTools.grades||{}),...(target.studyTools.grades||{})};
+     if(!target.studyTools.reminders&&src.studyTools.reminders)target.studyTools.reminders=copy(src.studyTools.reminders);
+    }
+   }
    target.date=src.date;target.imported=!!(target.imported||src.imported);
   }
   out.years.sort((a,b)=>a.start-b.start);out.terms.sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
