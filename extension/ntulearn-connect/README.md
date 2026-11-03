@@ -23,7 +23,7 @@ These Settings controls are part of the draft website update; they will not appe
 4. Return to Settings and click **Check connection**, then **Review latest updates**.
 5. Review announcements, assignment deadlines and material listings. Choose the correct enrolled module for each item and select the items to save.
 6. Click **Save selected updates to Hub**. These reviewed records use the planner’s existing cloud save. No schema or database configuration changes are required.
-7. Return later to **Review latest updates** to review new source snapshots. Scheduled refresh updates the extension’s local snapshot, not the planner automatically. Importing still requires review. Browser source refresh and planner cloud saving are separate.
+7. Return later to **Review latest updates** to review new source snapshots. Scheduled refresh updates the extension’s local snapshot. To save mapped course updates automatically while the planner is open, use Settings → Automatic planner updates → Set up automatic updates. Choose module mappings, tick the explicit approval, and save. This account/semester preference is saved through the existing workspace preferences. Unmapped items and personal edits remain in the review list. Turn off planner updates there at any time. Existing connector 0.2 installations are compatible; no extension update is required.
 
 ## What sync reads and saves
 

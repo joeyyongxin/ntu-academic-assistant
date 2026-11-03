@@ -21,5 +21,14 @@
  }
  function find(rows,item){return rows.find(x=>x.ntulearnSyncKey===item.sourceKey||(item.kind==='ann'&&x.announcementSourceKey===JSON.stringify([item.courseId,item.id])));}
  function classify(rows,item,module){const old=find(rows,item);if(!old)return 'new';if(!old.ntulearnSyncBaseline||old.ntulearnSyncBaseline!==fingerprint(old))return 'personal edit kept';return fingerprint(row(item,module||old.mod,old))===old.ntulearnSyncBaseline?'unchanged':'source changed';}
- root.NTULearnSync={parse,fingerprint,row,find,classify};
+ function automatic(rows,parsed,mods,start,end,mapping){
+  const changes=[];let protectedCount=0,unmapped=0;
+  for(const item of parsed.items){if(item.date<start||item.date>end)continue;
+   const module=Object.prototype.hasOwnProperty.call(mapping,item.courseId)?mapping[item.courseId]:'';
+   if(!mods.includes(module)){unmapped++;continue;}
+   const mode=classify(rows,item,module);if(mode==='personal edit kept'){protectedCount++;continue;}if(mode==='unchanged')continue;
+   changes.push({item,module,old:find(rows,item)});
+  }return {changes,protectedCount,unmapped};
+ }
+ root.NTULearnSync={parse,fingerprint,row,find,classify,automatic};
 })(globalThis);
