@@ -58,6 +58,7 @@ test('material downloads require paired context, synced membership and a current
  assert.equal((await send('APP_MATERIAL',{context,sourceKey},web)).ok,false);
  await send('APP_CONNECT',{context},web);await send('APPROVE',{pending:storage.ntuConnector.pending.id});
  assert.equal((await send('APP_MATERIAL',{context,sourceKey:'untrusted'},web)).ok,false);
+ assert.equal((await send('APP_PDF_LIST',{context,sourceKey},web)).ok,false);
  assert.equal((await send('APP_MATERIAL',{context,sourceKey},web)).ok,true);
  assert.match(opened.at(-1).url,/material.html\?request=/);
  const request=storage.ntuConnector.materialRequest.id;
