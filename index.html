@@ -1012,7 +1012,7 @@ window.assetUpload=async function(event){
   await ReferenceCloud.bridge?.queue;if(ReferenceCloud.bridge?.blocked)throw Error('Your workspace could not save. Resolve that before uploading.');
   await ReferenceCloud.bridge.ensurePreferences();
   await (await assetLibrary()).upload(owner,semester,module,file);
-  if(assetState===state&&assetKey()===state.key){state.fetched=false;state.error='';state.details=null;go();}
+  if(assetState===state&&assetKey()===state.key){state.fetched=false;state.error='';state.details=null;assetBusy=false;go();}
  }catch(error){if(assetKey()===state.key)status.textContent=assetError(error);}finally{assetBusy=false;button.disabled=false;if(assetKey()===state.key)renderAssetList();}
 };
 window.assetDownload=async function(id){
@@ -1022,7 +1022,7 @@ window.assetDownload=async function(id){
 };
 window.assetRemove=async function(id){
  if(assetBusy)return;const state=assetState,row=state.rows.find(f=>f.id===id),owner=ReferenceCloud.user?.id;if(!row)return;assetBusy=true;
- try{await (await assetLibrary()).remove(owner,row);if(assetKey()===state.key){state.rows=state.rows.filter(f=>f.id!==id);state.deleteId=null;state.details=null;state.error='';go();}}
+ try{await (await assetLibrary()).remove(owner,row);if(assetKey()===state.key){state.rows=state.rows.filter(f=>f.id!==id);state.deleteId=null;state.details=null;state.error='';assetBusy=false;go();}}
  catch(error){if(assetKey()===state.key){state.error=assetError(error);renderAssetList();}}finally{assetBusy=false;if(assetKey()===state.key)renderAssetList();}
 };
 const assetSignOut=ReferenceCloud.signOut.bind(ReferenceCloud);ReferenceCloud.signOut=function(){if(assetBusy)return Promise.reject(Error('Wait for the file transfer to finish before signing out.'));return assetSignOut();};
