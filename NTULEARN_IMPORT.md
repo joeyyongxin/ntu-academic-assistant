@@ -1,3 +1,7 @@
+# NTULearn browser connector and optional import
+
+The preferred connection is now the [browser connector](extension/ntulearn-connect/README.md), with course selection, opt-in local scheduled refresh and account/semester approval. Its Settings integration is in a draft release. The manual exporter below remains an optional fallback.
+
 # NTULearn announcement import
 
 This optional local exporter reads selected courses' announcements. It does not submit work, read grades, download course files or change NTULearn. It is not an official NTU integration. Access depends on what NTU enables for your student session.
