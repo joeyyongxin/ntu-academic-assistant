@@ -268,6 +268,11 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
    if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
+  for(const t of terms)for(const p of t.inbox||[])if(p.undoTask){
+   // Local numeric IDs can change on reload. Resolve only the saved database UUID.
+   const task=t.tasks.find(r=>map.get('tasks:'+r.id)?.id===p.undoTask.recordId);
+   p.undoTask.taskId=task?.id??null;
+  }
   return {map,snapshot:{years:years.sort((a,b)=>a.start-b.start),terms,active:current,current,studyYear:preferences?.studyYear||'Other',n:Math.max(n,preferences?.n||0),lastByYear:{},theme:null}};
  }
  function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of t[table])rows.set(table+':'+r.id,{table,row:r,termId:t.id});return rows;}
@@ -284,7 +289,13 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
    payload.recordTerms[table][saved.id]=termId;
    payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix}:{type:row.type,time:row.time};
   }
-  for(const t of payload.terms){t.tasks=[];t.assessments=[];}
+  for(const t of payload.terms){
+   for(const p of t.inbox||[])if(p.undoTask){
+    p.undoTask.recordId=map.get('tasks:'+p.undoTask.taskId)?.id||p.undoTask.recordId||null;
+    p.undoTask.taskId=null;
+   }
+   t.tasks=[];t.assessments=[];
+  }
   return payload;
  }
  class ProductionBridge{
@@ -603,20 +614,18 @@ const settingsBase=settings;settings=function(){const existing=settingsBase().re
 const dashboardBase=today;today=function(){let h=dashboardBase();if(!MODS.length)h=h.replace(/<form class="f"[\s\S]*?<\/form>/,'<p class="term-note">Add modules before creating study tasks. <a href="#settings">Set up this semester in Settings →</a></p>');if(!T.some(t=>t.date===TODAY))h=h.replace('<form class="f"','<p class="sub" style="margin:20px 0">No study tasks for this sample day.</p><form class="f"');return h};
 const oldAssessments=assessments;assessments=function(){return oldAssessments()+(!AS.length?'<section class="card term-empty">No assessments in this semester yet.</section>':'')};
 const oldTimetable=timetable;timetable=function(){return oldTimetable()+(!CL.length?'<section class="card term-empty">No classes in this semester yet.</section>':'')};
-const originalInbox=inbox;inbox=function(){if(active==='s1'&&!ReferenceCloud.enabled)return '<div class="term-note">All proposals below belong to '+esc(term().name)+'.</div>'+originalInbox();return '<p class="eb">'+esc(term().name)+'</p><h1>Needs your decision</h1><p class="sub">Proposals apply only to this semester.</p><br>'+ (IN.map(i=>'<section class="card">'+chip(i.mod)+'<h2>'+esc(i.title)+'</h2><p class="sub">'+esc(i.date)+' · '+i.min+' min · '+esc(term().name)+'</p><div class="toolbar">'+(i.s==='p'?'<button class="btn p" onclick="approveSemesterProposal('+i.id+')">Approve for this semester</button><button class="btn" onclick="rejectSemesterProposal('+i.id+')">Dismiss</button>':'<span class="ok">'+(i.s==='a'?'Applied to this semester':'Dismissed')+'</span>'+(i.s==='a'&&canUndoProposal(i.id)?'<button class="btn" onclick="undoSemesterProposal('+i.id+')">Undo (this session)</button>':''))+'</div></section>').join('')||'<section class="card term-empty">No proposals for this semester.</section>')};
-window.approveSemesterProposal=function(id){const i=IN.find(x=>x.id===id);if(!i||i.s!=='p')return;try{recordWritable()}catch(error){cloudFailure=error.message;testStatus('error');return;}if(i.class){CL.push(clone(i.class));const day=sh(TODAY,4);C.push([day,i.mod,i.class.kind,i.class.range]);imported=true}else{const task=mk(i.date,i.mod,i.title,i.min);T.push(task);proposalUndo.set(proposalUndoKey(id),{task,snapshot:JSON.stringify(task)});}i.s='a';go()};
+const originalInbox=inbox;inbox=function(){if(active==='s1'&&!ReferenceCloud.enabled)return '<div class="term-note">All proposals below belong to '+esc(term().name)+'.</div>'+originalInbox();return '<p class="eb">'+esc(term().name)+'</p><h1>Needs your decision</h1><p class="sub">Proposals apply only to this semester.</p><br>'+ (IN.map(i=>'<section class="card">'+chip(i.mod)+'<h2>'+esc(i.title)+'</h2><p class="sub">'+esc(i.date)+' · '+i.min+' min · '+esc(term().name)+'</p><div class="toolbar">'+(i.s==='p'?'<button class="btn p" onclick="approveSemesterProposal('+i.id+')">Approve for this semester</button><button class="btn" onclick="rejectSemesterProposal('+i.id+')">Dismiss</button>':'<span class="ok">'+(i.s==='a'?'Applied to this semester':'Dismissed')+'</span>'+(i.s==='a'&&canUndoProposal(i.id)?'<button class="btn" onclick="undoSemesterProposal('+i.id+')">Undo approval</button>':''))+'</div></section>').join('')||'<section class="card term-empty">No proposals for this semester.</section>')};
+window.approveSemesterProposal=function(id){const i=IN.find(x=>x.id===id);if(!i||i.s!=='p')return;try{recordWritable()}catch(error){cloudFailure=error.message;testStatus('error');return;}if(i.class){CL.push(clone(i.class));const day=sh(TODAY,4);C.push([day,i.mod,i.class.kind,i.class.range]);imported=true}else{const task=mk(i.date,i.mod,i.title,i.min);T.push(task);i.undoTask={taskId:task.id,snapshot:proposalTaskSnapshot(task)};}i.s='a';go()};
 window.rejectSemesterProposal=function(id){const i=IN.find(x=>x.id===id);if(!i||i.s!=='p')return;try{recordWritable()}catch(error){cloudFailure=error.message;testStatus('error');return;}i.s='r';go()};
-const proposalUndo=new Map();
-function proposalUndoKey(id){return (ReferenceCloud.user?.id||'')+':'+active+':'+id;}
-function canUndoProposal(id){const entry=proposalUndo.get(proposalUndoKey(id));return !!entry&&T.includes(entry.task)&&JSON.stringify(entry.task)===entry.snapshot;}
+function proposalTaskSnapshot(task){return JSON.stringify({date:task.date,mod:task.mod,title:task.title,min:task.min,fix:!!task.fix,done:!!task.done,notes:task.notes||'',done_at:task.done_at||null});}
+function canUndoProposal(id){const p=IN.find(x=>x.id===id),entry=p?.undoTask,task=entry&&T.find(t=>t.id===entry.taskId);return !!task&&p.s==='a'&&proposalTaskSnapshot(task)===entry.snapshot;}
 window.undoSemesterProposal=function(id){
  const proposal=IN.find(x=>x.id===id);if(!proposal||proposal.s!=='a')return;
- try{recordWritable();if(!canUndoProposal(id))throw Error('This task changed or was reloaded. Review it in your study plan instead.');
- const entry=proposalUndo.get(proposalUndoKey(id));if(!confirm('Undo this approval and remove only the task “'+entry.task.title+'”?'))return;
- T.splice(T.indexOf(entry.task),1);proposal.s='p';proposalUndo.delete(proposalUndoKey(id));go();
+ try{recordWritable();if(!canUndoProposal(id))throw Error('This task changed or is no longer available. Review it in your study plan instead.');
+ const task=T.find(t=>t.id===proposal.undoTask.taskId);if(!confirm('Undo this approval and remove only the task “'+task.title+'”?'))return;
+ T.splice(T.indexOf(task),1);proposal.s='p';delete proposal.undoTask;go();
  }catch(error){cloudFailure=error.message;testStatus('error');}
 };
-
 hubProposal=function(id){const x=HUB.find(x=>x.id===id);if(!x)return;if(active==='s1'&&!ReferenceCloud.enabled){IN.find(x=>x.id===2).s='p'}else IN.push({id:Date.now(),t:'semester',s:'p',mod:x.mod,title:'Review: '+x.title,date:TODAY,min:30});location.hash='inbox';go()};
 const oldImport=showImport;showImport=function(){if(!MODS.length){location.hash='settings';return}if(active==='s1'){oldImport();return}IN.push({id:Date.now(),t:'semester',s:'p',mod:MODS[0],title:'Sample timetable import — review one class',date:sh(TODAY,4),min:60,class:{d:'Fri',at:11,mod:MODS[0],kind:'Tutorial',range:'11:00–12:00',venue:'Sample room · demo'}});location.hash='inbox';go()};
 demoUpload=function(){if(!MODS.length){location.hash='settings';return}F.unshift(['Sample_'+MODS[0]+'_upload.pdf',MODS[0],'Notes','Local sample reference','120 KB']);go()};

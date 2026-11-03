@@ -20,6 +20,11 @@
    if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
+  for(const t of terms)for(const p of t.inbox||[])if(p.undoTask){
+   // Local numeric IDs can change on reload. Resolve only the saved database UUID.
+   const task=t.tasks.find(r=>map.get('tasks:'+r.id)?.id===p.undoTask.recordId);
+   p.undoTask.taskId=task?.id??null;
+  }
   return {map,snapshot:{years:years.sort((a,b)=>a.start-b.start),terms,active:current,current,studyYear:preferences?.studyYear||'Other',n:Math.max(n,preferences?.n||0),lastByYear:{},theme:null}};
  }
  function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of t[table])rows.set(table+':'+r.id,{table,row:r,termId:t.id});return rows;}
@@ -36,7 +41,13 @@
    payload.recordTerms[table][saved.id]=termId;
    payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix}:{type:row.type,time:row.time};
   }
-  for(const t of payload.terms){t.tasks=[];t.assessments=[];}
+  for(const t of payload.terms){
+   for(const p of t.inbox||[])if(p.undoTask){
+    p.undoTask.recordId=map.get('tasks:'+p.undoTask.taskId)?.id||p.undoTask.recordId||null;
+    p.undoTask.taskId=null;
+   }
+   t.tasks=[];t.assessments=[];
+  }
   return payload;
  }
  class ProductionBridge{
