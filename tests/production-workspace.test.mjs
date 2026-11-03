@@ -28,3 +28,17 @@ test('first file upload can register inferred semester settings before Storage c
  assert.equal(f.prefs.revision,1);assert.equal(f.prefs.payload.terms.some(t=>t.mods.includes('SC1004')),true);
  await f.bridge.ensurePreferences();assert.equal(f.prefs.revision,1);
 });
+
+test('Inbox undo links persist by database UUID when numeric IDs change after reload',async()=>{
+ const f=setup();await f.bridge.open({id:'alice'});const snapshot=structuredClone(f.c.snapshot),term=snapshot.terms.find(t=>t.tasks.length),task=term.tasks[0];
+ term.inbox.push({id:123,s:'a',mod:task.mod,title:task.title,undoTask:{taskId:task.id,snapshot:'original'}});
+ const payload=f.c.ProductionWorkspace.preferencesOf(snapshot,f.bridge.map);
+ assert.equal(payload.terms.find(t=>t.id===term.id).inbox[0].undoTask.recordId,'old-uuid');
+ assert.equal(payload.terms.find(t=>t.id===term.id).inbox[0].undoTask.taskId,null);
+ const rows=structuredClone(f.records);rows.tasks.push({...rows.tasks[0],id:'aaa-earlier',title:'Unrelated'});
+ const restored=f.c.ProductionWorkspace.project(rows,payload).snapshot.terms.find(t=>t.id===term.id);
+ assert.equal(restored.inbox[0].undoTask.taskId,restored.tasks.find(t=>t.title==='Existing task').id);
+ assert.notEqual(restored.inbox[0].undoTask.taskId,restored.tasks.find(t=>t.title==='Unrelated').id);
+ rows.tasks=rows.tasks.filter(t=>t.id!=='old-uuid');const missing=f.c.ProductionWorkspace.project(rows,payload).snapshot.terms.find(t=>t.id===term.id);
+ assert.equal(missing.inbox[0].undoTask.taskId,null);
+});
