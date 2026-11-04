@@ -2,7 +2,7 @@
 
 These additions use the existing account/semester cloud preferences and save bridge. They require no Supabase schema, credentials or policy changes. Existing task durations and source records are retained.
 
-- **Recurring tasks:** Plan → Recurring study tasks. Choose module, weekdays, interval and an end date within the semester. Preview all dates, then create. Matching tasks are skipped. Occurrences can be edited individually; deleting one does not regenerate it. This is a bounded schedule creation feature, not a continuing background recurrence service.
+- **Recurring tasks:** Add study task → Schedule → Weekly repeat. Choose module, weekdays, interval and an end date within the semester. Preview all dates, then create. Matching tasks are skipped. Occurrences can be edited individually; deleting one does not regenerate it. This is a bounded schedule creation feature, not a continuing background recurrence service.
 - **Study timer:** Start timer beside a task on Home, Plan or a module page. Pause/resume, Stop and review, then save actual minutes. Actual sessions are separate from planned minutes. An unfinished timer is local to that browser tab; switching semester or signing out pauses it. Saved sessions sync with semester preferences. Review time after the device sleeps.
 - **Assessment weights/results:** Assessments → Weight / result. Enter percentage, optional score and maximum. Totals distinguish earned points out of 100, scored/unscored weight, unassigned weight and average on scored work. Weights above a combined 100% are rejected. No letter-grade scale is assumed. Allow newly added assessments to finish saving before entering a result.
 - **Reminders:** Settings → Deadline reminders. Choose one week/day/hour or the deadline, plus an explicit Singapore-time anchor for date-only items. Save settings for this semester. In-app reminders check while the app is open; optional browser notifications require a separate explicit permission click. This release has no closed-browser push service. Alerts may be missed while the browser/device is closed; it checks recently missed reminders up to one day old and does not repeatedly notify the same event. Date-only anchors are not verified event times.
@@ -17,3 +17,14 @@ Full backups include the new semester metadata. Restore merges missing schedules
 Run `node --test tests/*.test.mjs`. `python tests/build_study_fixture.py` creates an isolated browser fixture at tests/study-ui-fixture.html and a synthetic two-page PDF. The fixture substitutes authentication, cloud records and file storage before connecting the UI. It performs no real service writes.
 
 Browser checks performed: recurrence preview/creation, timer review/save while preserving planned minutes, assessment totals (20% weighted, 8/10 produces 16 points), reminder preference saving, actual PDF extraction/index persistence after reload, page-2 search and visible page rendering, saved assessment answer with PDF source, mobile More navigation, light/dark layouts and no console errors in those flows. The deployed account's actual NTULearn PDF copy is not verified by these synthetic checks.
+
+
+## Timetable import and revised task entry
+
+Home uses one Add study task entry point for one-off and weekly tasks. The existing one-off notes/fixed fields and individual task editing remain available. Weekly schedules retain date previews, duplicate checks and bounded semester dates.
+
+Classes → Import classes accepts a pasted class list or a PNG/JPEG/WebP image up to 10 MB. Tesseract.js 5.1.1 is loaded only on image selection; OCR runs in the browser and downloads its runtime/language files. Images are not uploaded to planner storage or an AI service. First use needs internet and can take time.
+
+The parser recognizes one class per line with a module, weekday and explicit time range, such as `SC2000, Mon, 09:00–10:00, Lecture, LT1`. It also accepts `0900-1000`. OCR is not a general timetable-grid interpreter: screenshots without readable weekdays and explicit ranges in each class line need manual corrections or preview rows. Unread lines are reported, never silently imported. Users can edit every preview field and deselect rows. Unknown modules must be mapped to an enrolled module. All selected rows validate before any classes are added; duplicates are skipped, clashes rejected and account/semester changes block saving. The existing semester bridge saves the resulting classes.
+
+Verification: synthetic browser checks covered one-off save, weekly preview/create, Home edit, mobile More/Inbox, timetable text preview/save, and OCR of `verification/timetable-sample.png` (two class lines). This does not establish accuracy for arbitrary student screenshots.
