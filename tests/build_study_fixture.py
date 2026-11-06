@@ -1,6 +1,6 @@
 """Build an isolated browser fixture. All authentication, records and Storage are synthetic."""
 from pathlib import Path
-import json
+import json, sys
 
 root=Path(__file__).resolve().parent.parent
 verify=root/'verification'
@@ -17,7 +17,7 @@ for i,obj in enumerate(objects,1):offsets.append(len(pdf));pdf+=str(i).encode()+
 start=len(pdf);pdf+=b'xref\n0 8\n0000000000 65535 f \n'+b''.join(f'{n:010d} 00000 n \n'.encode() for n in offsets[1:])+b'trailer\n<< /Size 8 /Root 1 0 R >>\nstartxref\n'+str(start).encode()+b'\n%%EOF\n'
 (verify/'study-sample.pdf').write_bytes(pdf)
 html=(root/'index.html').read_text(encoding='utf-8').replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
-for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements']:
+for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements','workspace-trash']:
  html=html.replace(f'src="workspace/{asset}.js"',f'src="../workspace/{asset}.js"')
 script=r'''
 const fixtureUser={id:'study-fixture-owner',email:'study-fixture@example.invalid'},fixtureToday=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -26,11 +26,13 @@ const fixtureTables={tasks:[{id:'fixture-task-uuid',user_id:fixtureUser.id,title
 const fixtureBytes=new Map();
 ReferenceCloud.client=async()=>({
  auth:{getUser:async()=>({data:{user:fixtureUser}}),getSession:async()=>({data:{session:{user:fixtureUser}}}),onAuthStateChange(){return {data:{subscription:{unsubscribe(){}}}};}},
- from(table){let filters=[],low=0,high=499,one=false,inserted=null;const q={select(){return q;},eq(key,value){filters.push([key,value]);return q;},order(){return q;},range(a,b){low=a;high=b;return q;},insert(row){inserted={...row,updated_at:'v'+(++fixtureCounter),created_at:new Date().toISOString()};return q;},single(){one=true;return q;},maybeSingle(){one=true;return q;},then(resolve,reject){if(inserted){fixtureTables[table].push(inserted);return Promise.resolve({data:inserted}).then(resolve,reject);}const rows=(fixtureTables[table]||[]).filter(row=>filters.every(([k,v])=>row[k]===v)).slice(low,high+1);return Promise.resolve({data:one?rows[0]||null:structuredClone(rows)}).then(resolve,reject);}};return q;},
+ from(table){let filters=[],low=0,high=499,one=false,inserted=null,deleting=false;const q={delete(){deleting=true;return q;},select(){return q;},eq(key,value){filters.push([key,value]);return q;},order(){return q;},range(a,b){low=a;high=b;return q;},insert(row){inserted={...row,updated_at:'v'+(++fixtureCounter),created_at:new Date().toISOString()};return q;},single(){one=true;return q;},maybeSingle(){one=true;return q;},then(resolve,reject){if(deleting){fixtureTables[table]=(fixtureTables[table]||[]).filter(row=>!filters.every(([k,v])=>row[k]===v));return Promise.resolve({data:[]}).then(resolve,reject);}if(inserted){fixtureTables[table].push(inserted);return Promise.resolve({data:inserted}).then(resolve,reject);}const rows=(fixtureTables[table]||[]).filter(row=>filters.every(([k,v])=>row[k]===v)).slice(low,high+1);return Promise.resolve({data:one?rows[0]||null:structuredClone(rows)}).then(resolve,reject);}};return q;},
  rpc:async(name,args)=>{if(name==='aa_workspace_load')return {data:{revision:fixtureRevision,payload:structuredClone(fixturePrefs)}};if(name==='aa_workspace_revision')return {data:fixtureRevision};if(name==='aa_workspace_save'){if(args.p_expected_revision!==fixtureRevision)return {error:Error('fixture revision conflict')};fixturePrefs=structuredClone(args.p_payload);return {data:++fixtureRevision};}const table=name==='update_planner_task'?'tasks':'assessments',row=fixtureTables[table].find(x=>x.id===args.p_id);if(!row)return {error:Error('missing fixture record')};Object.assign(row,args.p_patch,{updated_at:'v'+(++fixtureCounter)});return {data:structuredClone(row)};},
  storage:{from(){return {download:async path=>({data:fixtureBytes.get(path)||await (await fetch('../verification/study-sample.pdf')).blob()}),upload:async(path,blob)=>{fixtureBytes.set(path,blob);return {data:{path}};},remove:async()=>({data:[]})};}}
 });
 '''.replace('PDF_SIZE',str(len(pdf)))
+if '--audit' in sys.argv:
+ script=script.replace('const fixtureBytes=new Map();',"\nfixturePrefs.years.push({id:'y2027',start:2027,label:'AY2027/28'});\nfixturePrefs.terms.push({...structuredClone(fixturePrefs.terms[0]),id:'s2',yearId:'y2027',label:'Semester 1',name:'AY2027/28 Semester 1',start:'2027-08-01',end:'2027-12-31',date:'2027-08-01',mods:[]});\nfixturePrefs.terms[0].topics.SC2000=[['Regression',0,0]];\nfixturePrefs.terms[0].timetable=[{id:'fixture-class',mod:'SC2000',d:'Mon',at:9,range:'09:00–10:00',kind:'Lecture',venue:'LT1'}];\nfixturePrefs.terms[0].inbox=[{id:999,t:'semester',s:'p',mod:'SC2000',title:'Review Quiz 3 announcement',date:'2026-11-07',min:20}];\nfixturePrefs.terms[0].hub=[{id:777,type:'ann',mod:'SC2000',title:'Quiz 3 announcement',date:'2026-11-06',desc:'Quiz 3 is on 9 November at 10:00.',origin:'Fixture source',url:'',unread:true}];\nfixtureTables.tasks.push({id:'fixture-monday',user_id:fixtureUser.id,title:'Quick warm-up + individual viva',module:'SC2000',date:'2026-11-02',minutes:10,done:true,updated_at:'v0'});\n\nconst fixtureBytes=new Map();")
 marker='globalThis.ProductionWorkspace={project,flatten,fields,preferencesOf,ProductionBridge};\n})();'
 assert marker in html
 html=html.replace(marker,marker+'\n'+script)
