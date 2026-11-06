@@ -7,7 +7,7 @@
  const check=(ok,message)=>{if(!ok)throw Error(message)};
  const MAX_TOTAL=50*1024*1024,MAX_JSON=72*1024*1024;
  const allowed=new Set(['pdf','txt','md','csv','png','jpg','jpeg','webp','docx','pptx','xlsx','zip']);
- function taskKey(t){return {mod:t.mod,title:t.title,date:t.date,min:t.min,fix:!!t.fix,done:!!t.done,done_at:t.done_at||null,notes:t.notes||''}}
+ function taskKey(t){return {mod:t.mod,title:t.title,date:t.date,min:t.min,fix:!!t.fix,done:!!t.done,done_at:t.done_at||null,notes:t.notes||'',priority:['high','low'].includes(t.priority)?t.priority:'normal'}}
  function assessmentKey(a){return {mod:a.mod,name:a.name,date:a.date,time:a.time||'',type:a.type||'Assessment'}}
  async function digest(bytes){const hash=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase()}
  function b64(bytes){let out='';for(let i=0;i<bytes.length;i+=32768)out+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(out)}
@@ -42,7 +42,7 @@
    if(src.studyTools){
     if(!target.studyTools)target.studyTools=copy(src.studyTools);
     else if(target.studyTools.owner===src.studyTools.owner){
-     for(const field of ['rules','sessions']){const current=target.studyTools[field]||[],incoming=src.studyTools[field]||[];check(Array.isArray(current)&&Array.isArray(incoming),'Invalid backed-up study tools.');const ids=new Set(current.map(x=>x.id));for(const item of incoming)if(!ids.has(item.id)){current.push(copy(item));ids.add(item.id);}target.studyTools[field]=current;}
+     for(const field of ['rules','sessions','moves']){const current=target.studyTools[field]||[],incoming=src.studyTools[field]||[];check(Array.isArray(current)&&Array.isArray(incoming),'Invalid backed-up study tools.');const ids=new Set(current.map(x=>x.id));for(const item of incoming)if(!ids.has(item.id)){current.push(copy(item));ids.add(item.id);}target.studyTools[field]=current;}
      target.studyTools.grades={...copy(src.studyTools.grades||{}),...(target.studyTools.grades||{})};
      if(!target.studyTools.reminders&&src.studyTools.reminders)target.studyTools.reminders=copy(src.studyTools.reminders);
     }

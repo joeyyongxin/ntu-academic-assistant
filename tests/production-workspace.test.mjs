@@ -42,3 +42,5 @@ test('Inbox undo links persist by database UUID when numeric IDs change after re
  rows.tasks=rows.tasks.filter(t=>t.id!=='old-uuid');const missing=f.c.ProductionWorkspace.project(rows,payload).snapshot.terms.find(t=>t.id===term.id);
  assert.equal(missing.inbox[0].undoTask.taskId,null);
 });
+
+test('priority and moved-task history survive metadata projection without new task rows',async()=>{const f=setup();f.prefs.available=true;await f.bridge.open({id:'alice'});const snapshot=structuredClone(f.c.snapshot),term=snapshot.terms.find(t=>t.tasks.length);term.tasks[0].priority='high';term.studyTools={owner:'alice',moves:[{id:'move-1',title:'Existing task',module:'SC1004',from:'2026-11-01',to:'2026-11-02'}]};f.bridge.changed(snapshot);await f.bridge.queue;assert.equal(f.writes.length,0);const restored=f.c.ProductionWorkspace.project(f.records,f.prefs.payload).snapshot.terms.find(t=>t.id===term.id);assert.equal(restored.tasks[0].priority,'high');assert.equal(restored.studyTools.moves[0].id,'move-1');assert.equal(restored.tasks.length,1);});
