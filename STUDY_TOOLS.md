@@ -38,3 +38,12 @@ Verification: synthetic browser checks covered one-off save, weekly preview/crea
 - Backup merge preserves task priorities and merges move-history entries by ID without duplication. Renamed academic-year/semester metadata continues to trigger the existing explicit conflict check when restoring incompatible older backups.
 
 Verification used synthetic local data: moving an overdue task kept it unfinished, saved priority appeared on the module page, academic-year/semester renames saved, an end date excluding a saved assessment was rejected, and desktop/mobile task icons aligned with no horizontal overflow or console errors. Cloud metadata projection and backup tests cover priority and move-history persistence.
+
+
+## Delete dialogs and workspace Trash
+
+Delete confirmations now appear as app dialogs for tasks, topics, classes, assessments, course updates and private files. Cancel, X, Esc or clicking outside cancels. File deletion still removes the actual stored file when explicitly confirmed; workspace deletion instead goes to recoverable Trash.
+
+Settings → Manage years & semesters has Delete academic year / Delete semester and a Trash section with Restore. Deleted workspaces are hidden from normal selection while retaining all records and file associations. At least one available semester is required. An empty academic year must have a semester created or restored before it can be viewed. Inbox Undo and backup restoration use app confirmation dialogs too.
+
+See `verification/WORKFLOW_AUDIT.md` for verified controls, test results and live integration checks still requiring an account/device. Cache v35 includes the new workspace helpers for offline reuse after installation.
