@@ -31,3 +31,9 @@ test('consent and module mappings survive the actual workspace preferences proje
  const restored=f.ctx.ProductionWorkspace.project({tasks:[],assessments:[]},payload);
  assert.equal(JSON.stringify(restored.snapshot.terms.find(x=>x.id==='s1').ntuAuto),JSON.stringify(semester.ntuAuto));
 });
+test('closed modal shells allow sync; an open modal pauses it',async()=>{
+ const f=setup();f.ctx.document.querySelector=selector=>selector==='.mback'?{}:null;
+ await f.ctx.runNTULearnAuto();assert.equal(f.saves(),1);
+ const blocked=setup();blocked.ctx.document.querySelector=selector=>selector==='.mback.open'?{}:null;
+ await blocked.ctx.runNTULearnAuto();assert.equal(blocked.saves(),0);
+});

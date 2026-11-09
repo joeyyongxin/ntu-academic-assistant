@@ -27,12 +27,13 @@ const send=(type,extra={},sender=local)=>new Promise(resolve=>listener.message({
 test('worker requires explicit pairing and confines snapshot access to approved account, semester and page',async()=>{
  assert.equal((await send('LIST')).ok,true);
  const configured=await send('CONFIG',{ids:['course1'],auto:true});assert.equal(configured.ok,true);assert.equal(configured.data.count,1);assert.ok(alarms.has('ntu-refresh'));
- assert.equal((await send('APP_SNAPSHOT',{context},web)).ok,false);
+ assert.equal((await send('APP_SNAPSHOT',{context},web)).ok,false);assert.equal((await send('APP_SYNC',{context},web)).ok,false);
  assert.equal((await send('APP_CONNECT',{context},web)).ok,true);assert.match(opened[0].url,/\?approve=/);
  const pending=storage.ntuConnector.pending.id;
  assert.equal((await send('APPROVE',{pending:'wrong'})).ok,false);
  assert.equal((await send('APPROVE',{pending})).ok,true);
  const status=await send('APP_STATUS',{context},web);assert.equal(status.data.version,'0.4.0');assert.ok(status.data.capabilities.includes('pdf'));
+ assert.equal((await send('APP_SYNC',{context},web)).ok,true);assert.equal((await send('APP_SYNC',{context:{...context,owner:'other'}},web)).ok,false);
  const snapshot=await send('APP_SNAPSHOT',{context},web);assert.equal(snapshot.ok,true);assert.equal(snapshot.data.items.length,1);
  assert.equal((await send('APP_SNAPSHOT',{context:{...context,owner:'other'}},web)).ok,false);
  assert.equal((await send('APP_SNAPSHOT',{context:{...context,semester:'other'}},web)).ok,false);

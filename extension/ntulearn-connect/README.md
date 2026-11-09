@@ -1,3 +1,17 @@
+# Connector 0.9 — Sync now from the NTULearn Hub
+
+1. Replace the files in your existing installed connector folder with this version. Keep the folder location unchanged.
+2. Open chrome://extensions, find Academic Assistant, click Reload, and check version 0.9.0.
+3. Refresh the planner after the website update is published.
+4. In NTULearn, click Sync now. It refreshes only your selected courses and requires the existing account/semester pairing.
+5. In Connection settings, retain or set up course-to-module mappings and automatic updates. Enable scheduled refresh in the connector for 30-minute checks.
+6. Tick Automatically save available PDFs to My Files and approve PDF copies in the connector if not already approved. Keep the planner open and NTULearn signed in.
+7. Expand a module in My Files and download a saved PDF to verify it.
+
+No new host permissions. The new APP_SYNC command is limited to the approved page, account and semester. An absent material must reappear in a refreshed selected-course snapshot before its attachments can be fetched. Missing, inaccessible, non-PDF and blocked-redirect sources are still reported as errors; this update does not bypass NTULearn access restrictions.
+
+---
+
 # Connector 0.8 — PDFs inside Ultra child blocks
 
 Replace all files in the SAME installed connector folder, Reload at chrome://extensions, confirm version 0.8.0, then refresh the planner. Pairing and permissions are unchanged.
