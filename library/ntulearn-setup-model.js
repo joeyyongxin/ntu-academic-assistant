@@ -1,0 +1,8 @@
+(function(root){
+ const WINDOW_MS=60*60*1000;
+ function suggest(name,modules){const codes=[...new Set([...String(name).toUpperCase().matchAll(/(?:^|[^A-Z0-9])([A-Z]{2}\d{4})(?=$|[^A-Z0-9])/g)].map(m=>m[1]))];return codes.length===1&&modules.includes(codes[0])?codes[0]:'';}
+ function courses(items,modules,auto,pdf){return [...new Map(items.map(x=>[x.courseId,x.courseName])).entries()].map(([id,name])=>({id,name,module:auto?.skipped?.includes(id)?'':modules.includes(auto?.mapping?.[id])?auto.mapping[id]:suggest(name,modules),pdf:!!pdf?.mapping?.[id]}));}
+ function preferences(rows,modules,approved){const mapping={},pdfMapping={},skipped=[];for(const row of rows){if(!row.module){skipped.push(row.id);if(row.pdf)throw Error('Choose a module or turn off PDF saving for '+row.name+'.');continue;}if(!modules.includes(row.module))throw Error('Choose an enrolled module.');mapping[row.id]=row.module;if(row.pdf)pdfMapping[row.id]=row.module;}if(!Object.keys(mapping).length)throw Error('Map at least one course.');if(Object.keys(pdfMapping).length&&!approved)throw Error('Approve PDF copies in the connector before enabling them.');return {mapping,pdfMapping,skipped};}
+ function status(state,now=Date.now()){if(state.busy)return 'Syncing';if(state.paired===false)return 'Not connected';if(state.issue||!state.paired||!state.completed||!state.sourceAt||!Number.isFinite(Date.parse(state.sourceAt))||Date.parse(state.sourceAt)-now>300000||now-Date.parse(state.sourceAt)>WINDOW_MS||state.warnings||state.pdfPending)return 'Needs attention';return 'Up to date';}
+ root.NTULearnSetup={suggest,courses,preferences,status};
+})(globalThis);
