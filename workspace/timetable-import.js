@@ -3,7 +3,20 @@
  function parse(text){
   if(typeof text!=='string'||text.length>100000)throw Error('Use up to 100,000 characters.');
   const rows=[],unread=[];
-  for(const line of text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)){
+  // OCR often splits a class into several lines. Join only within one module block;
+  // never infer a missing weekday/time or merge two course codes.
+  const lines=text.replace(/[−–—]/g,'-').replace(/\b([0-2]?\d)\s*[:.]\s*([0-5]\d)\b/g,'$1:$2').split(/\r?\n/).map(x=>x.trim()).filter(Boolean), organised=[];
+  let pending=[];
+  const flush=()=>{if(pending.length){organised.push(pending.join(' '));pending=[];}};
+  for(const line of lines){
+   if(/\b[A-Z]{2,4}\d{4}[A-Z]?\b/i.test(line)){flush();pending=[line];}
+   else if(pending.length && pending.length<6)pending.push(line);
+   else {flush();organised.push(line);}
+   const joined=pending.join(' ');
+   if(/\b(?:mon|tue|wed|thu|fri|sat|sun)(?:day|sday|nesday|rsday|urday)?\b/i.test(joined)&&/\d(?:\d|:)\d\s*-\s*\d/.test(joined)&&/\b(?:lecture|tutorial|laboratory|lab|seminar|workshop|lec|tut)\b/i.test(joined))flush();
+  }
+  flush();
+  for(const line of organised){
    if(/^module[,\t]/i.test(line))continue;
    const mod=line.match(/\b[A-Z]{2,4}\d{4}[A-Z]?\b/i),day=line.match(/\b(mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)\b/i);
    const range=line.match(/\b([01]?\d|2[0-3])[:.]([0-5]\d)\s*[-–—]\s*([01]?\d|2[0-3])[:.]([0-5]\d)\b/)||line.match(/\b([01]\d|2[0-3])([0-5]\d)\s*[-–—]\s*([01]\d|2[0-3])([0-5]\d)\b/);
