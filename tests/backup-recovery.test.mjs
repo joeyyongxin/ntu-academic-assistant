@@ -110,3 +110,5 @@ test('backup restore remaps a deleted file to its restored storage ID',async()=>
  let saved;await api.restore(workspace(),archive,{async saveWorkspace(s){saved=structuredClone(s);},async listFiles(){return [];},async uploadFile(){return {id:'restored-file'};}},validate);
  assert.equal(saved.terms[0].fileTrash['old-file'],undefined);assert.equal(saved.terms[0].fileTrash['restored-file'].name,'notes.txt');
 });
+
+test('imported schedule proposals remain preserved but cannot target a recycled local task ID',()=>{const incoming=workspace(term([task])),current=workspace(term([{...task,title:'Current task'}]));incoming.terms[0].inbox=[{id:999,t:'change',s:'p',mod:task.mod,title:'Delete restored task',date:task.date,min:task.min,change:{source:'user',entity:'tasks',operation:'delete',before:task,after:null,recordId:'original-uuid'}}];const merged=api.merge(current,incoming,validate).snapshot;assert.equal(merged.terms[0].inbox[0].change.unavailable,true);assert.equal(merged.terms[0].tasks[0].title,'Current task');assert.equal(merged.terms[0].inbox[0].change.recordId,'original-uuid');});

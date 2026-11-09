@@ -21,6 +21,7 @@
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
   for(const t of terms)for(const entry of t.recordTrash||[]){if(!['tasks','assessments'].includes(entry.kind))continue;const list=t[entry.kind],index=list.findIndex(row=>map.get(entry.kind+':'+row.id)?.id===entry.recordId);if(index>=0){entry.row=list.splice(index,1)[0];delete entry.unavailable;}else entry.unavailable=true;}
+  for(const t of terms)for(const p of t.inbox||[])if(p.change?.recordId){const c=p.change,list=t[c.entity]||[],row=list.find(r=>map.get(c.entity+':'+r.id)?.id===c.recordId)||(t.recordTrash||[]).find(e=>e.recordId===c.recordId)?.row;if(row){c.before.id=row.id;if(c.after)c.after.id=row.id;delete c.unavailable;}else c.unavailable=true;}
   for(const t of terms)for(const p of t.inbox||[])if(p.undoTask){
    // Local numeric IDs can change on reload. Resolve only the saved database UUID.
    const task=t.tasks.find(r=>map.get('tasks:'+r.id)?.id===p.undoTask.recordId);
@@ -44,6 +45,7 @@
   }
   for(const t of payload.terms){
    for(const entry of t.recordTrash||[])if(['tasks','assessments'].includes(entry.kind))entry.recordId=map.get(entry.kind+':'+entry.row.id)?.id||entry.recordId||null;
+   for(const p of t.inbox||[])if(p.change?.before&&['tasks','assessments'].includes(p.change.entity))p.change.recordId=p.change.recordId||map.get(p.change.entity+':'+p.change.before.id)?.id||null;
    for(const p of t.inbox||[])if(p.undoTask){
     p.undoTask.recordId=map.get('tasks:'+p.undoTask.taskId)?.id||p.undoTask.recordId||null;
     p.undoTask.taskId=null;
