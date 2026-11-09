@@ -17,6 +17,7 @@ for i,obj in enumerate(objects,1):offsets.append(len(pdf));pdf+=str(i).encode()+
 start=len(pdf);pdf+=b'xref\n0 8\n0000000000 65535 f \n'+b''.join(f'{n:010d} 00000 n \n'.encode() for n in offsets[1:])+b'trailer\n<< /Size 8 /Root 1 0 R >>\nstartxref\n'+str(start).encode()+b'\n%%EOF\n'
 (verify/'study-sample.pdf').write_bytes(pdf)
 html=(root/'index.html').read_text(encoding='utf-8').replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
+html=html.replace('src="ui/date-nav.js"','src="../ui/date-nav.js"')
 for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements','workspace-trash']:
  html=html.replace(f'src="workspace/{asset}.js"',f'src="../workspace/{asset}.js"')
 script=r'''
