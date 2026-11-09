@@ -18,7 +18,7 @@ start=len(pdf);pdf+=b'xref\n0 8\n0000000000 65535 f \n'+b''.join(f'{n:010d} 0000
 (verify/'study-sample.pdf').write_bytes(pdf)
 html=(root/'index.html').read_text(encoding='utf-8').replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
 html=html.replace('src="ui/date-nav.js"','src="../ui/date-nav.js"')
-for asset in ['ui/primitives.js','state/workspace-provider.js','state/record-trash.js','state/change-pipeline.js','library/library-model.js']:html=html.replace('src="'+asset+'"','src="../'+asset+'"')
+for asset in ['ui/primitives.js','state/workspace-provider.js','state/record-trash.js','state/change-pipeline.js','library/library-model.js','library/ntulearn-setup-model.js']:html=html.replace('src="'+asset+'"','src="../'+asset+'"')
 for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements','workspace-trash']:
  html=html.replace(f'src="workspace/{asset}.js"',f'src="../workspace/{asset}.js"')
 script=r'''
@@ -40,6 +40,12 @@ if '--library' in sys.argv:
 fixturePrefs.terms[0].hub.push({id:778,type:'file',mod:'SC2000',title:'Lecture notes — regression',date:fixtureToday,desc:'Synthetic course material with a saved PDF attachment.',origin:'Fixture connector',url:'https://ntulearn.ntu.edu.sg/fixture-notes',ntulearnSyncKey:'fixture-material-key',unread:true});
 fixturePrefs.terms[0].libraryLinks={'fixture-pdf-uuid':{materialId:778,sourceKey:'fixture-material-key'}};
 fixtureTables.aa_file_assets.push({...fixtureTables.aa_file_assets[0],id:'fixture-upload-2',name:'SC1004 Revision.pdf',module:'SC1004',path:fixtureUser.id+'/s1/fixture-upload-2.pdf'});
+"""
+if '--setup' in sys.argv:
+ script += r"""
+let fixtureConnectorPaired=false,fixtureSetupAt=new Date().toISOString();
+const fixtureSetupSnapshot=()=>({format:'academic-assistant-ntulearn-sync',schemaVersion:1,exportedAt:fixtureSetupAt,warnings:[],items:[['exact','SC2000 Introduction'],['ambiguous','SC2000 / SC1004 Combined'],['unmatched','Other course']].map(([id,name])=>({id,courseId:id,courseName:name,kind:id==='exact'?'file':'ann',title:'Synthetic '+name,text:'Synthetic setup listing.',date:fixtureToday,deadlineDate:'',url:'https://ntulearn.ntu.edu.sg/fixture-'+id}))});
+window.addEventListener('message',event=>{const m=event.data;if(event.source!==window||m?.channel!=='aa-ntu-request')return;let data;if(m.type==='APP_CONNECT'){fixtureConnectorPaired=true;data={approvalRequired:true};}else if(m.type==='APP_DISCONNECT'){fixtureConnectorPaired=false;data={disconnected:true};}else if(m.type==='APP_STATUS')data={paired:fixtureConnectorPaired,libraryApproved:true,capabilities:['pdf-library','sync-now'],auto:true,lastSync:new Date().toISOString(),count:3};else if(m.type==='APP_SYNC'){fixtureSetupAt=new Date().toISOString();data={synced:true};}else if(m.type==='APP_SNAPSHOT')data=fixtureSetupSnapshot();else if(m.type==='APP_PDF_LIST')data={files:[]};else return;window.postMessage({channel:'aa-ntu-response',id:m.id,ok:true,data},location.origin);});
 """
 if '--inbox' in sys.argv:
  script += r"""
