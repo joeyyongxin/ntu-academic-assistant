@@ -262,10 +262,16 @@ input[type=file]{max-width:100%;min-height:40px;color:var(--mut);font-size:12px}
 .class-agenda .event{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 0}.class-agenda .event small{flex-basis:100%;color:var(--mut)}
 
 .hubsource+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--ln);border-radius:10px;background:var(--sf);margin:16px 0}.hubsource+.statgrid>div{border:0;border-radius:0;box-shadow:none;padding:14px;min-height:0;background:transparent}.hubsource+.statgrid>div+div{border-left:1px solid var(--ln)}.hubsource+.statgrid h1{font-size:26px;margin:4px 0 0}.ntu-sync-card .hd{gap:12px;flex-wrap:wrap}
+
+/* Shared workspace controls */
+.ui-icon-button{min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center}
+#ui-toasts{position:fixed;bottom:24px;right:20px;z-index:1200;display:grid;gap:8px;max-width:min(440px,calc(100vw - 32px));max-height:40vh;overflow:auto}.ui-toast{display:flex;align-items:center;gap:10px;background:var(--sf);color:var(--ink);border:1px solid var(--ln);border-radius:8px;padding:10px 12px}.ui-toast>span{flex:1;overflow-wrap:anywhere}.ui-toast .btn{flex:none}
+.header-semester{display:flex;align-items:center;gap:8px;flex:1 1 240px;min-width:0}.header-semester select{min-width:0;max-width:340px;width:100%;text-overflow:ellipsis}.header-semester .btn{padding:8px}.tb{flex-wrap:wrap}.academic-period-sheet{width:min(960px,94vw);max-height:88dvh;overflow:auto}.academic-period-sheet .card{box-shadow:none}.ui-icon-button.academic-delete{font-size:20px}
+@media(max-width:800px){#ui-toasts{bottom:calc(80px + env(safe-area-inset-bottom));right:12px;max-width:calc(100vw - 24px)}.header-semester{order:4;flex-basis:100%}.academic-period-sheet{width:94vw}.academic-period-sheet .year-heading{flex-wrap:wrap;gap:8px}}
 </style><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
 <header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
 <div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
-<script src="config.js"></script><script src="data-service.js"></script><script src="ui/date-nav.js"></script><script src="workspace/backup-recovery.js"></script><script src="workspace/ntulearn-calendar.js"></script><script src="workspace/ntulearn-announcements.js"></script><script src="workspace/ntulearn-sync.js"></script><script src="workspace/ntulearn-library.js"></script><script src="workspace/ntulearn-answers.js"></script><script src="workspace/study-tools.js"></script><script src="workspace/planner-refinements.js"></script><script src="workspace/workspace-trash.js"></script><script src="workspace/timetable-import.js"></script><script src="workspace/pdf-study-search.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
+<script src="config.js"></script><script src="data-service.js"></script><script src="ui/date-nav.js"></script><script src="ui/primitives.js"></script><script src="state/workspace-provider.js"></script><script src="state/record-trash.js"></script><script src="workspace/backup-recovery.js"></script><script src="workspace/ntulearn-calendar.js"></script><script src="workspace/ntulearn-announcements.js"></script><script src="workspace/ntulearn-sync.js"></script><script src="workspace/ntulearn-library.js"></script><script src="workspace/ntulearn-answers.js"></script><script src="workspace/study-tools.js"></script><script src="workspace/planner-refinements.js"></script><script src="workspace/workspace-trash.js"></script><script src="workspace/timetable-import.js"></script><script src="workspace/pdf-study-search.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
 (function(root){
  const KEY='aa-reference-v29-workspace-v1';
  const copy=value=>JSON.parse(JSON.stringify(value));
@@ -299,6 +305,7 @@ input[type=file]{max-width:100%;min-height:40px;color:var(--mut);font-size:12px}
   check(Number.isSafeInteger(data.n)&&data.n>=0,'Invalid task counter.');
   check(!data.theme||['light','dark'].includes(data.theme),'Invalid appearance preference.');
   if(data.lastByYear)for(const [year,id] of Object.entries(data.lastByYear))check(years.has(year)&&data.terms.some(t=>t.id===id&&t.yearId===year),'Invalid remembered semester.');
+  if(data.terms.some(t=>t.recordTrash?.length)){const expanded=copy(data);for(const t of expanded.terms){check(Array.isArray(t.recordTrash||[])&&(t.recordTrash||[]).length<=10000,'Invalid Trash.');for(const entry of t.recordTrash||[]){check(entry&&typeof entry.id==='string'&&['tasks','assessments','timetable','hub','topics'].includes(entry.kind),'Invalid deleted item.');if(entry.unavailable)continue;if(entry.kind==='topics'){check(t.mods.includes(entry.module),'Invalid deleted topic module.');(t.topics[entry.module]??=[]).push(entry.row);}else t[entry.kind].push(entry.row);}delete t.recordTrash;}validate(expanded);}
   return data;
  }
  class ConflictError extends Error{constructor(){super('Another tab saved newer changes. Export this tab’s work before reloading the saved workspace.');this.name='ConflictError';}}
@@ -529,12 +536,13 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
    return terms.find(a=>a.id===id);
   }
   const current=terms.find(t=>t.id===preferences?.current)?.id||semester(dateNow()).id;
-  for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
+  for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at||terms.some(t=>(t.recordTrash||[]).some(e=>e.kind===table&&e.recordId===r.id))).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
    const t=semester(row.date,preferences?.recordTerms?.[table]?.[row.id]),mod=row.module.toUpperCase();if(!t.mods.includes(mod))t.mods.push(mod);
    const id=++n;map.set(table+':'+id,copy(row));
    if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
+  for(const t of terms)for(const entry of t.recordTrash||[]){if(!['tasks','assessments'].includes(entry.kind))continue;const list=t[entry.kind],index=list.findIndex(row=>map.get(entry.kind+':'+row.id)?.id===entry.recordId);if(index>=0){entry.row=list.splice(index,1)[0];delete entry.unavailable;}else entry.unavailable=true;}
   for(const t of terms)for(const p of t.inbox||[])if(p.undoTask){
    // Local numeric IDs can change on reload. Resolve only the saved database UUID.
    const task=t.tasks.find(r=>map.get('tasks:'+r.id)?.id===p.undoTask.recordId);
@@ -542,7 +550,7 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
   }
   return {map,snapshot:{years:years.sort((a,b)=>a.start-b.start),terms,active:current,current,studyYear:preferences?.studyYear||'Other',n:Math.max(n,preferences?.n||0),lastByYear:{},theme:null}};
  }
- function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of t[table])rows.set(table+':'+r.id,{table,row:r,termId:t.id});return rows;}
+ function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of [...t[table],...(t.recordTrash||[]).filter(e=>e.kind===table&&!e.unavailable).map(e=>e.row)])rows.set(table+':'+r.id,{table,row:r,termId:t.id,trashedAt:(t.recordTrash||[]).find(e=>e.kind===table&&e.row.id===r.id)?.at||null});return rows;}
  function fields(table,r){
   const doc={title:table==='tasks'?r.title:r.name,date:r.date,module:r.mod==='OTHER'?'Other':r.mod};
   if(table==='tasks')Object.assign(doc,{minutes:r.min,done:r.done,done_at:r.done_at??null,notes:r.notes||''});
@@ -557,6 +565,7 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
    payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
   }
   for(const t of payload.terms){
+   for(const entry of t.recordTrash||[])if(['tasks','assessments'].includes(entry.kind))entry.recordId=map.get(entry.kind+':'+entry.row.id)?.id||entry.recordId||null;
    for(const p of t.inbox||[])if(p.undoTask){
     p.undoTask.recordId=map.get('tasks:'+p.undoTask.taskId)?.id||p.undoTask.recordId||null;
     p.undoTask.taskId=null;
@@ -578,7 +587,7 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
     if(epoch!==this.epoch||this.blocked)return;
     ReferenceLocalStore.validate(data);
     const before=flatten(this.base),after=flatten(data),ops=[];
-    for(const [key,{table,row}] of after){const old=before.get(key)?.row;if(!old||JSON.stringify(fields(table,row))!==JSON.stringify(fields(table,old)))ops.push({key,table,row});}
+    for(const [key,{table,row,trashedAt}] of after){const prior=before.get(key),old=prior?.row;if(!old||JSON.stringify(fields(table,row))!==JSON.stringify(fields(table,old))||trashedAt!==prior.trashedAt)ops.push({key,table,row,deleted:!!trashedAt,restoring:!!prior?.trashedAt&&!trashedAt});}
     for(const [key,{table,row}] of before)if(!after.has(key))ops.push({key,table,row,deleted:true});
     const metadataChanged=forceMetadata||JSON.stringify(preferencesOf(data,this.map))!==this.preferenceSignature;
     if(!ops.length&&(!metadataChanged||!this.preferencesAvailable))return;
@@ -587,11 +596,12 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
      if(epoch!==this.epoch)return;
      const old=this.map.get(op.key);let patch=op.deleted?{deleted_at:new Date().toISOString()}:fields(op.table,op.row);
      if(old&&!op.deleted){const previous=fields(op.table,before.get(op.key).row);patch=Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v)!==JSON.stringify(previous[k])));}
+     if(op.restoring)patch.deleted_at=null;
      const id=old?.id||crypto.randomUUID();
-     const change=old?{kind:'update',table:op.table,id,expected:old.updated_at,base:old,patch}:{kind:'insert',table:op.table,id,doc:{id,user_id:owner,...patch,...(op.table==='tasks'?{source:'manual'}:{})}};
+     const change=old?{kind:'update',table:op.table,id,expected:old.updated_at,base:old,patch}:{kind:'insert',table:op.table,id,doc:{id,user_id:owner,...(!old&&op.deleted?fields(op.table,op.row):{}),...patch,...(op.table==='tasks'?{source:'manual'}:{})}};
      const saved=await this.service.apply(owner,change);coreWrites++;if(epoch!==this.epoch)return;
      const rawRows=this.remoteRows[op.table],index=rawRows.findIndex(r=>r.id===saved.id);if(index<0)rawRows.push(copy(saved));else rawRows[index]=copy(saved);
-     if(op.deleted)this.map.delete(op.key);else this.map.set(op.key,saved);
+     if(op.deleted&&!after.has(op.key))this.map.delete(op.key);else this.map.set(op.key,saved);
     }
     if(this.preferencesAvailable){
      const payload=preferencesOf(data,this.map),signature=JSON.stringify(payload);
@@ -846,16 +856,18 @@ if(saved()){const r=route();pendingRoute=authRoutes.includes(r)?'today':r;show('
 // v2.9: each semester owns its module enrolments and every academic record.
 (function(){
 const clone=x=>JSON.parse(JSON.stringify(x));
-const years=[{id:'y26',start:2026,label:'AY2026/27'},{id:'y27',start:2027,label:'AY2027/28'}];
-let studyYear='Year 1';const lastByYear={};
-const terms=[{id:'s1',yearId:'y26',label:'Semester 1',name:'AY2026/27 · Semester 1',start:'2026-08-10',end:'2026-12-04',weeks:13,date:TODAY,mods:MODS,tasks:T,classes:C,topics:TP,inbox:IN,files:F,assessments:AS,timetable:CL,hub:HUB,imported:false},
+WorkspaceProvider.bind(window,['years','terms','active','current','studyYear','lastByYear']);
+WorkspaceProvider.bindAccount(ReferenceCloud);
+years=[{id:'y26',start:2026,label:'AY2026/27'},{id:'y27',start:2027,label:'AY2027/28'}];
+studyYear='Year 1';lastByYear={};
+terms=[{id:'s1',yearId:'y26',label:'Semester 1',name:'AY2026/27 · Semester 1',start:'2026-08-10',end:'2026-12-04',weeks:13,date:TODAY,mods:MODS,tasks:T,classes:C,topics:TP,inbox:IN,files:F,assessments:AS,timetable:CL,hub:HUB,imported:false},
 {id:'s2',yearId:'y26',label:'Semester 2',name:'AY2026/27 · Semester 2',start:'2027-01-11',end:'2027-05-07',weeks:13,date:'2027-01-18',mods:['SC1002','SC1003','MH1810','CC0006'],tasks:[mk('2027-01-18','SC1002','Practise linked lists and stacks',45),mk('2027-01-18','MH1810','Revise differentiation exercises',30),mk('2027-01-19','SC1003','Work through processor examples',50)],classes:[['2027-01-18','SC1002','Tutorial','10:00–11:00'],['2027-01-19','SC1003','Lecture','14:00–16:00']],topics:{SC1002:[['Linked lists',1,0],['Stacks and queues',0,0]],MH1810:[['Differentiation',2,2]]},inbox:[{id:201,t:'semester',s:'p',mod:'SC1002',title:'Practise stacks before Tutorial 2',date:'2027-01-19',min:35}],files:[['SC1002_Week2_Notes.pdf','SC1002','Notes','Semester 2 sample','240 KB'],['MH1810_Practice.pdf','MH1810','Tutorial','Semester 2 sample','180 KB']],assessments:[{mod:'SC1002',name:'Sample CA1',date:'2027-02-05',time:'10:00',type:'Quiz'},{mod:'MH1810',name:'Sample midterm',date:'2027-02-19',time:'14:00',type:'Test'}],timetable:[{d:'Mon',at:10,mod:'SC1002',kind:'Tutorial',range:'10:00–11:00',venue:'Sample room A'},{d:'Tue',at:14,mod:'SC1003',kind:'Lecture',range:'14:00–16:00',venue:'Sample lecture theatre'}],hub:[{id:201,type:'ann',mod:'SC1002',title:'Week 2 tutorial preparation',date:'18 Jan 2027',desc:'Sample update for Semester 2 only. Review stacks before the next tutorial.',origin:'Semester 2 sample announcement',unread:true},{id:202,type:'file',mod:'MH1810',title:'Differentiation practice.pdf',date:'18 Jan 2027',desc:'Illustrative Semester 2 course material. No actual file bytes.',origin:'Semester 2 sample file',unread:true}],imported:false}];
 terms.push({id:'s3',yearId:'y27',label:'Semester 1',name:'AY2027/28 · Semester 1',start:'2027-08-09',end:'2027-12-03',weeks:13,date:'2027-08-16',mods:['SC1002','SC2002'],tasks:[mk('2027-08-16','SC2002','Sketch an object-oriented design',40)],classes:[['2027-08-16','SC2002','Lab','10:00–12:00']],topics:{SC1002:[['Linked lists',0,0]],SC2002:[['Classes and objects',1,0]]},inbox:[],files:[['SC2002_Design_Notes.pdf','SC2002','Notes','AY2027/28 sample','180 KB']],assessments:[{mod:'SC2002',name:'Sample design checkpoint',date:'2027-09-03',time:'10:00',type:'Project'}],timetable:[{d:'Mon',at:10,mod:'SC2002',kind:'Lab',range:'10:00–12:00',venue:'Sample lab'}],hub:[{id:301,type:'ann',mod:'SC2002',title:'Project briefing',date:'16 Aug 2027',desc:'Sample course announcement for AY2027/28 only.',origin:'AY2027/28 sample',unread:true}],imported:false});
-let active='s1',current='s1',message='';
+active='s1';current='s1';let message='';
 const yearOf=t=>years.find(y=>y.id===t.yearId);
 const yearStatus=y=>y.id===yearOf(terms.find(t=>t.id===current)).id?'Current academic year':y.start<yearOf(terms.find(t=>t.id===current)).start?'Past academic year':'Upcoming academic year';
 
-const term=()=>terms.find(x=>x.id===active);
+const term=()=>WorkspaceProvider.activeSemester;
 function status(t){return t.id===current?'Current':t.start<terms.find(x=>x.id===current).start?'Past':'Upcoming'}
 function capture(){Object.assign(term(),{date:TODAY,mods:MODS,tasks:T,classes:C,topics:TP,inbox:IN,files:F,assessments:AS,timetable:CL,hub:HUB,imported})}
 function load(id){capture();lastByYear[term().yearId]=active;active=id;lastByYear[term().yearId]=id;const t=term();TODAY=t.date;MODS=t.mods;T=t.tasks;C=t.classes;TP=t.topics;IN=t.inbox;F=t.files;AS=t.assessments;CL=t.timetable;HUB=t.hub;imported=t.imported;mod=null;q='';fm='';filePreview='';hubTab='all';hubMod='all';hubMessages=[{role:'bot',text:'Ask about '+t.name+' sample updates. No live NTULearn connection.'}];pendingClass={d:'Fri',at:11,mod:MODS[0]||'',kind:'Tutorial',range:'11:00–12:00',venue:'Sample room · review required'};}
@@ -878,7 +890,7 @@ window.createSemester=function(e){e.preventDefault();const label=document.getEle
 window.addSemesterModule=function(e){e.preventDefault();const el=document.getElementById('newModule'),code=el.value.trim().toUpperCase();if(!/^[-A-Z0-9_]{2,16}$/.test(code))return;if(!MODS.includes(code))MODS.push(code);message=code+' is enrolled in '+term().name;go()};
 const settingsBase=settings;settings=function(){const existing=settingsBase().replace("<p class=\"eb\">Settings</p><h1>Connections and preferences</h1><br>",'').replace("<div class=\"card\"><h2>Term</h2><div class=\"set\"><span>Current semester (sample)<br><small class=\"sub\">Start date, teaching weeks and recess are set here</small></span><button class=\"btn\">Edit</button></div></div>",'');return '<p class="eb">Preferences</p><h1>Settings</h1><p class="sub" style="margin-bottom:22px">Manage your academic workspace and account in one place.</p><section class="card"><h2>Academic year &amp; semester</h2><p class="sub">Choose which semester’s records to view across the app. These controls stay here in Settings.</p><div class="semester-bar settings-semester" style="margin-top:18px">'+academicSelectors()+'</div><p class="term-note"><b>Viewing:</b> '+esc(term().name)+'<br><b>Current semester:</b> '+esc(terms.find(t=>t.id===current).name)+'<br>Switching the view keeps all records separate. Use Manage years &amp; semesters to create terms or change the current semester.</p>'+(active!==current?'<button class="btn" style="margin-top:12px" onclick="selectSemester(\''+current+'\')">Return to current semester</button>':'')+'<div class="term-toast" role="status">'+esc(message)+'</div></section>'+studyProfile()+existing};
 
-const dashboardBase=today;today=function(){let h=dashboardBase();if(!MODS.length)h=h.replace(/<form class="f"[\s\S]*?<\/form>/,'<p class="term-note">Add modules before creating study tasks. <a href="#settings">Set up this semester in Settings →</a></p>');if(!T.some(t=>t.date===TODAY))h=h.replace('<form class="f"','<p class="sub" style="margin:20px 0">No study tasks for this day.</p><form class="f"');return h};
+const dashboardBase=today;today=function(){let h=dashboardBase();if(!MODS.length)h=h.replace(/<form class="f"[\s\S]*?<\/form>/,'<p class="term-note">Add modules before creating study tasks. <a href="#semesters">Set up this semester →</a></p>');if(!T.some(t=>t.date===TODAY))h=h.replace('<form class="f"','<p class="sub" style="margin:20px 0">No study tasks for this day.</p><form class="f"');return h};
 const oldAssessments=assessments;assessments=function(){return oldAssessments()+(!AS.length?'<section class="card term-empty">No assessments in this semester yet.</section>':'')};
 const oldTimetable=timetable;timetable=function(){return oldTimetable()+(!CL.length?'<section class="card term-empty">No classes in this semester yet.</section>':'')};
 const originalInbox=inbox;inbox=function(){if(active==='s1'&&!ReferenceCloud.enabled)return '<div class="term-note">All proposals below belong to '+esc(term().name)+'.</div>'+originalInbox();return '<p class="eb">'+esc(term().name)+'</p><h1>Needs your decision</h1><p class="sub">Proposals apply only to this semester.</p><br>'+ (IN.map(i=>'<section class="card">'+chip(i.mod)+'<h2>'+esc(i.title)+'</h2><p class="sub">'+esc(i.date)+' · '+i.min+' min · '+esc(term().name)+'</p><div class="toolbar">'+(i.s==='p'?'<button class="btn p" onclick="approveSemesterProposal('+i.id+')">Approve for this semester</button><button class="btn" onclick="rejectSemesterProposal('+i.id+')">Dismiss</button>':'<span class="ok">'+(i.s==='a'?'Applied to this semester':'Dismissed')+'</span>'+(i.s==='a'&&canUndoProposal(i.id)?'<button class="btn" onclick="undoSemesterProposal('+i.id+')">Undo approval</button>':''))+'</div></section>').join('')||'<section class="card term-empty">No proposals for this semester.</section>')};
@@ -953,10 +965,10 @@ function resetAssetState(){if(assetState.key!==assetKey())assetState={key:assetK
 function renderAssetList(){
  resetAssetState();const el=document.getElementById('fl');if(!el)return;
  if(assetState.loading){el.innerHTML='<p class="sub" role="status">Loading files…</p>';return;}
- const rows=assetState.rows.filter(f=>(!fm||f.module===fm)&&f.name.toLowerCase().includes(q.toLowerCase()));
+ const rows=assetState.rows.filter(f=>!term().fileTrash?.[f.id]&&(!fm||f.module===fm)&&f.name.toLowerCase().includes(q.toLowerCase()));
  const expanded=new Set([...el.querySelectorAll('details[open]')].map(x=>x.dataset.module));
  const groups=[...new Set(rows.map(f=>f.module))].sort();
- el.innerHTML=(assetState.error?'<p class="notice" role="alert">'+esc(assetState.error)+'</p>':'')+groups.map(module=>{const group=rows.filter(f=>f.module===module);return '<details class="file-module" data-module="'+esc(module)+'" '+(q||fm||expanded.has(module)?'open':'')+'><summary>'+esc(module)+'<small>'+group.length+' file'+(group.length===1?'':'s')+'</small></summary>'+group.map(f=>'<div class="fileitem"><div>'+chip(f.module)+'<b>'+esc(f.name)+'</b><small>'+esc(assetSize(f.bytes))+' · Private upload</small></div><div class="file-actions"><button class="btn" onclick="assetDetails(\''+f.id+'\')">Details</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDownload(\''+f.id+'\')">Download</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDeletePrompt(\''+f.id+'\')">Delete</button></div></div>').join('')+'</details>';}).join('')+(!rows.length&&!assetState.error?'<p class="sub">'+(assetState.rows.length?'No files match.':'No files uploaded in this semester yet.')+'</p>':'');
+ el.innerHTML=(assetState.error?'<p class="notice" role="alert">'+esc(assetState.error)+'</p>':'')+groups.map(module=>{const group=rows.filter(f=>f.module===module);return '<details class="file-module" data-module="'+esc(module)+'" '+(q||fm||expanded.has(module)?'open':'')+'><summary>'+esc(module)+'<small>'+group.length+' file'+(group.length===1?'':'s')+'</small></summary>'+group.map(f=>'<div class="fileitem"><div>'+chip(f.module)+'<b>'+esc(f.name)+'</b><small>'+esc(assetSize(f.bytes))+' · Private upload</small></div><div class="file-actions"><button class="btn" onclick="assetDetails(\''+f.id+'\')">Details</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDownload(\''+f.id+'\')">Download</button><button class="btn" '+(assetBusy?'disabled':'')+' onclick="assetDeletePrompt(\''+f.id+'\')">Delete</button></div></div>').join('')+'</details>';}).join('')+(!rows.length&&!assetState.error?'<p class="sub">'+(q||fm?'No files match.':'No files in this semester. Deleted files are in Trash.')+'</p>':'');
 }
 async function fetchAssets(force=false){
  resetAssetState();if(assetState.loading||assetState.fetched&&!force)return;const state=assetState,owner=ReferenceCloud.user?.id,semester=active;if(!owner)return;
@@ -1133,7 +1145,7 @@ function clearPrivatePreview(){previewEpoch++;if(privatePreviewUrl)URL.revokeObj
 const previewFiles=files;
 files=function(){clearPrivatePreview();return previewFiles()+'<section class="card" id="privateFilePreview" hidden></section>';};
 const previewList=renderAssetList;
-renderAssetList=function(){previewList();const list=document.getElementById('fl');if(!list)return;for(const row of assetState.rows){const details=list.querySelector('button[onclick="assetDetails(\''+row.id+'\')"]');if(!details)continue;const button=document.createElement('button');button.className='btn';button.textContent='Preview';button.disabled=assetBusy;button.onclick=()=>void previewPrivateFile(row.id);details.before(button);}};
+renderAssetList=function(){previewList();const list=document.getElementById('fl');if(!list)return;for(const row of assetState.rows){const details=list.querySelector('button[onclick="assetDetails(\''+row.id+'\')"]');if(!details)continue;const button=document.createElement('button');button.className='btn';button.textContent='Preview';button.disabled=assetBusy;button.onclick=()=>void previewPrivateFile(row.id);details.before(button);for(const b of details.parentElement.querySelectorAll('button')){b.title=b.textContent.trim();b.setAttribute('aria-label',b.textContent.trim());}}};
 window.closePrivatePreview=function(){clearPrivatePreview();};
 window.previewPrivateFile=async function(id){
  if(assetBusy)return;resetAssetState();clearPrivatePreview();
@@ -1401,6 +1413,7 @@ window.runNTULearnAuto=async function(){
  try{recordWritable();const parsed=NTULearnSync.parse(JSON.stringify(await ntuRequest('APP_SNAPSHOT',context)));
   if(!ntuSame(context,ntuContext())||signature!==JSON.stringify(ntuAutoConfig())||!ntuAutoIdle())return;recordWritable();
   const result=NTULearnSync.automatic(HUB,parsed,MODS,term().start,term().end,config.mapping||{});
+  result.changes=result.changes.filter(({item})=>!(term().recordTrash||[]).some(e=>e.kind==='hub'&&e.row.ntulearnSyncKey===item.sourceKey));
   for(const {item} of result.changes)recordDate(item.date);
   for(const {item,module,old} of result.changes){const fields=NTULearnSync.row(item,module,old),record={...(old||{}),...fields,id:old?.id||nextHubId(HUB),unread:true,origin:'NTULearn browser sync · automatic',ntulearnSyncKey:item.sourceKey,ntulearnSyncBaseline:NTULearnSync.fingerprint(fields)};if(item.kind==='ann')record.announcementSourceKey=JSON.stringify([item.courseId,item.id]);if(old)HUB[HUB.indexOf(old)]=record;else HUB.unshift(record);}
   const message='Planner checked '+new Date().toLocaleTimeString()+' · source snapshot '+new Date(parsed.exportedAt).toLocaleString()+' · '+result.changes.length+' updates · '+result.protectedCount+' personal edits kept · '+result.unmapped+' unmapped items need review'+(parsed.warnings.length?' · some source categories failed; existing records kept.':'.');
@@ -1648,12 +1661,12 @@ files=function(){return pdfSearchFiles()+'<section class="card"><h2>Search insid
 function setStudyPDFNotice(text){studyPDFNotice=text;studyToolsMessage('studyPDFNotice',text);}
 function studyPDFScopeValid(scope){return scope===studyToolsScope()&&!!ReferenceCloud.user&&!ReferenceCloud.bridge?.blocked;}
 window.indexStudyPDFs=async function(){if(studyPDFBusy||assetBusy)return;const scope=studyToolsScope(),context=ntuContext(),module=document.getElementById('studyPDFModule')?.value||'';studyPDFBusy=true;assetBusy=true;let indexed=0,unchanged=0;const failures=[];
- try{recordWritable();const library=await assetLibrary(),rows=(await library.list(context.owner,context.semester)).filter(x=>/\.pdf$/i.test(x.name)&&(!module||x.module===module)),cached=await PDFStudySearch.documents(scope);if(!studyPDFScopeValid(scope))return;const pending=rows.filter(row=>!cached.some(x=>x.key===PDFStudySearch.key(scope,row)));unchanged=rows.length-pending.length;
+ try{recordWritable();const library=await assetLibrary(),rows=(await library.list(context.owner,context.semester)).filter(x=>!term().fileTrash?.[x.id]&&/\.pdf$/i.test(x.name)&&(!module||x.module===module)),cached=await PDFStudySearch.documents(scope);if(!studyPDFScopeValid(scope))return;const pending=rows.filter(row=>!cached.some(x=>x.key===PDFStudySearch.key(scope,row)));unchanged=rows.length-pending.length;
  for(const row of pending.slice(0,5)){if(!studyPDFScopeValid(scope))return;try{setStudyPDFNotice('Indexing '+studyFileTitle(row.name)+'…');const blob=await library.download(context.owner,row);if(!studyPDFScopeValid(scope))return;const pages=await PDFStudySearch.extract(blob);if(!studyPDFScopeValid(scope))return;await PDFStudySearch.put({key:PDFStudySearch.key(scope,row),scope,assetId:row.id,name:studyFileTitle(row.name),module:row.module,path:row.path,bytes:row.bytes,pages});indexed++;}catch(error){failures.push(studyFileTitle(row.name)+': '+error.message);}}
  if(studyPDFScopeValid(scope))setStudyPDFNotice(indexed+' PDFs indexed · '+unchanged+' already indexed · '+Math.max(0,pending.length-5)+' waiting for another pass.'+(failures.length?' Skipped: '+failures.join(' '):''));
  }catch(error){if(studyPDFScopeValid(scope))setStudyPDFNotice(error.message);}finally{studyPDFBusy=false;assetBusy=false;for(const button of document.querySelectorAll('[onclick="indexStudyPDFs()"],[onclick="clearStudyPDFIndex()"]'))button.disabled=false;}
 };
-async function liveStudyPDFIndex(scope){const context=ntuContext(),records=await PDFStudySearch.documents(scope);if(!studyPDFScopeValid(scope))return [];const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);if(!studyPDFScopeValid(scope))return [];const keys=new Set(rows.map(row=>PDFStudySearch.key(scope,row)));return records.filter(doc=>keys.has(doc.key));}
+async function liveStudyPDFIndex(scope){const context=ntuContext(),records=await PDFStudySearch.documents(scope);if(!studyPDFScopeValid(scope))return [];const library=await assetLibrary(),rows=await library.list(context.owner,context.semester);if(!studyPDFScopeValid(scope))return [];const keys=new Set(rows.filter(row=>!term().fileTrash?.[row.id]).map(row=>PDFStudySearch.key(scope,row)));return records.filter(doc=>keys.has(doc.key));}
 window.searchStudyPDFs=async function(event){event.preventDefault();const form=event.target,scope=studyToolsScope(),query=form.elements.query.value.trim().slice(0,200);try{if(form.dataset.scope!==scope)throw Error('Account or semester changed. Search again.');const documents=await liveStudyPDFIndex(scope);if(!studyPDFScopeValid(scope))return;studyPDFResults=StudyTools.searchPages(documents,query,document.getElementById('studyPDFModule')?.value||'');const panel=document.getElementById('studyPDFResults');if(!panel)return;panel.innerHTML=studyPDFResults.map((hit,i)=>'<article class="review"><b>'+esc(hit.module+' · '+hit.name)+'</b><p class="sub">Page '+hit.page+'</p><p>'+esc(hit.text)+'</p><button class="btn" onclick="openStudyPDFResult('+i+')">Open page '+hit.page+'</button></article>').join('');setStudyPDFNotice(documents.length?studyPDFResults.length+' matching pages (up to 50).':'No indexed PDFs available in this semester. Copy/upload files, then index them first.');}catch(error){if(studyPDFScopeValid(scope))setStudyPDFNotice(error.message);}};
 window.clearStudyPDFIndex=async function(){if(studyPDFBusy)return;const scope=studyToolsScope();try{await PDFStudySearch.clear(scope);if(studyPDFScopeValid(scope)){studyPDFResults=[];document.getElementById('studyPDFResults')?.replaceChildren();setStudyPDFNotice('Local PDF text index cleared. Your original files are kept.');}}catch(error){setStudyPDFNotice(error.message);}};
 window.openStudyPDFResult=async function(index){const hit=studyPDFResults[index];if(hit)await openStudyPDFPage(hit.id,hit.page);};
@@ -1687,6 +1700,25 @@ window.syncNTUFromHub=async function(){
 };
 const connectedHub=ntulearn;
 ntulearn=function(){const template=document.createElement('template');template.innerHTML=connectedHub();const card=document.createElement('section');card.className='card ntu-sync-card';card.innerHTML='<div class="hd"><h2>NTULearn sync</h2><span class="tag">'+(ntuAutoConfig()?'Automatic updates on':'Automatic updates off')+'</span></div><p class="sub">When enabled in the connector: refresh every 30 minutes with your browser running and NTULearn signed in. Keep the planner open to save updates and PDFs.</p><div class="toolbar"><button id="ntuSyncNow" class="btn p" onclick="syncNTUFromHub()">Sync now</button><button class="btn" onclick="ntuConnectorAction(\'APP_STATUS\')">Check connection</button><a class="btn" href="#settings">Connection settings</a></div><label class="study-field"><span><input type="checkbox" '+(ntuPDFConfig()?'checked':'')+' onchange="toggleNTUPDFCopies(this)"> Automatically save available PDFs to My Files</span></label><p id="ntuSyncStatus" role="status">'+esc(ntuSyncNotice)+'</p><p id="ntuPDFStatus" role="status">'+esc(ntuPDFNotice)+'</p>';const toolbar=template.content.querySelector('.ntu-browse');if(toolbar)toolbar.before(card);else template.content.append(card);return template.innerHTML;};
+
+// Recoverable record removal; all persistence continues through the existing workspace bridge.
+function trashList(t,kind,module){return kind==='topics'?(t.topics[module]??=[]):t[kind];}
+function trashError(error){PlannerUI.UndoToast.show(error.message);}
+function removeRecord(kind,index,module){try{recordWritable();if(!ReferenceCloud.bridge?.preferencesAvailable)throw Error('Reload workspace settings before deleting.');capture();const owner=WorkspaceProvider.account.id,t=term(),entry=RecordTrash.take(t,kind,trashList(t,kind,module),index,module?{module}:{});taskEdit=null;classEdit=null;assessmentEdit=null;topicEdit=null;hubEditor=null;go();PlannerUI.UndoToast.show('Moved to Trash',()=>restoreDeletedRecord(t.id,entry.id,owner));}catch(error){trashError(error);}}
+window.restoreDeletedRecord=function(termId,id,owner=WorkspaceProvider.account?.id){recordWritable();if(owner!==WorkspaceProvider.account?.id)throw Error('Sign in to the original account to restore this item.');capture();const t=terms.find(x=>x.id===termId),entry=t?.recordTrash?.find(x=>x.id===id);if(!entry||entry.unavailable)throw Error('This item is unavailable.');RecordTrash.restore(t,id,trashList(t,entry.kind,entry.module));go();};
+window.askStudyDelete=function(id){if(id!=null)removeRecord('tasks',T.findIndex(x=>x.id===id));};
+window.deleteStudyTask=function(){if(taskDelete!=null)askStudyDelete(taskDelete);taskDelete=null;};
+window.askRecordDelete=function(type,index){removeRecord(type==='assessment'?'assessments':'timetable',index);};
+window.confirmRecordDelete=function(){if(recordDelete)askRecordDelete(recordDelete.type,recordDelete.index);recordDelete=null;};
+window.askTopicDelete=function(index){if(index!=null)removeRecord('topics',index,mod);};
+window.deleteStudyTopic=function(){if(topicDelete!=null)askTopicDelete(topicDelete);topicDelete=null;};
+window.deleteCourseUpdate=function(id){if(id!=null)removeRecord('hub',HUB.findIndex(x=>x.id===id));};
+window.confirmCourseDelete=function(){if(hubDelete!=null)deleteCourseUpdate(hubDelete);hubDelete=null;};
+window.assetDeletePrompt=function(id){if(id==null)return;try{recordWritable();if(assetBusy)throw Error('Wait for the file transfer to finish.');if(!ReferenceCloud.bridge?.preferencesAvailable)throw Error('Reload workspace settings before deleting.');const row=assetState.rows.find(x=>x.id===id);if(!row)return;const t=term(),owner=WorkspaceProvider.account.id;t.fileTrash??={};t.fileTrash[id]={name:row.name,module:row.module,at:new Date().toISOString()};assetState.deleteId=null;assetState.details=null;go();PlannerUI.UndoToast.show('File moved to Trash',()=>restoreDeletedFile(t.id,id,owner));}catch(error){trashError(error);}};
+window.assetRemove=id=>assetDeletePrompt(id);
+window.restoreDeletedFile=function(termId,id,owner=WorkspaceProvider.account?.id){recordWritable();if(owner!==WorkspaceProvider.account?.id)throw Error('Sign in to the original account to restore this file.');const t=terms.find(x=>x.id===termId);if(!t?.fileTrash?.[id])throw Error('This file is no longer in Trash.');delete t.fileTrash[id];go();};
+const recordsTrashManager=manager;
+manager=function(){let html=recordsTrashManager();const items=terms.flatMap(t=>[...(t.recordTrash||[]).map(e=>({term:t,id:e.id,title:e.row?.title||e.row?.name||e.row?.kind||e.row?.[0]||'Item',kind:e.kind,unavailable:e.unavailable})),...Object.entries(t.fileTrash||{}).map(([id,e])=>({term:t,id,title:e.name,kind:'file'}))]);return html+'<section class="card"><h2>Deleted items</h2>'+items.map(e=>'<div class="trash-row"><div><b>'+esc(e.title)+'</b><small>'+esc(e.term.name)+' · '+esc(e.kind)+'</small></div><button class="btn" '+(e.unavailable?'disabled':'')+' onclick="'+(e.kind==='file'?'restoreDeletedFile':'restoreDeletedRecord')+'(\''+esc(e.term.id)+'\',\''+esc(e.id)+'\')">Restore</button></div>').join('')+(!items.length?PlannerUI.EmptyState.html('No deleted items.'):'')+'</section>';};
 
 }else{
 // Injected INSIDE the original v2.9 semester closure. Renderers and CSS are retained.
@@ -1792,18 +1824,19 @@ localStatus(localBlocked?'Saved data needs review':localRevision?'Saved locally'
  const V=()=>document.getElementById('v');
  let lastBtn=null,saved=false,tt;
  const find=re=>[...V().querySelectorAll('section.card')].find(c=>{const h=c.querySelector(':scope>h2');return h&&re.test(h.textContent.trim())});
- function closeM(){document.querySelector('.mback.open[data-app-confirmation] [data-cancel-confirm]')?.click();const deletion=document.querySelector('.mback.open[data-k=delete]');if(deletion){const cancel=[...deletion.querySelectorAll('button')].find(b=>b.textContent.trim()==='Cancel');cancel?.click();}document.querySelectorAll('.mback.open').forEach(m=>m.classList.remove('open'));document.documentElement.classList.remove('mopen');if(lastBtn&&document.contains(lastBtn))lastBtn.focus();else if(deletion){const heading=document.querySelector('#v h1');if(heading){heading.tabIndex=-1;heading.focus();}}lastBtn=null}
- function openM(k,btn){const m=document.querySelector('.mback[data-k="'+k+'"]');if(!m)return;lastBtn=btn||null;m.classList.add('open');document.documentElement.classList.add('mopen');const f=m.querySelector('input:not([type=checkbox]):not([type=hidden]),select,textarea');if(f)setTimeout(()=>f.focus(),30)}
- function toast(msg){if(!msg)return;let t=document.getElementById('mtoast');if(!t){t=document.createElement('div');t.id='mtoast';t.setAttribute('role','status');document.body.append(t)}t.textContent=msg;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200)}
- function mk(k,card,open){const m=document.createElement('div');m.className='mback'+(open?' open':'');m.dataset.k=k;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-label',card.querySelector('h2').textContent.trim());card.hidden=false;card.classList.add('sheet');const x=document.createElement('button');x.type='button';x.className='mx';x.setAttribute('aria-label','Close');x.textContent='×';x.onclick=closeM;card.prepend(x);m.append(card);m.addEventListener('mousedown',e=>{if(e.target===m)closeM()});document.body.append(m);if(open)document.documentElement.classList.add('mopen');return m}
+ function closeM(){document.querySelectorAll('.mback.open').forEach(m=>PlannerUI.Sheet.close(m));lastBtn=null;}
+ function openM(k,btn){const m=document.querySelector('.mback[data-k="'+k+'"]');if(m)PlannerUI.Sheet.open(m,btn);}
+ function toast(msg){if(msg)PlannerUI.UndoToast.show(msg);}
+ function mk(k,card,open){return PlannerUI.Sheet.create({key:k,content:card,title:card.querySelector('h2').textContent.trim(),open,onClose:()=>{if(/^Edit/.test(card.querySelector('h2')?.textContent||'')){const handler={class:'editAcademicClass',task:'editStudyTask',topic:'editStudyTopic',assessment:'editAcademicAssessment'}[k];if(handler)window[handler](null);}}});}
  function addBtn(label,k){const b=document.createElement('button');b.type='button';b.className='btn p addbtn';b.textContent=label;b.onclick=()=>openM(k,b);return b}
  function row(h){if(h.parentElement.classList.contains('headrow'))return h.parentElement;const r=document.createElement('div');r.className='headrow';h.replaceWith(r);r.append(h);return r}
  function decorate(){
   document.querySelectorAll('body>.mback').forEach(n=>n.remove());document.documentElement.classList.remove('mopen');
   const v=V();if(!v)return;
   v.querySelectorAll('[data-mdec]').forEach(n=>n.remove());
-  const cc=find(/^(Add|Edit) class$/),tc=find(/^(Plan a study task|Edit study task)$/),pc=find(/^(Add syllabus topic|Edit topic)$/),uc=document.getElementById('assetUploadForm'),h1=v.querySelector('h1'),isEdit=c=>/^Edit/.test(c.querySelector('h2').textContent.trim());
+  const ac=find(/^(Add|Edit) assessment$/),cc=find(/^(Add|Edit) class$/),tc=find(/^(Plan a study task|Edit study task)$/),pc=find(/^(Add syllabus topic|Edit topic)$/),uc=document.getElementById('assetUploadForm'),h1=v.querySelector('h1'),isEdit=c=>/^Edit/.test(c.querySelector('h2').textContent.trim());
   if(tc){const n=tc.querySelector('.term-toast');if(n){if(saved)toast(n.textContent.trim());n.remove()}}
+  if(ac&&h1){row(h1).append(addBtn('Add assessment','assessment'));mk('assessment',ac,isEdit(ac));}
   if(cc&&h1)row(h1).append(addBtn('Add class','class'));
   if(tc&&h1)row(h1).append(addBtn('Add study task','task'));
   const topics=[...v.querySelectorAll('section.card')].find(c=>c.querySelector(':scope>h2')?.textContent.trim()==='Topics');
@@ -1829,16 +1862,6 @@ localStatus(localBlocked?'Saved data needs review':localRevision?'Saved locally'
  for(const n of ['saveStudyTask','deleteStudyTask']){const f=window[n];if(typeof f==='function')window[n]=function(){saved=true;try{return f.apply(this,arguments)}finally{saved=false}}}
  const a0=add;add=function(){saved=true;try{return a0.apply(this,arguments)}finally{saved=false}};
  const g=go;go=function(){const r=g.apply(this,arguments);try{decorate()}catch(e){}return r};
- // Keep keyboard navigation inside the active form dialog.
- document.addEventListener('keydown',e=>{
-  const dialog=document.querySelector('.mback.open');if(!dialog)return;
-  if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeM();return;}
-  if(e.key!=='Tab')return;
-  const fields=[...dialog.querySelectorAll('button,a[href],input,select,textarea,[tabindex]')].filter(x=>!x.disabled&&x.tabIndex>=0&&!x.closest('[hidden],[inert]')&&x.getClientRects().length);
-  if(!fields.length){e.preventDefault();dialog.tabIndex=-1;dialog.focus();return;}
-  const first=fields[0],last=fields[fields.length-1],current=document.activeElement;
-  if(!fields.includes(current)||(e.shiftKey?current===first:current===last)){e.preventDefault();(e.shiftKey?last:first).focus();}
- },true);
  const v=V();if(v){new MutationObserver(()=>{if(!v.querySelector('[data-mdec]')&&v.children.length)try{decorate()}catch(e){}}).observe(v,{childList:true});try{decorate()}catch(e){}}
 })();
 
@@ -1894,8 +1917,23 @@ window.confirmWorkspaceDelete=function(){try{recordWritable();if(!workspaceDelet
 window.restoreWorkspace=function(type,id){try{recordWritable();WorkspaceTrash.restore(years,terms,type,id);message='Workspace restored with its records and files.';go();}catch(error){message=error.message;go();}};
 
 
-window.appConfirm=function(title,text,label){return new Promise(resolve=>{const modal=document.createElement('div');modal.className='mback open';modal.dataset.appConfirmation='true';modal.setAttribute('role','alertdialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label',title);const card=document.createElement('section');card.className='card sheet delete-sheet';const h=document.createElement('h2');h.textContent=title;const p=document.createElement('p');p.className='sub';p.textContent=text;const actions=document.createElement('div');actions.className='toolbar';const cancel=document.createElement('button');cancel.className='btn';cancel.textContent='Cancel';cancel.dataset.cancelConfirm='true';const accept=document.createElement('button');accept.className='btn p';accept.textContent=label;const previous=document.activeElement;let settled=false;const finish=value=>{if(settled)return;settled=true;modal.remove();document.documentElement.classList.remove('mopen');if(previous?.isConnected)previous.focus();resolve(value);};cancel.onclick=()=>finish(false);accept.onclick=()=>finish(true);modal.onmousedown=e=>{if(e.target===modal)finish(false);};actions.append(cancel,accept);card.append(h,p,actions);modal.append(card);document.body.append(modal);document.documentElement.classList.add('mopen');cancel.focus();});};
+window.appConfirm=(title,text,label)=>PlannerUI.Sheet.confirm(title,text,label);
 window.requestUndoConfirmation=function(id,title){const scope=studyToolsScope();window.appConfirm('Undo approval?','Remove only the unchanged task “'+title+'” and return its proposal to Inbox?','Undo approval').then(approved=>{if(approved&&scope===studyToolsScope())window.undoSemesterProposal(id,true);});};
+
+// Header workspace selection and academic-period sheet.
+let periodsOpen=false,periodsTrigger=null,workspacePage='#today',toastOwner='';
+window.openAcademicPeriods=function(){periodsOpen=true;periodsTrigger=document.activeElement;go();};
+const sharedSettings=settings;settings=function(){const tpl=document.createElement('template');tpl.innerHTML=sharedSettings();tpl.content.querySelector('.settings-semester')?.closest('section')?.remove();return tpl.innerHTML;};
+window.askWorkspaceDelete=function(type,id){try{recordWritable();capture();const owner=WorkspaceProvider.account?.id,result=WorkspaceTrash.prepare({years,terms,active,current},type,id),stamp=new Date().toISOString(),batch=crypto.randomUUID();result.item.trashedAt=stamp;result.item.trashBatch=batch;for(const t of result.affected){t.trashedAt=stamp;t.trashBatch=batch;}current=result.current;if(active!==result.active)load(result.active);periodsOpen=false;go();PlannerUI.UndoToast.show('Workspace moved to Trash',()=>{if(owner!==WorkspaceProvider.account?.id)throw Error('Sign in to the original account to restore this workspace.');restoreWorkspace(type,id);});}catch(error){PlannerUI.UndoToast.show(error.message);}};
+window.confirmWorkspaceDelete=function(){if(workspaceDelete)askWorkspaceDelete(workspaceDelete.type,workspaceDelete.id);workspaceDelete=null;};
+const sharedGo=go;
+go=function(){if(location.hash==='#semesters'){periodsOpen=true;history.replaceState(null,'',workspacePage);}else workspacePage=location.hash||'#today';const result=sharedGo.apply(this,arguments);
+ const owner=WorkspaceProvider.account?.id;if(toastOwner!==owner){document.getElementById('ui-toasts')?.remove();toastOwner=owner;}if(!ReferenceCloud.user){periodsOpen=false;return result;}
+ const toolbar=document.querySelector('.tb');if(toolbar){toolbar.querySelector('.header-semester')?.remove();const field=document.createElement('div');field.className='header-semester';const select=document.createElement('select');select.className='btn';select.setAttribute('aria-label','Active semester');for(const t of availableTerms()){const option=document.createElement('option');option.value=t.id;option.textContent=t.name;option.selected=t.id===WorkspaceProvider.state.active;select.append(option);}select.onchange=()=>selectSemester(select.value);const button=PlannerUI.IconButton.create({label:'Manage academic years and semesters',icon:'⚙',onClick:openAcademicPeriods});field.append(select,button);toolbar.prepend(field);}
+ if(periodsOpen){const card=document.createElement('section');card.className='card academic-period-sheet';card.innerHTML=manager().replace('Prototype only · All semesters and edits save in this browser and survive reload. The sample week changes with the selected semester; dates are illustrative, not an official NTU calendar.','Academic periods and module enrolments are saved to your account. Check your semester dates against the university calendar.');PlannerUI.Sheet.create({key:'academic-periods',content:card,title:'Academic years and semesters',open:true,trigger:toolbar?.querySelector('button'),onClose:()=>{periodsOpen=false;}});}
+ for(const button of document.querySelectorAll('button[onclick]')){const handler=button.getAttribute('onclick');if(/^(editStudyTask|editAcademicAssessment|editAcademicClass|editCourseUpdate|editStudyTopic|askStudyDelete|askRecordDelete|askTopicDelete|deleteCourseUpdate|assetDeletePrompt|askWorkspaceDelete)\(/.test(handler)&&!handler.includes('(null)')){const label=button.getAttribute('aria-label')||button.textContent.trim();PlannerUI.IconButton.decorate(button,label);if(handler.startsWith('askWorkspaceDelete'))button.textContent='×';}}
+ return result;
+};
 
 go();
 })();

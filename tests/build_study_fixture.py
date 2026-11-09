@@ -18,6 +18,7 @@ start=len(pdf);pdf+=b'xref\n0 8\n0000000000 65535 f \n'+b''.join(f'{n:010d} 0000
 (verify/'study-sample.pdf').write_bytes(pdf)
 html=(root/'index.html').read_text(encoding='utf-8').replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
 html=html.replace('src="ui/date-nav.js"','src="../ui/date-nav.js"')
+for asset in ['ui/primitives.js','state/workspace-provider.js','state/record-trash.js']:html=html.replace('src="'+asset+'"','src="../'+asset+'"')
 for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements','workspace-trash']:
  html=html.replace(f'src="workspace/{asset}.js"',f'src="../workspace/{asset}.js"')
 script=r'''

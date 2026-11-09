@@ -101,3 +101,12 @@ test('backup does not combine study metadata owned by different accounts',()=>{
 });
 
 test('backups preserve task priorities and merge moved history once',async()=>{const source=workspace(term([{...task,priority:'high'}]));source.terms[0].studyTools={owner:'alice',moves:[{id:'move-1',title:task.title,module:task.mod,from:'2026-11-01',to:task.date}]};const packed=await api.create(source,[]),parsed=await api.parse(JSON.stringify(packed),validate);assert.equal(parsed.data.terms[0].tasks[0].priority,'high');const current=structuredClone(source);current.terms[0].studyTools.moves=[];const merged=api.merge(current,parsed.data,validate);assert.equal(merged.snapshot.terms[0].studyTools.moves.length,1);assert.equal(api.merge(merged.snapshot,parsed.data,validate).snapshot.terms[0].studyTools.moves.length,1);});
+
+test('backup merging preserves deleted task records with distinct local IDs',()=>{const incoming=workspace(term());incoming.terms[0].recordTrash=[{id:'deleted-task',kind:'tasks',row:{...task,id:1},index:0}];const current=workspace(term([{...task,title:'Different active task'}]));const restored=api.merge(current,incoming,validate);const result=restored.data||restored.snapshot||restored;assert.equal(result.terms[0].recordTrash.length,1);assert.notEqual(result.terms[0].recordTrash[0].row.id,result.terms[0].tasks[0].id);});
+
+test('backup restore remaps a deleted file to its restored storage ID',async()=>{
+ const data=workspace(),bytes=new TextEncoder().encode('trashed file');data.terms[0].fileTrash={'old-file':{name:'notes.txt',module:'SC1001',at:'2026-11-09T00:00:00Z'}};
+ const archive=await api.parse(JSON.stringify(await api.create(data,[{row:{id:'old-file',semester_id:'s1',module:'SC1001',name:'notes.txt',bytes:bytes.length,mime:'text/plain'},blob:new Blob([bytes])}])),validate);
+ let saved;await api.restore(workspace(),archive,{async saveWorkspace(s){saved=structuredClone(s);},async listFiles(){return [];},async uploadFile(){return {id:'restored-file'};}},validate);
+ assert.equal(saved.terms[0].fileTrash['old-file'],undefined);assert.equal(saved.terms[0].fileTrash['restored-file'].name,'notes.txt');
+});
