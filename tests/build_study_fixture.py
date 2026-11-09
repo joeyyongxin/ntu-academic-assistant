@@ -18,7 +18,7 @@ start=len(pdf);pdf+=b'xref\n0 8\n0000000000 65535 f \n'+b''.join(f'{n:010d} 0000
 (verify/'study-sample.pdf').write_bytes(pdf)
 html=(root/'index.html').read_text(encoding='utf-8').replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
 html=html.replace('src="ui/date-nav.js"','src="../ui/date-nav.js"')
-for asset in ['ui/primitives.js','state/workspace-provider.js','state/record-trash.js']:html=html.replace('src="'+asset+'"','src="../'+asset+'"')
+for asset in ['ui/primitives.js','state/workspace-provider.js','state/record-trash.js','state/change-pipeline.js','library/library-model.js']:html=html.replace('src="'+asset+'"','src="../'+asset+'"')
 for asset in ['backup-recovery','ntulearn-calendar','ntulearn-announcements','ntulearn-sync','ntulearn-library','ntulearn-answers','study-tools','pdf-study-search','timetable-import','planner-refinements','workspace-trash']:
  html=html.replace(f'src="workspace/{asset}.js"',f'src="../workspace/{asset}.js"')
 script=r'''
@@ -35,6 +35,16 @@ ReferenceCloud.client=async()=>({
 '''.replace('PDF_SIZE',str(len(pdf)))
 if '--audit' in sys.argv:
  script=script.replace('const fixtureBytes=new Map();',"\nfixturePrefs.years.push({id:'y2027',start:2027,label:'AY2027/28'});\nfixturePrefs.terms.push({...structuredClone(fixturePrefs.terms[0]),id:'s2',yearId:'y2027',label:'Semester 1',name:'AY2027/28 Semester 1',start:'2027-08-01',end:'2027-12-31',date:'2027-08-01',mods:[]});\nfixturePrefs.terms[0].topics.SC2000=[['Regression',0,0]];\nfixturePrefs.terms[0].timetable=[{id:'fixture-class',mod:'SC2000',d:'Mon',at:9,range:'09:00–10:00',kind:'Lecture',venue:'LT1'}];\nfixturePrefs.terms[0].inbox=[{id:999,t:'semester',s:'p',mod:'SC2000',title:'Review Quiz 3 announcement',date:'2026-11-07',min:20}];\nfixturePrefs.terms[0].hub=[{id:777,type:'ann',mod:'SC2000',title:'Quiz 3 announcement',date:'2026-11-06',desc:'Quiz 3 is on 9 November at 10:00.',origin:'Fixture source',url:'',unread:true}];\nfixtureTables.tasks.push({id:'fixture-monday',user_id:fixtureUser.id,title:'Quick warm-up + individual viva',module:'SC2000',date:'2026-11-02',minutes:10,done:true,updated_at:'v0'});\n\nconst fixtureBytes=new Map();")
+if '--library' in sys.argv:
+ script += r"""
+fixturePrefs.terms[0].hub.push({id:778,type:'file',mod:'SC2000',title:'Lecture notes — regression',date:fixtureToday,desc:'Synthetic course material with a saved PDF attachment.',origin:'Fixture connector',url:'https://ntulearn.ntu.edu.sg/fixture-notes',ntulearnSyncKey:'fixture-material-key',unread:true});
+fixturePrefs.terms[0].libraryLinks={'fixture-pdf-uuid':{materialId:778,sourceKey:'fixture-material-key'}};
+fixtureTables.aa_file_assets.push({...fixtureTables.aa_file_assets[0],id:'fixture-upload-2',name:'SC1004 Revision.pdf',module:'SC1004',path:fixtureUser.id+'/s1/fixture-upload-2.pdf'});
+"""
+if '--inbox' in sys.argv:
+ script += r"""
+window.addEventListener('message',event=>{const m=event.data;if(event.source!==window||m?.channel!=='aa-ntu-request'||m.type!=='APP_SNAPSHOT')return;window.postMessage({channel:'aa-ntu-response',id:m.id,ok:true,data:{format:'academic-assistant-ntulearn-sync',schemaVersion:1,exportedAt:new Date().toISOString(),warnings:[],items:[{id:'fixture-material',courseId:'fixture-course',courseName:'SC2000',kind:'file',title:'Synthetic lecture notes',text:'Fixture material listing.',date:fixtureToday,deadlineDate:'',url:'https://ntulearn.ntu.edu.sg/fixture-notes'}]}},location.origin);});
+"""
 marker='globalThis.ProductionWorkspace={project,flatten,fields,preferencesOf,ProductionBridge};\n})();'
 assert marker in html
 html=html.replace(marker,marker+'\n'+script)

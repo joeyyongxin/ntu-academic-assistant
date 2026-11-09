@@ -20,9 +20,9 @@ window.runNTUPDFImport=async function(){
    for(let offset=ntuPDFOffsets.get(scan)||0;offset<listing.files.length;offset++){const attachment=listing.files[offset];if(!current()||!ntuAutoIdle())return;if(transfers>=3){complete=false;break;}transfers++;
     ntuPDFStatus('Checking PDF: '+attachment.name);const data=await ntuRequest('APP_PDF_BYTES',context,item.sourceKey,attachment.url);if(!current())return;
     const decoded=await NTULearnLibrary.decodePDF(data),name=await NTULearnLibrary.nameFor(item.sourceKey+attachment.url,data,decoded.hash);if(!current())return;
-    const module=config.mapping[item.courseId];if(rows.some(x=>x.name===name&&x.module===module)){skipped++;ntuPDFOffsets.set(scan,offset+1);continue;}
+    const module=config.mapping[item.courseId];const existing=rows.find(x=>x.name===name&&x.module===module);if(existing){noteLibraryAsset(existing,item.sourceKey);skipped++;ntuPDFOffsets.set(scan,offset+1);continue;}
     recordWritable();await ReferenceCloud.bridge?.queue;if(!current())return;recordWritable();await ReferenceCloud.bridge.ensurePreferences();if(!current())return;
-    assetBusy=true;try{const saved=await library.upload(context.owner,context.semester,module,new File([decoded.bytes],name,{type:'application/pdf'}));rows.push(saved);copied++;ntuPDFOffsets.set(scan,offset+1);}finally{assetBusy=false;}
+    assetBusy=true;try{const saved=await library.upload(context.owner,context.semester,module,new File([decoded.bytes],name,{type:'application/pdf'}));rows.push(saved);noteLibraryAsset(saved,item.sourceKey);copied++;ntuPDFOffsets.set(scan,offset+1);}finally{assetBusy=false;}
    }
    if(complete){ntuPDFSeen.add(scan);ntuPDFOffsets.delete(scan);}
   }
