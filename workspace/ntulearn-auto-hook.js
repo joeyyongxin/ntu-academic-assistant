@@ -21,6 +21,7 @@ window.runNTULearnAuto=async function(){
  try{recordWritable();const parsed=NTULearnSync.parse(JSON.stringify(await ntuRequest('APP_SNAPSHOT',context)));
   if(!ntuSame(context,ntuContext())||signature!==JSON.stringify(ntuAutoConfig())||!ntuAutoIdle())return;recordWritable();
   const result=NTULearnSync.automatic(HUB,parsed,MODS,term().start,term().end,config.mapping||{});
+  result.changes=result.changes.filter(({item})=>!(term().recordTrash||[]).some(e=>e.kind==='hub'&&e.row.ntulearnSyncKey===item.sourceKey));
   for(const {item} of result.changes)recordDate(item.date);
   for(const {item,module,old} of result.changes){const fields=NTULearnSync.row(item,module,old),record={...(old||{}),...fields,id:old?.id||nextHubId(HUB),unread:true,origin:'NTULearn browser sync · automatic',ntulearnSyncKey:item.sourceKey,ntulearnSyncBaseline:NTULearnSync.fingerprint(fields)};if(item.kind==='ann')record.announcementSourceKey=JSON.stringify([item.courseId,item.id]);if(old)HUB[HUB.indexOf(old)]=record;else HUB.unshift(record);}
   const message='Planner checked '+new Date().toLocaleTimeString()+' · source snapshot '+new Date(parsed.exportedAt).toLocaleString()+' · '+result.changes.length+' updates · '+result.protectedCount+' personal edits kept · '+result.unmapped+' unmapped items need review'+(parsed.warnings.length?' · some source categories failed; existing records kept.':'.');

@@ -14,12 +14,13 @@
    return terms.find(a=>a.id===id);
   }
   const current=terms.find(t=>t.id===preferences?.current)?.id||semester(dateNow()).id;
-  for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
+  for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at||terms.some(t=>(t.recordTrash||[]).some(e=>e.kind===table&&e.recordId===r.id))).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
    const t=semester(row.date,preferences?.recordTerms?.[table]?.[row.id]),mod=row.module.toUpperCase();if(!t.mods.includes(mod))t.mods.push(mod);
    const id=++n;map.set(table+':'+id,copy(row));
    if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
+  for(const t of terms)for(const entry of t.recordTrash||[]){if(!['tasks','assessments'].includes(entry.kind))continue;const list=t[entry.kind],index=list.findIndex(row=>map.get(entry.kind+':'+row.id)?.id===entry.recordId);if(index>=0){entry.row=list.splice(index,1)[0];delete entry.unavailable;}else entry.unavailable=true;}
   for(const t of terms)for(const p of t.inbox||[])if(p.undoTask){
    // Local numeric IDs can change on reload. Resolve only the saved database UUID.
    const task=t.tasks.find(r=>map.get('tasks:'+r.id)?.id===p.undoTask.recordId);
@@ -27,7 +28,7 @@
   }
   return {map,snapshot:{years:years.sort((a,b)=>a.start-b.start),terms,active:current,current,studyYear:preferences?.studyYear||'Other',n:Math.max(n,preferences?.n||0),lastByYear:{},theme:null}};
  }
- function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of t[table])rows.set(table+':'+r.id,{table,row:r,termId:t.id});return rows;}
+ function flatten(snapshot){const rows=new Map();for(const t of snapshot.terms)for(const table of ['tasks','assessments'])for(const r of [...t[table],...(t.recordTrash||[]).filter(e=>e.kind===table&&!e.unavailable).map(e=>e.row)])rows.set(table+':'+r.id,{table,row:r,termId:t.id,trashedAt:(t.recordTrash||[]).find(e=>e.kind===table&&e.row.id===r.id)?.at||null});return rows;}
  function fields(table,r){
   const doc={title:table==='tasks'?r.title:r.name,date:r.date,module:r.mod==='OTHER'?'Other':r.mod};
   if(table==='tasks')Object.assign(doc,{minutes:r.min,done:r.done,done_at:r.done_at??null,notes:r.notes||''});
@@ -42,6 +43,7 @@
    payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
   }
   for(const t of payload.terms){
+   for(const entry of t.recordTrash||[])if(['tasks','assessments'].includes(entry.kind))entry.recordId=map.get(entry.kind+':'+entry.row.id)?.id||entry.recordId||null;
    for(const p of t.inbox||[])if(p.undoTask){
     p.undoTask.recordId=map.get('tasks:'+p.undoTask.taskId)?.id||p.undoTask.recordId||null;
     p.undoTask.taskId=null;
@@ -63,7 +65,7 @@
     if(epoch!==this.epoch||this.blocked)return;
     ReferenceLocalStore.validate(data);
     const before=flatten(this.base),after=flatten(data),ops=[];
-    for(const [key,{table,row}] of after){const old=before.get(key)?.row;if(!old||JSON.stringify(fields(table,row))!==JSON.stringify(fields(table,old)))ops.push({key,table,row});}
+    for(const [key,{table,row,trashedAt}] of after){const prior=before.get(key),old=prior?.row;if(!old||JSON.stringify(fields(table,row))!==JSON.stringify(fields(table,old))||trashedAt!==prior.trashedAt)ops.push({key,table,row,deleted:!!trashedAt,restoring:!!prior?.trashedAt&&!trashedAt});}
     for(const [key,{table,row}] of before)if(!after.has(key))ops.push({key,table,row,deleted:true});
     const metadataChanged=forceMetadata||JSON.stringify(preferencesOf(data,this.map))!==this.preferenceSignature;
     if(!ops.length&&(!metadataChanged||!this.preferencesAvailable))return;
@@ -72,11 +74,12 @@
      if(epoch!==this.epoch)return;
      const old=this.map.get(op.key);let patch=op.deleted?{deleted_at:new Date().toISOString()}:fields(op.table,op.row);
      if(old&&!op.deleted){const previous=fields(op.table,before.get(op.key).row);patch=Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v)!==JSON.stringify(previous[k])));}
+     if(op.restoring)patch.deleted_at=null;
      const id=old?.id||crypto.randomUUID();
-     const change=old?{kind:'update',table:op.table,id,expected:old.updated_at,base:old,patch}:{kind:'insert',table:op.table,id,doc:{id,user_id:owner,...patch,...(op.table==='tasks'?{source:'manual'}:{})}};
+     const change=old?{kind:'update',table:op.table,id,expected:old.updated_at,base:old,patch}:{kind:'insert',table:op.table,id,doc:{id,user_id:owner,...(!old&&op.deleted?fields(op.table,op.row):{}),...patch,...(op.table==='tasks'?{source:'manual'}:{})}};
      const saved=await this.service.apply(owner,change);coreWrites++;if(epoch!==this.epoch)return;
      const rawRows=this.remoteRows[op.table],index=rawRows.findIndex(r=>r.id===saved.id);if(index<0)rawRows.push(copy(saved));else rawRows[index]=copy(saved);
-     if(op.deleted)this.map.delete(op.key);else this.map.set(op.key,saved);
+     if(op.deleted&&!after.has(op.key))this.map.delete(op.key);else this.map.set(op.key,saved);
     }
     if(this.preferencesAvailable){
      const payload=preferencesOf(data,this.map),signature=JSON.stringify(payload);

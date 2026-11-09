@@ -14,7 +14,7 @@
  function unb64(text){check(typeof text==='string'&&/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(text),'A backed-up file is not valid Base64.');const raw=atob(text),out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out}
  async function create(snapshot,assets){
   const packed=[];let total=0;
-  for(const item of assets){const bytes=new Uint8Array(await item.blob.arrayBuffer());total+=bytes.length;check(bytes.length===item.row.bytes&&bytes.length>0,'A file changed while the backup was being created. Refresh the Library and try again.');check(total<=MAX_TOTAL,'Backups can include up to 50 MB of uploaded files.');packed.push({semesterId:item.row.semester_id,module:item.row.module,name:item.row.name,bytes:bytes.length,mime:item.row.mime||'application/octet-stream',sha256:await digest(bytes),contentBase64:b64(bytes)});}
+  for(const item of assets){const bytes=new Uint8Array(await item.blob.arrayBuffer());total+=bytes.length;check(bytes.length===item.row.bytes&&bytes.length>0,'A file changed while the backup was being created. Refresh the Library and try again.');check(total<=MAX_TOTAL,'Backups can include up to 50 MB of uploaded files.');packed.push({...(item.row.id?{sourceId:item.row.id}:{}),semesterId:item.row.semester_id,module:item.row.module,name:item.row.name,bytes:bytes.length,mime:item.row.mime||'application/octet-stream',sha256:await digest(bytes),contentBase64:b64(bytes)});}
   return {format:'academic-assistant-backup',schemaVersion:2,exportedAt:new Date().toISOString(),data:copy(snapshot),assets:packed};
  }
  async function parse(text,validate){
@@ -29,9 +29,9 @@
  function merge(current,incoming,validate){
   const out=copy(current),source=copy(incoming),yearIds=new Map(out.years.map(y=>[y.id,y])),termIds=new Map(out.terms.map(t=>[t.id,t]));let addedTasks=0,addedAssessments=0,addedTerms=0,addedFiles=0,duplicates=0;
   for(const y of source.years){const old=yearIds.get(y.id);if(old){check(old.start===y.start&&old.label===y.label,'Academic year '+y.label+' conflicts with the existing year settings. No data was restored.');}else{check(!out.years.some(a=>a.start===y.start),'Two academic year IDs have the same start year. No data was restored.');out.years.push(y);yearIds.set(y.id,y);}}
-  let nextId=Math.max(Number(out.n)||0,...out.terms.flatMap(t=>[...t.tasks,...t.assessments].map(x=>Number(x.id)||0)));
+  let nextId=Math.max(Number(out.n)||0,...out.terms.flatMap(t=>[...t.tasks,...t.assessments,...(t.recordTrash||[]).filter(e=>['tasks','assessments'].includes(e.kind)).map(e=>e.row)].map(x=>Number(x.id)||0)));
   const mergeUnique=(target,items)=>{const counts=new Map();for(const x of target){const key=JSON.stringify(canonical(x));counts.set(key,(counts.get(key)||0)+1);}const used=new Map();for(const item of items||[]){const key=JSON.stringify(canonical(item)),seen=used.get(key)||0;used.set(key,seen+1);if(seen<(counts.get(key)||0)){duplicates++;continue;}const row=copy(item);if(Number.isSafeInteger(row.id)&&target.some(x=>x.id===row.id)){row.id=Math.max(0,...target.map(x=>Number(x.id)||0))+1;}target.push(row);}};
-  for(const src of source.terms){let target=termIds.get(src.id);if(target){check(target.yearId===src.yearId&&target.label===src.label&&target.name===src.name&&target.start===src.start&&target.end===src.end&&target.weeks===src.weeks,'Semester '+src.name+' conflicts with existing semester settings. No data was restored.');}else{target=copy(src);target.tasks=[];target.assessments=[];target.classes=[];target.inbox=[];target.files=[];target.timetable=[];target.hub=[];target.topics={};target.mods=[];out.terms.push(target);termIds.set(src.id,target);addedTerms++;}
+  for(const src of source.terms){let target=termIds.get(src.id);if(target){check(target.yearId===src.yearId&&target.label===src.label&&target.name===src.name&&target.start===src.start&&target.end===src.end&&target.weeks===src.weeks,'Semester '+src.name+' conflicts with existing semester settings. No data was restored.');}else{target=copy(src);target.recordTrash=[];target.tasks=[];target.assessments=[];target.classes=[];target.inbox=[];target.files=[];target.timetable=[];target.hub=[];target.topics={};target.mods=[];out.terms.push(target);termIds.set(src.id,target);addedTerms++;}
    for(const m of src.mods)if(!target.mods.includes(m))target.mods.push(m);
    const taskCounts=new Map();for(const x of target.tasks){const key=JSON.stringify(canonical(taskKey(x)));taskCounts.set(key,(taskCounts.get(key)||0)+1);}const taskUsed=new Map();
    for(const task of src.tasks){const key=JSON.stringify(canonical(taskKey(task))),seen=taskUsed.get(key)||0;taskUsed.set(key,seen+1);if(seen<(taskCounts.get(key)||0)){duplicates++;continue;}const row=copy(task);row.id=++nextId;target.tasks.push(row);addedTasks++;}
@@ -47,6 +47,8 @@
      if(!target.studyTools.reminders&&src.studyTools.reminders)target.studyTools.reminders=copy(src.studyTools.reminders);
     }
    }
+   target.recordTrash??=[];for(const entry of src.recordTrash||[]){if(target.recordTrash.some(e=>e.id===entry.id))continue;const saved=copy(entry);if(['tasks','assessments'].includes(saved.kind)){const key=saved.kind==='tasks'?taskKey:assessmentKey;if(target[saved.kind].some(row=>JSON.stringify(canonical(key(row)))===JSON.stringify(canonical(key(saved.row)))))continue;saved.row.id=++nextId;delete saved.recordId;delete saved.unavailable;}target.recordTrash.push(saved);}
+   target.fileTrash={...copy(src.fileTrash||{}),...(target.fileTrash||{})};
    target.date=src.date;target.imported=!!(target.imported||src.imported);
   }
   out.years.sort((a,b)=>a.start-b.start);out.terms.sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
@@ -56,13 +58,15 @@
  }
  async function restore(current,backup,adapter,validate){
   const result=merge(current,backup.data,validate);await adapter.saveWorkspace(result.snapshot);
-  let addedFiles=0,skippedFiles=0;const fileCounts=new Map(),fileUsed=new Map();
+  let addedFiles=0,skippedFiles=0,trashRemapped=false;const fileCounts=new Map(),fileUsed=new Map();
   for(let i=0;i<backup.assets.length;i++){
    const file=backup.assets[i],key=JSON.stringify([file.semesterId,file.module,file.name,file.bytes,file.sha256]),seen=fileUsed.get(key)||0;fileUsed.set(key,seen+1);
-   if(!fileCounts.has(key)){const rows=await adapter.listFiles(file.semesterId),candidates=rows.filter(r=>r.module===file.module&&r.name===file.name&&r.bytes===file.bytes);let count=0;for(const row of candidates)if(await digest(await adapter.downloadFile(row).then(blob=>blob.arrayBuffer()))===file.sha256)count++;fileCounts.set(key,count);}
-   if(seen<fileCounts.get(key))skippedFiles++;else{await adapter.uploadFile(file);addedFiles++;}
+   if(!fileCounts.has(key)){const rows=await adapter.listFiles(file.semesterId),candidates=rows.filter(r=>r.module===file.module&&r.name===file.name&&r.bytes===file.bytes);const matches=[];for(const row of candidates)if(await digest(await adapter.downloadFile(row).then(blob=>blob.arrayBuffer()))===file.sha256)matches.push(row);fileCounts.set(key,matches);}
+   let saved;if(seen<fileCounts.get(key).length){saved=fileCounts.get(key)[seen];skippedFiles++;}else{saved=await adapter.uploadFile(file);addedFiles++;}
+   const target=result.snapshot.terms.find(t=>t.id===file.semesterId),archived=file.sourceId&&target.fileTrash?.[file.sourceId];if(archived&&saved?.id&&saved.id!==file.sourceId){target.fileTrash[saved.id]=archived;delete target.fileTrash[file.sourceId];trashRemapped=true;}
    adapter.progress?.({done:i+1,total:backup.assets.length,added:addedFiles,skipped:skippedFiles});
   }
+  if(trashRemapped)await adapter.saveWorkspace(result.snapshot);
   return {...result.summary,addedFiles,skippedFiles};
  }
  root.AcademicBackup={MAX_TOTAL,create,parse,merge,restore,digest,taskKey,assessmentKey};

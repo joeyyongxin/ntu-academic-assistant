@@ -3,14 +3,15 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-const source=html.match(/\/\/ Keep keyboard navigation inside the active form dialog\.([\s\S]*?),true\);/)[0];
+const primitive=await readFile(new URL('../ui/primitives.js',import.meta.url),'utf8');
+const source=primitive.slice(primitive.indexOf(" document.addEventListener('keydown'"),primitive.lastIndexOf('})(globalThis)'));
 function setup(){
  let handler,closed=false;
- const document={activeElement:null,addEventListener:(name,fn,capture)=>{assert.equal(capture,true);handler=fn;},querySelector:()=>dialog};
+ const document={activeElement:null,addEventListener:(name,fn,capture)=>{assert.equal(capture,true);handler=fn;},querySelectorAll:()=>[dialog]};
  const field=(disabled=false,visible=true)=>({disabled,tabIndex:0,closest:()=>false,getClientRects:()=>visible?[{}]:[],focus(){document.activeElement=this;}});
  const first=field(),hidden=field(false,false),disabled=field(true),last=field();
  const dialog={querySelectorAll:()=>[first,hidden,disabled,last]};
- vm.runInNewContext(source,{document,closeM:()=>{closed=true;}});
+ vm.runInNewContext(source,{document,ui:{Sheet:{close:()=>{closed=true;}}}});
  const press=(key,shiftKey=false)=>{const e={key,shiftKey,preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}};handler(e);return e;};
  return {document,first,last,press,closed:()=>closed};
 }

@@ -32,6 +32,7 @@
   check(Number.isSafeInteger(data.n)&&data.n>=0,'Invalid task counter.');
   check(!data.theme||['light','dark'].includes(data.theme),'Invalid appearance preference.');
   if(data.lastByYear)for(const [year,id] of Object.entries(data.lastByYear))check(years.has(year)&&data.terms.some(t=>t.id===id&&t.yearId===year),'Invalid remembered semester.');
+  if(data.terms.some(t=>t.recordTrash?.length)){const expanded=copy(data);for(const t of expanded.terms){check(Array.isArray(t.recordTrash||[])&&(t.recordTrash||[]).length<=10000,'Invalid Trash.');for(const entry of t.recordTrash||[]){check(entry&&typeof entry.id==='string'&&['tasks','assessments','timetable','hub','topics'].includes(entry.kind),'Invalid deleted item.');if(entry.unavailable)continue;if(entry.kind==='topics'){check(t.mods.includes(entry.module),'Invalid deleted topic module.');(t.topics[entry.module]??=[]).push(entry.row);}else t[entry.kind].push(entry.row);}delete t.recordTrash;}validate(expanded);}
   return data;
  }
  class ConflictError extends Error{constructor(){super('Another tab saved newer changes. Export this tab’s work before reloading the saved workspace.');this.name='ConflictError';}}
