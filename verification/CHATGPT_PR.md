@@ -36,3 +36,10 @@ project with synthetic A/B:
 - [ ] Concurrent requests, caches and jobs preserve owner isolation.
 - [ ] Errors do not disclose another owner's record existence.
 - [ ] Real fresh-chat and full-planner browser/account/semester flows pass.
+
+Review follow-up: Supabase OAuth beta now requires enableSupabaseOAuth=true in
+addition to enabled=true; both default false. Existing Auth0 remains untouched.
+The MCP follow-up draft includes GATE_MATRIX.md, RECOVERY_STATUS.md,
+OLD_API_COMPARISON.md, PR_SCOPE_AUDIT.md and SEPARATE_PROJECT_PLAN.md. The real
+refresh-token harness is missing and all hosted release gates remain unchecked.
+The website PR has no RLS SQL; the MCP drafts do enable RLS on NEW tables only.

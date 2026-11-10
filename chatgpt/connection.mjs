@@ -1,6 +1,7 @@
 export const CHATGPT_URL='https://chatgpt.com/plugins';
 export function checkConfig(c){
  if(!c?.enabled||c.environment!=='test')throw Error('ChatGPT test integration is disabled.');
+ if(c.enableSupabaseOAuth!==true)throw Error('Supabase OAuth beta is disabled. The existing Auth0 connection is unchanged.');
  const db=new URL(c.supabaseUrl),mcp=new URL(c.connectorUrl);
  if(db.hostname.includes('qnpkiqedalgusjxojclo')||mcp.hostname==='academic-assistant-mcp.onrender.com')throw Error('Production endpoints are not permitted.');
  for(const url of [db,mcp])if(url.username||url.password||url.search||url.hash||(url.protocol!=='https:'&&!['localhost','127.0.0.1'].includes(url.hostname)))throw Error('Invalid test endpoint.');

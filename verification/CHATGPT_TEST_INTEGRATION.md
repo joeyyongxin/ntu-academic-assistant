@@ -1,5 +1,14 @@
 # ChatGPT integration draft — local evidence, 2026-11-10
 
+Review follow-up: existing Auth0 connection is retained. The experimental UI now
+requires BOTH enabled=true and enableSupabaseOAuth=true; both default false.
+The test runner separately requires AA_ENABLE_SUPABASE_OAUTH=true. No provider
+cutover is performed. The MCP draft's GATE_MATRIX.md states every local/hosted
+coverage gap, RECOVERY_STATUS.md records the missing-CLI stop and exact download
+commands, and SEPARATE_PROJECT_PLAN.md describes the three real-provider gates.
+If beta contracts change, disable/revoke the TEST path rather than migrating
+Auth0 or falling back to a default account. Provider flags are not revocation.
+
 ## Changed files
 
 - chatgpt/config.js: disabled test-only configuration, no production URL/key.
