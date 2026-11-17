@@ -1999,6 +1999,7 @@ const inboxGo=go;go=function(){if(location.hash==='#inbox'){inboxOpen=true;histo
 // Personal connection setup. No credentials or inferred authentication state.
 (() => {
  const url='https://academic-assistant-mcp.onrender.com/mcp';
+ const liveChecksEnabled=window.AA_PERSONAL_CONNECTION_CHECK_ENABLED===true;
  const plugin='https://chatgpt.com/plugins/plugin_asdk_app_6af339ded2248191a049c3ef85c2d1e4';
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
  const scope=()=>WorkspaceProvider.scope();
@@ -2013,7 +2014,7 @@ const inboxGo=go;go=function(){if(location.hash==='#inbox'){inboxOpen=true;histo
   return r.json();
  }
  window.startPersonalChatGPTCheck=async function(){
-  if(busy)return;const initial=scope();busy=true;say('Starting a live check...');
+  if(!liveChecksEnabled){say('Live verification is not enabled in this release. Verify by asking NTU Academic Assistant to read your tasks.');return;}if(busy)return;const initial=scope();busy=true;say('Starting a live check...');
   try{const r=await request({action:'start'});if(scope()!==initial)return;
    if(!/^[a-f0-9]{48}$/.test(r.id||'')||!Number.isFinite(Date.parse(r.expiresAt)))throw Error('Invalid verification response.');
    proof={...r,scope:initial};window.openPersonalChatGPTSetup(true);
@@ -2032,7 +2033,7 @@ const inboxGo=go;go=function(){if(location.hash==='#inbox'){inboxOpen=true;histo
   card.append(el('h2','Connect ChatGPT'),el('p','Use NTU Academic Assistant, your working personal planner connection.','sub'));
   const link=el('a','Open NTU Academic Assistant','btn p');link.href=plugin;link.target='_blank';link.rel='noopener noreferrer';card.append(link);
   const steps=el('ol');for(const text of ['Open NTU Academic Assistant and connect if prompted. Use the Auth0 identity authorized by the server; its email can differ from your ChatGPT email.','For manual setup: Plugins > Add > Add custom MCP server. Use the URL below and OAuth. Choose a unique name if needed.','In a new chat select @NTU Academic Assistant and ask for your unfinished tasks without changing anything.'])steps.append(el('li',text));card.append(steps);
-  const label=el('label','Connector URL'),input=el('input');input.className='btn';input.readOnly=true;input.value=url;label.append(input);card.append(label,button('Copy URL',()=>copy(url)),button('Start live connection check',()=>window.startPersonalChatGPTCheck()));
+  const label=el('label','Connector URL'),input=el('input');input.className='btn';input.readOnly=true;input.value=url;label.append(input);card.append(label,button('Copy URL',()=>copy(url)));if(liveChecksEnabled)card.append(button('Start live connection check',()=>window.startPersonalChatGPTCheck()));else card.append(el('p','To verify this connection, ask NTU Academic Assistant to read your tasks. In-app live verification is not enabled in this release.','sub'));
   const p=valid();if(p){const prompt='Use verifyPlannerConnection with code '+p.id+'. Do not change tasks or assessments.';card.append(el('p','Send this in ChatGPT, then check the result here. The code expires after five minutes.','sub'),el('pre',prompt,'connection-proof'),button('Copy verification request',()=>copy(prompt)),button('Check result',()=>window.checkPersonalChatGPTResult()));}
   const status=el('p',notice||'Not checked here. Opening ChatGPT or installing a plugin does not verify live access.','sub');status.id='chatgptConnectionNotice';status.setAttribute('role','status');card.append(status);
   card.append(el('p','Requires an eligible ChatGPT account and permission to add custom MCP servers.','sub'),el('p','Disconnect and revoke access in ChatGPT. This page cannot revoke its grant. This connector is personal; it does not link other students to their planners.','sub'));

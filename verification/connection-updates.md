@@ -32,3 +32,6 @@ No Supabase TEST project reference supplied. Recovered planner-api source is sti
 5. Review and test PR #3 separately against the non-production API. Its additive SQL has companion rollback scripts; hosted gates remain unchecked.
 6. Production remains blocked pending explicit user approval. sw.js is bumped from v41 to v42 in this draft so cached setup code updates after a future approved website publish.
 7. Roll back website by reverting this commit and bumping cache again. Disable ENABLE_CONNECTION_CHECK and restore the old connector commit to remove only the optional probe. It stores only ephemeral five-minute status, so no database rollback is required for this connector change. For draft #3 use its SQL rollback scripts only after preserving new audit/history and stopping writes.
+
+## Website-only release
+User approved publishing only the website on 17 November. The optional live-check UI is hidden unless AA_PERSONAL_CONNECTION_CHECK_ENABLED is explicitly true; the released site offers a read-only ChatGPT verification prompt instead. No connector endpoint is deployed. Full-app browser checks assert the unavailable action is absent.
