@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 root=Path(__file__).resolve().parent.parent
 html=(root/'workspace.html').read_text(encoding='utf-8')
 html=html.replace('<script src="config.js"></script>','<script>window.PLANNER_CONFIG={supabaseUrl:"https://fixture.invalid",supabaseAnonKey:"sb_publishable_fixture"};</script>').replace('src="data-service.js"','src="../data-service.js"')
@@ -15,5 +16,8 @@ ReferenceCloud.client=async()=>{
 marker='globalThis.ProductionWorkspace={project,flatten,fields,preferencesOf,ProductionBridge};\n})();'
 assert marker in html
 html=html.replace(marker,marker+'\n'+script)
-(root/'tests/ui-workspace.html').write_text(html,encoding='utf-8')
-print('Built isolated UI fixture. No real credentials or external requests.')
+if '--stdout' in sys.argv:
+ sys.stdout.buffer.write(html.encode('utf-8'))
+else:
+ (root/'tests/ui-workspace.html').write_text(html,encoding='utf-8')
+ print('Built isolated UI fixture. No real credentials or external requests.')
