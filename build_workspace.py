@@ -26,6 +26,8 @@ worker="<script>if('serviceWorker' in navigator&&location.protocol==='https:')na
 html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/chatgpt-connect-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
 html=html.replace('<script src="ui/date-nav.js"></script>', '<script src="ui/date-nav.js"></script><script src="workspace/task-times.js"></script>',1)
 html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/task-times-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
+html=html.replace('<script src="workspace/task-times.js"></script>', '<script src="workspace/task-times.js"></script><script src="workspace/plan-import.js"></script>',1)
+html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/plan-import-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
 html=html.replace('</body>',worker+'</body>',1)
 legacy=root/'legacy.html'
 if not legacy.exists():legacy.write_bytes((root/'index.html').read_bytes())
