@@ -17,7 +17,7 @@
   for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at||terms.some(t=>(t.recordTrash||[]).some(e=>e.kind===table&&e.recordId===r.id))).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
    const t=semester(row.date,preferences?.recordTerms?.[table]?.[row.id]),mod=row.module.toUpperCase();if(!t.mods.includes(mod))t.mods.push(mod);
    const id=++n;map.set(table+':'+id,copy(row));
-   if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
+   if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(preferences?.recordExtras?.tasks?.[row.id]?.startTime?{startTime:preferences.recordExtras.tasks[row.id].startTime}:{}),...(preferences?.recordExtras?.tasks?.[row.id]?.endTime?{endTime:preferences.recordExtras.tasks[row.id].endTime}:{}),...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
   for(const t of terms)for(const entry of t.recordTrash||[]){if(!['tasks','assessments'].includes(entry.kind))continue;const list=t[entry.kind],index=list.findIndex(row=>map.get(entry.kind+':'+row.id)?.id===entry.recordId);if(index>=0){entry.row=list.splice(index,1)[0];delete entry.unavailable;}else entry.unavailable=true;}
@@ -41,7 +41,7 @@
   for(const [key,{table,row,termId}] of flatten(snapshot)){
    const saved=map.get(key);if(!saved)continue;
    payload.recordTerms[table][saved.id]=termId;
-   payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
+   payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(row.startTime?{startTime:row.startTime}:{}),...(row.endTime?{endTime:row.endTime}:{}),...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
   }
   for(const t of payload.terms){
    for(const entry of t.recordTrash||[])if(['tasks','assessments'].includes(entry.kind))entry.recordId=map.get(entry.kind+':'+entry.row.id)?.id||entry.recordId||null;

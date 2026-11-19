@@ -17,7 +17,7 @@
    check(Array.isArray(t.mods)&&t.mods.every(m=>typeof m==='string'&&/^[A-Z0-9_-]{2,16}$/.test(m))&&new Set(t.mods).size===t.mods.length,'Invalid module enrolments.');
    for(const key of ['tasks','classes','inbox','files','assessments','timetable','hub'])check(Array.isArray(t[key])&&t[key].length<=10000,'Invalid '+key+' collection.');
    count+=t.tasks.length+t.classes.length+t.inbox.length+t.files.length+t.assessments.length+t.timetable.length+t.hub.length;
-   for(const x of t.tasks){check(Number.isSafeInteger(x.id)&&x.id>0&&!taskIds.has(x.id)&&t.mods.includes(x.mod)&&date(x.date)&&words(x.title,500)&&x.title.trim()&&Number.isInteger(x.min)&&x.min>=0&&x.min<=1440&&typeof x.done==='boolean','Invalid task record or semester assignment.');taskIds.add(x.id);}
+   for(const x of t.tasks){check(Number.isSafeInteger(x.id)&&x.id>0&&!taskIds.has(x.id)&&t.mods.includes(x.mod)&&date(x.date)&&words(x.title,500)&&x.title.trim()&&Number.isInteger(x.min)&&x.min>=0&&x.min<=1440&&typeof x.done==='boolean','Invalid task record or semester assignment.');check((x.startTime===undefined||/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(x.startTime))&&(x.endTime===undefined||/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(x.endTime)&&!!x.startTime&&x.endTime>x.startTime),'Invalid optional task time.');taskIds.add(x.id);}
    for(const f of t.files)check(Array.isArray(f)&&f.length>=5&&f.slice(0,5).every(x=>words(x))&&t.mods.includes(f[1]),'Invalid library record.');
    for(const a of t.assessments)check(t.mods.includes(a.mod)&&date(a.date)&&words(a.name,500)&&words(a.type,80)&&words(a.time,40),'Invalid assessment record.');
    for(const c of t.classes)check(Array.isArray(c)&&date(c[0])&&t.mods.includes(c[1])&&words(c[2],80)&&words(c[3],80),'Invalid planner class.');

@@ -278,7 +278,7 @@ input[type=file]{max-width:100%;min-height:40px;color:var(--mut);font-size:12px}
 </style><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head><body class="auth-mode"><section id="authRoot" aria-label="Demo account access"></section><div id="workspace" hidden inert>
 <header class="mobile-top"><div class="mbrand"><span class="mlogo">✦</span><span>Academic Assistant</span></div><span class="mstatus">● Demo</span></header><nav id="nav" aria-label="Main navigation"><div class="bt"><span class="lg">✦</span><span><b>Academic<br>Assistant</b><small>Your NTU workspace</small></span></div><span class="navsub">WORKSPACE</span><a href="#today">▦ &nbsp; Dashboard</a><a href="#plan">☑ &nbsp; Study Planner</a><a href="#timetable">▤ &nbsp; Timetable</a><a href="#files">▣ &nbsp; My Files</a><a href="#ntulearn">♧ &nbsp; NTULearn</a><span class="navsub">YOUR PROGRESS</span><a href="#modules">◎ &nbsp; Modules</a><a href="#assessments">◷ &nbsp; Assessments</a><a href="#inbox">✉ &nbsp; Approval Inbox <span class="bd" id="bd"></span></a><a href="#settings">⚙ &nbsp; Settings</a><button class="btn th" onclick="theme()">Switch light / dark</button></nav>
 <div class="mobile-scrim" id="mobileScrim" onclick="closeMore()"></div><section class="mobile-more" id="mobileMore" aria-label="More navigation"><div class="more-handle"></div><div class="more-head"><strong>All sections</strong><button class="btn" onclick="closeMore()">Close ✕</button></div><div id="moreLinks"></div></section><main><div class="preview-note"><strong>v2.9 · Simulated account demo</strong> · All records are illustrative and save only in this browser. No Supabase, NTULearn, file storage or real AI connection.</div><div class="tb" id="tb"></div><div id="v"></div></main></div>
-<script src="config.js"></script><script src="data-service.js"></script><script src="ui/date-nav.js"></script><script src="ui/primitives.js"></script><script src="state/workspace-provider.js"></script><script src="state/record-trash.js"></script><script src="state/change-pipeline.js"></script><script src="library/library-model.js"></script><script src="workspace/backup-recovery.js"></script><script src="workspace/ntulearn-calendar.js"></script><script src="workspace/ntulearn-announcements.js"></script><script src="workspace/ntulearn-sync.js"></script><script src="workspace/ntulearn-library.js"></script><script src="workspace/ntulearn-answers.js"></script><script src="workspace/study-tools.js"></script><script src="workspace/planner-refinements.js"></script><script src="workspace/workspace-trash.js"></script><script src="workspace/timetable-import.js"></script><script src="workspace/pdf-study-search.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
+<script src="config.js"></script><script src="data-service.js"></script><script src="ui/date-nav.js"></script><script src="workspace/task-times.js"></script><script src="ui/primitives.js"></script><script src="state/workspace-provider.js"></script><script src="state/record-trash.js"></script><script src="state/change-pipeline.js"></script><script src="library/library-model.js"></script><script src="workspace/backup-recovery.js"></script><script src="workspace/ntulearn-calendar.js"></script><script src="workspace/ntulearn-announcements.js"></script><script src="workspace/ntulearn-sync.js"></script><script src="workspace/ntulearn-library.js"></script><script src="workspace/ntulearn-answers.js"></script><script src="workspace/study-tools.js"></script><script src="workspace/planner-refinements.js"></script><script src="workspace/workspace-trash.js"></script><script src="workspace/timetable-import.js"></script><script src="workspace/pdf-study-search.js"></script><script>window.ACADEMIC_REFERENCE_CONFIG={mode:"supabase",projectRole:"production",supabaseUrl:PLANNER_CONFIG.supabaseUrl,publishableKey:PLANNER_CONFIG.supabaseAnonKey};</script><script>/* Local persistence only. This adapter never connects to a remote service. */
 (function(root){
  const KEY='aa-reference-v29-workspace-v1';
  const copy=value=>JSON.parse(JSON.stringify(value));
@@ -297,7 +297,7 @@ input[type=file]{max-width:100%;min-height:40px;color:var(--mut);font-size:12px}
    check(Array.isArray(t.mods)&&t.mods.every(m=>typeof m==='string'&&/^[A-Z0-9_-]{2,16}$/.test(m))&&new Set(t.mods).size===t.mods.length,'Invalid module enrolments.');
    for(const key of ['tasks','classes','inbox','files','assessments','timetable','hub'])check(Array.isArray(t[key])&&t[key].length<=10000,'Invalid '+key+' collection.');
    count+=t.tasks.length+t.classes.length+t.inbox.length+t.files.length+t.assessments.length+t.timetable.length+t.hub.length;
-   for(const x of t.tasks){check(Number.isSafeInteger(x.id)&&x.id>0&&!taskIds.has(x.id)&&t.mods.includes(x.mod)&&date(x.date)&&words(x.title,500)&&x.title.trim()&&Number.isInteger(x.min)&&x.min>=0&&x.min<=1440&&typeof x.done==='boolean','Invalid task record or semester assignment.');taskIds.add(x.id);}
+   for(const x of t.tasks){check(Number.isSafeInteger(x.id)&&x.id>0&&!taskIds.has(x.id)&&t.mods.includes(x.mod)&&date(x.date)&&words(x.title,500)&&x.title.trim()&&Number.isInteger(x.min)&&x.min>=0&&x.min<=1440&&typeof x.done==='boolean','Invalid task record or semester assignment.');check((x.startTime===undefined||/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(x.startTime))&&(x.endTime===undefined||/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(x.endTime)&&!!x.startTime&&x.endTime>x.startTime),'Invalid optional task time.');taskIds.add(x.id);}
    for(const f of t.files)check(Array.isArray(f)&&f.length>=5&&f.slice(0,5).every(x=>words(x))&&t.mods.includes(f[1]),'Invalid library record.');
    for(const a of t.assessments)check(t.mods.includes(a.mod)&&date(a.date)&&words(a.name,500)&&words(a.type,80)&&words(a.time,40),'Invalid assessment record.');
    for(const c of t.classes)check(Array.isArray(c)&&date(c[0])&&t.mods.includes(c[1])&&words(c[2],80)&&words(c[3],80),'Invalid planner class.');
@@ -546,7 +546,7 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
   for(const table of ['tasks','assessments'])for(const row of records[table].filter(r=>!r.deleted_at||terms.some(t=>(t.recordTrash||[]).some(e=>e.kind===table&&e.recordId===r.id))).sort((a,b)=>String(a.id).localeCompare(String(b.id)))){
    const t=semester(row.date,preferences?.recordTerms?.[table]?.[row.id]),mod=row.module.toUpperCase();if(!t.mods.includes(mod))t.mods.push(mod);
    const id=++n;map.set(table+':'+id,copy(row));
-   if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
+   if(table==='tasks')t.tasks.push({id,mod,title:row.title,date:row.date,min:row.minutes??0,done:!!row.done,done_at:row.done_at??null,notes:row.notes||'',fix:preferences?.recordExtras?.tasks?.[row.id]?.fix===true,...(preferences?.recordExtras?.tasks?.[row.id]?.startTime?{startTime:preferences.recordExtras.tasks[row.id].startTime}:{}),...(preferences?.recordExtras?.tasks?.[row.id]?.endTime?{endTime:preferences.recordExtras.tasks[row.id].endTime}:{}),...(['high','low'].includes(preferences?.recordExtras?.tasks?.[row.id]?.priority)?{priority:preferences.recordExtras.tasks[row.id].priority}:{})});
    else t.assessments.push({id,mod,name:row.title,date:row.date,type:preferences?.recordExtras?.assessments?.[row.id]?.type||'Assessment',time:preferences?.recordExtras?.assessments?.[row.id]?.time||''});
   }
   for(const t of terms)for(const entry of t.recordTrash||[]){if(!['tasks','assessments'].includes(entry.kind))continue;const list=t[entry.kind],index=list.findIndex(row=>map.get(entry.kind+':'+row.id)?.id===entry.recordId);if(index>=0){entry.row=list.splice(index,1)[0];delete entry.unavailable;}else entry.unavailable=true;}
@@ -570,7 +570,7 @@ ReferenceCloud.configure(window.ACADEMIC_REFERENCE_CONFIG||{mode:"local"});
   for(const [key,{table,row,termId}] of flatten(snapshot)){
    const saved=map.get(key);if(!saved)continue;
    payload.recordTerms[table][saved.id]=termId;
-   payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
+   payload.recordExtras[table][saved.id]=table==='tasks'?{fix:!!row.fix,...(row.startTime?{startTime:row.startTime}:{}),...(row.endTime?{endTime:row.endTime}:{}),...(['high','low'].includes(row.priority)?{priority:row.priority}:{})}:{type:row.type,time:row.time};
   }
   for(const t of payload.terms){
    for(const entry of t.recordTrash||[])if(['tasks','assessments'].includes(entry.kind))entry.recordId=map.get(entry.kind+':'+entry.row.id)?.id||entry.recordId||null;
@@ -2064,6 +2064,37 @@ const inboxGo=go;go=function(){if(location.hash==='#inbox'){inboxOpen=true;histo
  };
  const style=el('style');style.textContent='.connection-row{gap:12px;align-items:center;flex-wrap:wrap}.connection-row>span{flex:1 1 240px;min-width:0}.connection-sheet{width:min(680px,100%);max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box}.connection-sheet p{max-width:70ch}.connection-sheet a.btn{display:inline-flex;text-decoration:none}.connection-sheet input{display:block;width:100%;box-sizing:border-box;margin:6px 0 10px}.connection-sheet li{margin:12px 0}.connection-sheet ol{padding-left:24px}.connection-proof{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;border:1px solid var(--ln);padding:12px;border-radius:8px}.connection-sheet .btn{margin:4px;max-width:100%;white-space:normal}';document.head.append(style);
  if(location.hash==='#settings')go();
+})();
+
+// Runs inside the workspace closure, after task editor and modal overrides.
+(() => {
+ let editingId=null;const edit=window.editStudyTask;window.editStudyTask=function(id){editingId=id;return edit.apply(this,arguments);};
+ window.clearStudyTaskTime=function(){for(const id of ['studyStartTime','studyEndTime']){const n=document.getElementById(id);if(n)n.value='';}};
+ window.updateStudyTimeDuration=function(){try{const duration=TaskTimes.duration(document.getElementById('studyStartTime').value,document.getElementById('studyEndTime').value);if(duration!==null)document.getElementById('studyMinutes').value=duration;document.getElementById('studyError').textContent='';}catch(e){document.getElementById('studyError').textContent=e.message;}};
+ const save=window.saveStudyTask;
+ window.saveStudyTask=function(event){
+  let time;
+  try{time=TaskTimes.read(document.getElementById('studyStartTime')?.value||'',document.getElementById('studyEndTime')?.value||'');}
+  catch(e){event.preventDefault();document.getElementById('studyError').textContent=e.message;return;}
+  const apply=window.applyOrPropose;
+  window.applyOrPropose=function(change){if(change.entity==='tasks'&&change.after){const after={...change.after};delete after.startTime;delete after.endTime;Object.assign(after,time);if(time.endTime)after.min=TaskTimes.duration(time.startTime,time.endTime);change={...change,after};}return apply(change);};
+  try{return save.apply(this,arguments);}finally{window.applyOrPropose=apply;}
+ };
+ function decorate(html){
+  const t=document.createElement('template');t.innerHTML=html;const groups=new Map();
+  const form=t.content.querySelector('#studyTitle')?.closest('form');if(form){const editing=form.closest('section')?.querySelector('h2')?.textContent==='Edit study task',task=editing?T.find(x=>x.id===editingId):null,v=TaskTimes.stored(task),fields=document.createElement('fieldset');fields.className='wide task-time-fields';fields.innerHTML='<legend>Time (optional, Singapore)</legend><p class="sub">Leave blank for a flexible task. End time is optional; when set, it determines planned minutes.</p><div class="task-time-inputs"><label>Start time<input type="time" id="studyStartTime" value="'+(v.startTime||'')+'" onchange="updateStudyTimeDuration()"></label><label>End time<input type="time" id="studyEndTime" value="'+(v.endTime||'')+'" onchange="updateStudyTimeDuration()"></label><button class="btn" type="button" onclick="clearStudyTaskTime()">Clear time</button></div>';form.querySelector('#studyNotes')?.closest('label')?.before(fields);}
+
+  for(const check of t.content.querySelectorAll('input[onchange^="tog("]')){
+   const id=Number(check.getAttribute('onchange').match(/tog\((\d+)\)/)?.[1]),task=T.find(x=>x.id===id);if(!task)continue;
+   const label=check.closest('label'),time=TaskTimes.label(task);if(time){const badge=document.createElement('small');badge.className='task-scheduled-time';badge.textContent=time+' SGT';label?.querySelector('span')?.append(badge);}
+   const row=check.closest('.home-study-row,.task-study-row');if(!row)continue;
+   const rows=groups.get(row.parentElement)||[];if(!rows.some(x=>x.row===row))rows.push({row,task});groups.set(row.parentElement,rows);
+  }
+  for(const [parent,rows] of groups){if(!rows.some(x=>TaskTimes.label(x.task)))continue;const marker=document.createComment('task time groups');rows[0].row.before(marker);let lastType='';for(const {row,task} of rows.sort((a,b)=>TaskTimes.compare(a.task,b.task))){const type=TaskTimes.label(task)?'Scheduled':'Flexible tasks';if(type!==lastType){const heading=document.createElement('p');heading.className='sub task-time-heading';heading.textContent=type;marker.before(heading);lastType=type;}marker.before(row);}marker.remove();}
+  return t.innerHTML;
+ }
+ for(const name of ['today','plan','detail']){const base=name==='today'?today:name==='plan'?plan:detail;const wrapped=function(){return decorate(base.apply(this,arguments));};if(name==='today')today=wrapped;else if(name==='plan')plan=wrapped;else detail=wrapped;}
+ const style=document.createElement('style');style.textContent='.task-time-fields{border:0;border-top:1px solid var(--ln);padding:12px 0}.task-time-inputs{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.task-time-inputs label{flex:1 1 140px}.task-scheduled-time{display:block!important;color:var(--acc);font-weight:600;margin-top:4px}.task-time-heading{grid-column:1/-1;margin:12px 0 4px;font-weight:600}.task-time-fields p{max-width:65ch}';document.head.append(style);
 })();
 
 go();
