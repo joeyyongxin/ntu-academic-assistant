@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFile} from 'node:fs/promises';
+const c=vm.createContext({});vm.runInContext(await readFile(new URL('../workspace/task-times.js',import.meta.url),'utf8'),c);const api=c.TaskTimes;
+test('untimed, start-only and timed tasks remain distinct',()=>{assert.equal(JSON.stringify(api.read()),'{}');assert.equal(api.label({startTime:'09:00'}),'09:00');assert.equal(api.duration('10:00','11:45'),105);assert.equal(api.label({startTime:'10:00',endTime:'11:45'}),'10:00 - 11:45');});
+test('reject invalid and overnight ranges without inventing a time',()=>{for(const [s,e] of [['','10:00'],['24:00',''],['09:70',''],['10:00','09:00'],['10:00','10:00']])assert.throws(()=>api.read(s,e));assert.equal(api.label({startTime:'bad'}),'');});
+test('scheduled tasks sort first within their date, flexible order stays stable',()=>{const tasks=[{id:1,date:'2026-11-20'},{id:2,date:'2026-11-20',startTime:'13:00'},{id:3,date:'2026-11-20',startTime:'09:00'},{id:4,date:'2026-11-20'},{id:5,date:'2026-11-21',startTime:'08:00'}];assert.deepEqual(tasks.sort(api.compare).map(t=>t.id),[3,2,1,4,5]);});

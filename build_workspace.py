@@ -24,6 +24,8 @@ assert re.search(r'<style>(.*?)</style>',html,re.S)[1]==re.search(r'<style>(.*?)
 html=html.replace('</head>', '<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#3551db"></head>',1)
 worker="<script>if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});</script>"
 html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/chatgpt-connect-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
+html=html.replace('<script src="ui/date-nav.js"></script>', '<script src="ui/date-nav.js"></script><script src="workspace/task-times.js"></script>',1)
+html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/task-times-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
 html=html.replace('</body>',worker+'</body>',1)
 legacy=root/'legacy.html'
 if not legacy.exists():legacy.write_bytes((root/'index.html').read_bytes())
