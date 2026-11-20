@@ -1,4 +1,4 @@
-const CACHE='academic-assistant-shell-v44';
+const CACHE='academic-assistant-shell-v45';
 const ASSETS=['./','./index.html','./workspace.html','./legacy.html','./app.js','./data-service.js','./account.js','./styles.css','./config.js','./username-config.js','./manifest.json','./icon.svg','./ui/primitives.js','./state/workspace-provider.js','./state/record-trash.js','./state/change-pipeline.js','./library/library-model.js','./ui/date-nav.js','./workspace/task-times.js','./workspace/plan-import.js','./workspace/chatgpt-connect-hook.js','./workspace/backup-recovery.js','./workspace/ntulearn-calendar.js','./workspace/ntulearn-announcements.js','./workspace/ntulearn-sync.js','./workspace/ntulearn-library.js','./workspace/ntulearn-answers.js','./workspace/study-tools.js','./workspace/planner-refinements.js','./workspace/timetable-import.js','./workspace/workspace-trash.js','./workspace/pdf-study-search.js','./vendor/pdfjs/pdf.mjs','./vendor/pdfjs/pdf.worker.mjs'];
 const HOSTS=['cdn.jsdelivr.net','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
