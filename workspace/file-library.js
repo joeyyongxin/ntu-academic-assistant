@@ -1,10 +1,10 @@
 /* Private file bytes live in Storage; metadata is separate from workspace snapshots. */
 (function(root){
- const BUCKET='academic-private-files',MAX=10*1024*1024;
+ const BUCKET='academic-private-files',MAX=((typeof PLANNER_CONFIG!=='undefined'&&PLANNER_CONFIG.maxFileMB===50)?50:10)*1024*1024;
  const extensions=new Set(['pdf','txt','md','csv','png','jpg','jpeg','webp','docx','pptx','xlsx','zip']);
  function validateFile(file){
   if(!file||typeof file.name!=='string'||!file.name.trim()||file.name.length>240)throw Error('Choose a file with a name of 1–240 characters.');
-  if(!Number.isSafeInteger(file.size)||file.size<=0||file.size>MAX)throw Error('Choose a non-empty file up to 10 MB.');
+  if(!Number.isSafeInteger(file.size)||file.size<=0||file.size>MAX)throw Error('Choose a non-empty file up to '+(MAX/1024/1024)+' MB.');
   const ext=file.name.split('.').pop().toLowerCase();if(!extensions.has(ext))throw Error('Supported files: PDF, text, CSV, images, Office documents and ZIP.');return ext;
  }
  class Library{
