@@ -29,6 +29,10 @@ html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/task-times-
 html=html.replace('<script src="workspace/task-times.js"></script>', '<script src="workspace/task-times.js"></script><script src="workspace/plan-import.js"></script>',1)
 html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/plan-import-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
 html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/task-trash-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
+html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/priority-dots-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
+html=html.replace('<script src="workspace/task-times.js"></script>', '<script src="workspace/task-times.js"></script><script src="workspace/class-plan-import.js"></script>',1)
+html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/class-plan-import-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
+html=html.replace('\ngo();\n})();\n</script>', '\n'+(root/'workspace/folder-upload-hook.js').read_text(encoding='utf-8')+'\ngo();\n})();\n</script>',1)
 html=html.replace('</body>',worker+'</body>',1)
 legacy=root/'legacy.html'
 if not legacy.exists():legacy.write_bytes((root/'index.html').read_bytes())
