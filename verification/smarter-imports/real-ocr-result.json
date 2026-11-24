@@ -1,0 +1,30 @@
+{
+  "rows": [
+    {
+      "mod": "SC1004",
+      "d": "Mon",
+      "start": "09:00",
+      "end": "10:00",
+      "kind": "Lecture",
+      "venue": "LT1",
+      "raw": "SC1004 09:00-10:00 Lecture LT1",
+      "issues": [],
+      "correction": ""
+    },
+    {
+      "mod": "SC2000",
+      "d": "Tue",
+      "start": "11:00",
+      "end": "12:00",
+      "kind": "Tutorial",
+      "venue": "TR2",
+      "raw": "SC2000 11:00-12:00 Tutorial TR2",
+      "issues": [],
+      "correction": ""
+    }
+  ],
+  "flagged": [],
+  "unread": [],
+  "layout": "weekly grid",
+  "text": "Monday                                    Tuesday                                  Wednesday\nSC1004                                      SC2000\n\n09:00-10:00                   11:00-12:00\n\nLecture                                                Tutorial\n\nLT1                                                        TR2\n"
+}

@@ -1,3 +1,5 @@
+> Historical creation-only import. The current reviewed update flow is documented in [smarter-imports.md](smarter-imports.md).
+
 # ChatGPT copy/paste plan import
 
 Home and Plan gain Import a plan. The shared sheet provides a copyable prompt containing only the chosen semester ID/date bounds, module codes and Singapore date. No account email, token, saved task list or credentials are put in the prompt. User supplies their plan to ChatGPT separately and pastes its JSON reply. Nothing calls an AI API or requires an MCP connection.
